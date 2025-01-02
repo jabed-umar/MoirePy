@@ -200,45 +200,71 @@ class Layer:  # parent class
         
         self.bigger_points = points
         
-        point_positions = self._point_positions(points, v1, v2)
-        # print(point_positions.shape)
-        # print(point_positions)
 
         self.kdtree = KDTree(points)
         
+        
+
+
+
 
         # plot the points but with colours based on the point_positions
         # - point_positions = [0, 0] -> black
         # - point_positions = [1, 0] -> red
         # - do not plot the rest of the points at all
 
-        plt.plot(points[point_positions[:, 0] == 0][:, 0], points[point_positions[:, 0] == 0][:, 1], 'k.')
-        plt.plot(points[point_positions[:, 0] == 1][:, 0], points[point_positions[:, 0] == 1][:, 1], 'r.')
+        # plt.plot(points[point_positions[:, 0] == 0][:, 0], points[point_positions[:, 0] == 0][:, 1], 'k.')
+        # plt.plot(points[point_positions[:, 0] == 1][:, 0], points[point_positions[:, 0] == 1][:, 1], 'r.')
 
-        # plt.plot(*all_points.T, "ro")
-        # plt.plot(*points.T, "b.")
+        # # plt.plot(*all_points.T, "ro")
+        # # plt.plot(*points.T, "b.")
         
-        # parallellogram around the whole lattice
-        plt.plot([0, self.mln1*self.mlv1[0]], [0, self.mln1*self.mlv1[1]], 'k', linewidth=1)
-        plt.plot([0, self.mln2*self.mlv2[0]], [0, self.mln2*self.mlv2[1]], 'k', linewidth=1)
-        plt.plot([self.mln1*self.mlv1[0], self.mln1*self.mlv1[0] + self.mln2*self.mlv2[0]], [self.mln1*self.mlv1[1], self.mln1*self.mlv1[1] + self.mln2*self.mlv2[1]], 'k', linewidth=1)
-        plt.plot([self.mln2*self.mlv2[0], self.mln1*self.mlv1[0] + self.mln2*self.mlv2[0]], [self.mln2*self.mlv2[1], self.mln1*self.mlv1[1] + self.mln2*self.mlv2[1]], 'k', linewidth=1)
+        # # parallellogram around the whole lattice
+        # plt.plot([0, self.mln1*self.mlv1[0]], [0, self.mln1*self.mlv1[1]], 'k', linewidth=1)
+        # plt.plot([0, self.mln2*self.mlv2[0]], [0, self.mln2*self.mlv2[1]], 'k', linewidth=1)
+        # plt.plot([self.mln1*self.mlv1[0], self.mln1*self.mlv1[0] + self.mln2*self.mlv2[0]], [self.mln1*self.mlv1[1], self.mln1*self.mlv1[1] + self.mln2*self.mlv2[1]], 'k', linewidth=1)
+        # plt.plot([self.mln2*self.mlv2[0], self.mln1*self.mlv1[0] + self.mln2*self.mlv2[0]], [self.mln2*self.mlv2[1], self.mln1*self.mlv1[1] + self.mln2*self.mlv2[1]], 'k', linewidth=1)
         
-        # just plot mlv1 and mlv2 parallellogram
-        plt.plot([0, self.mlv1[0]], [0, self.mlv1[1]], 'k', linewidth=1)
-        plt.plot([0, self.mlv2[0]], [0, self.mlv2[1]], 'k', linewidth=1)
-        plt.plot([self.mlv1[0], self.mlv1[0] + self.mlv2[0]], [self.mlv1[1], self.mlv1[1] + self.mlv2[1]], 'k', linewidth=1)
-        plt.plot([self.mlv2[0], self.mlv1[0] + self.mlv2[0]], [self.mlv2[1], self.mlv1[1] + self.mlv2[1]], 'k', linewidth=1)
+        # # just plot mlv1 and mlv2 parallellogram
+        # plt.plot([0, self.mlv1[0]], [0, self.mlv1[1]], 'k', linewidth=1)
+        # plt.plot([0, self.mlv2[0]], [0, self.mlv2[1]], 'k', linewidth=1)
+        # plt.plot([self.mlv1[0], self.mlv1[0] + self.mlv2[0]], [self.mlv1[1], self.mlv1[1] + self.mlv2[1]], 'k', linewidth=1)
+        # plt.plot([self.mlv2[0], self.mlv1[0] + self.mlv2[0]], [self.mlv2[1], self.mlv1[1] + self.mlv2[1]], 'k', linewidth=1)
         
-        plt.grid()
-        plt.show()
+        # plt.grid()
+        # plt.show()
         
         
+    def _generate_mapping(self) -> None:
+        point_positions = self._point_positions(
+            self.bigger_points,
+            self.mln1 * self.mlv1,
+            self.mln2 * self.mlv2
+        )
         
+        # point positions... for each point in self.point, point position is a array of length 2 (x, y)
+        # where the elemnts are -1, 0 and 1... this is what their value signify
+        # 
+        # (-1, 1) | (0, 1) | (1, 1)
+        # -----------------------------
+        # (-1, 0) | (0, 0) | (1, 0)
+        # -----------------------------
+        # (-1,-1) | (0,-1) | (1,-1)
+        # 
+        # (0, 0) is our lattice... 
+        # all point with point_positions = (x, y) need to be translated by
+        # (x*self.mlv1*self.mln1 + y*self.mlv2*self.mln2) to get the corresponding point in the lattice
+        
+        # generate mappings from indices in the self.bigger_points to the self.points...
+        # querying the KDTree will give the indices in the self.bigger_points
+        # we need to map those indices to the self.points indices
+        # then we will store that in `self.mappings``
+        # self.mapppings will be a dictionary with keys as the indices in the
+        # self.bigger_points (unique) and values as the indices in the self.points (not unique)
     
     def query_kdtree(self, points: np.ndarray, k: int=1, nn_mode=True) -> Tuple[np.ndarray, np.ndarray]:  # distance, index
         assert self.kdtree is not None, "first generate the KDTree before quering (call `Layer.generate_kdtree()` function)"
-            
+
         # Step 1:
         # - get a normal query from KDTree
         # - distance, index = self.kdtree.query(points, k=k)
@@ -247,7 +273,9 @@ class Layer:  # parent class
         
         
         # Step 2: it will come here if PBC is True
-        # - get the 
+        # - for all the points map them using self.mappings
+        # - replace the indices with the mapped indices
+        # - return the mapped indices and distances (distance will be the same)
 
     def plot_lattice(self, plot_connections: bool = True, plot_unit_cell: bool = False) -> None:
         # plt.figure(figsize=(8, 8))
