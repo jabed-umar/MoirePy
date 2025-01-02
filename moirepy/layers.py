@@ -130,7 +130,12 @@ class Layer:  # parent class
     #         & (q - m2*p  <        d2)
     #     ]
     
-    def point_positions(self, points: np.ndarray, A: np.ndarray, B: np.ndarray) -> np.ndarray:
+    def _point_positions(self, points: np.ndarray, A: np.ndarray, B: np.ndarray) -> np.ndarray:
+        # for each point this returns it's position corresponding to the parallelogram of interest
+        # - if the point is inside, returns (0, 0)
+        # - for outside, left side and right side will give -1 and 1 respectively
+        # - for outside, top side and bottom side will give -1 and 1 respectively
+
         # Compute determinants for positions relative to OA and BC
         det_OA = (points[:, 0] * A[1] - points[:, 1] * A[0]) <= self.toll_scale * 1e-2
         det_BC = ((points[:, 0] - B[0]) * A[1] - (points[:, 1] - B[1]) * A[0]) <= self.toll_scale * 1e-2
@@ -236,14 +241,23 @@ class Layer:  # parent class
         
         
     def _generate_mapping(self) -> None:
-        point_positions = self._point_positions(
+        self.mappings = {}
+        tree = KDTree(self.points)
+        translations = self._point_positions(
             self.bigger_points,
             self.mln1 * self.mlv1,
             self.mln2 * self.mlv2
         )
-        
+
+        for i, (dx, dy) in enumerate(translations):
+            point = self.bigger_points[i] - (dx * self.mlv1 * self.mln1 + dy * self.mlv2 * self.mln2)
+            distance, index = tree.query(point)
+            if distance >= self.toll_scale * 1e-3:
+                raise ValueError(f"FATAL ERROR: Distance {distance} exceeds tolerance for point {i}")
+            self.mappings[i] = index
+
         # point positions... for each point in self.point, point position is a array of length 2 (x, y)
-        # where the elemnts are -1, 0 and 1... this is what their value signify
+        # where the elemnts are -1, 0 and 1... this is what their value mean about their position
         # 
         # (-1, 1) | (0, 1) | (1, 1)
         # -----------------------------
@@ -251,31 +265,66 @@ class Layer:  # parent class
         # -----------------------------
         # (-1,-1) | (0,-1) | (1,-1)
         # 
-        # (0, 0) is our lattice... 
+        # (0, 0) is our actual lattice part... 
+        # do this for all points in self.bigger_points:
         # all point with point_positions = (x, y) need to be translated by
-        # (x*self.mlv1*self.mln1 + y*self.mlv2*self.mln2) to get the corresponding point in the lattice
-        
-        # generate mappings from indices in the self.bigger_points to the self.points...
-        # querying the KDTree will give the indices in the self.bigger_points
-        # we need to map those indices to the self.points indices
+        # (-x*self.mlv1*self.mln1 - y*self.mlv2*self.mln2) to get the corresponding point inside the lattice
+        # then you would need to run a query on a newly kdtree of the smaller points...
+        # to the get the index of the corresponding point inside the lattice (distance should be zero, just saying)
+        # now we already know the index of the point in the self.bigger_points... so we can map that to the index of the point in the self.points
         # then we will store that in `self.mappings``
         # self.mapppings will be a dictionary with keys as the indices in the
         # self.bigger_points (unique) and values as the indices in the self.points (not unique)
-    
-    def query_kdtree(self, points: np.ndarray, k: int=1, nn_mode=True) -> Tuple[np.ndarray, np.ndarray]:  # distance, index
-        assert self.kdtree is not None, "first generate the KDTree before quering (call `Layer.generate_kdtree()` function)"
 
+
+    def query(self, points: np.ndarray, k: int = 1) -> Tuple[np.ndarray, np.ndarray]:
         # Step 1:
         # - get a normal query from KDTree
         # - distance, index = self.kdtree.query(points, k=k)
         # - remove all the points farther than (1+0.1*toll_scale) * min distance
         # - return here just that if OBC
-        
-        
+
         # Step 2: it will come here if PBC is True
         # - for all the points map them using self.mappings
         # - replace the indices with the mapped indices
         # - return the mapped indices and distances (distance will be the same)
+
+        assert self.kdtree is not None, "Generate the KDTree first by calling `Layer.generate_kdtree()`."
+        distances, indices = self.kdtree.query(points, k=k)
+        
+        # Set minimum distance threshold
+        min_distance = distances[:, 0].min()
+        threshold = (1 + 1e-2 * self.toll_scale) * min_distance
+        
+        # Filter distances and indices based on thresholds
+        distances_list, indices_list = distances.tolist(), indices.tolist()
+        for i in range(len(distances_list)):
+            while distances_list[i] and distances_list[i][-1] > threshold:
+                distances_list[i].pop()
+                indices_list[i].pop()
+
+        if not self.pbc:
+            return distances_list, indices_list
+
+
+        # Convert lists back to numpy arrays for PBC
+        try:
+            distances = np.array(distances_list)
+            indices = np.array(indices_list)
+        except ValueError as e:
+            raise RuntimeError("FATAL ERROR: Uneven row lengths in PBC.") from e
+        
+        # Apply mappings
+        try:
+            vectorized_fn = np.vectorize(self.mappings.get)
+            remapped_indices = vectorized_fn(indices)
+        except TypeError as e:
+            raise RuntimeError("FATAL ERROR: Mapping failed during vectorization. Check if all indices are valid.") from e
+        return distances, remapped_indices
+
+    def query_non_self(self, points: np.ndarray, k: int = 1) -> Tuple[np.ndarray, np.ndarray]:
+        distances, indices = self.query(points, k=k+1)
+        return distances[:, 1:], indices[:, 1:]
 
     def plot_lattice(self, plot_connections: bool = True, plot_unit_cell: bool = False) -> None:
         # plt.figure(figsize=(8, 8))

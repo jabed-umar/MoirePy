@@ -80,7 +80,7 @@ class MoireLattice:
         if isinstance(tdd, int) or  isinstance(tdd, float): tdd = lambda theta: tdd
         if isinstance(tdu, int) or  isinstance(tdu, float): tdu = lambda theta: tdu
         assert callable(tuu) and callable(tdd) and callable(tdu), "tuu, tdd and tdu must be floats, ints or callable objects like functions"
-        
+
         # hamiltonian has 4 parts:
         # 1. interation inside the lower lattice
         # 2. interaction inside the upper lattice
