@@ -173,7 +173,7 @@ class Layer:  # parent class
 
         return self._inside_polygon(
             points,
-            np.array([p1, p2, p4, p3]) - self.toll_scale * 1e-2
+            np.array([p1, p2, p4, p3]) - self.toll_scale * 1e-4
         )
 
     def generate_kdtree(self, nearest_neighbours = 1) -> None:
@@ -207,22 +207,20 @@ class Layer:  # parent class
         
 
         self.kdtree = KDTree(points)
-        
-        
 
 
 
 
-        # plot the points but with colours based on the point_positions
-        # - point_positions = [0, 0] -> black
-        # - point_positions = [1, 0] -> red
-        # - do not plot the rest of the points at all
+        # # plot the points but with colours based on the point_positions
+        # # - point_positions = [0, 0] -> black
+        # # - point_positions = [1, 0] -> red
+        # # - do not plot the rest of the points at all
 
         # plt.plot(points[point_positions[:, 0] == 0][:, 0], points[point_positions[:, 0] == 0][:, 1], 'k.')
         # plt.plot(points[point_positions[:, 0] == 1][:, 0], points[point_positions[:, 0] == 1][:, 1], 'r.')
 
-        # # plt.plot(*all_points.T, "ro")
-        # # plt.plot(*points.T, "b.")
+        # plt.plot(*all_points.T, "ro")
+        # plt.plot(*points.T, "b.")
         
         # # parallellogram around the whole lattice
         # plt.plot([0, self.mln1*self.mlv1[0]], [0, self.mln1*self.mlv1[1]], 'k', linewidth=1)
@@ -239,7 +237,8 @@ class Layer:  # parent class
         # plt.grid()
         # plt.show()
         
-        
+        self._generate_mapping()
+
     def _generate_mapping(self) -> None:
         self.mappings = {}
         tree = KDTree(self.points)
@@ -248,11 +247,40 @@ class Layer:  # parent class
             self.mln1 * self.mlv1,
             self.mln2 * self.mlv2
         )
+        
+
 
         for i, (dx, dy) in enumerate(translations):
             point = self.bigger_points[i] - (dx * self.mlv1 * self.mln1 + dy * self.mlv2 * self.mln2)
             distance, index = tree.query(point)
             if distance >= self.toll_scale * 1e-3:
+                
+                
+                plt.plot(*self.bigger_points.T, "ko", alpha=0.3)
+                plt.plot(*self.points.T, "k.")
+                
+                
+                
+                # plt.plot(*self.bigger_points[i], "b.")
+                # plt.plot(*point, "r.")
+                # plt.plot(*self.points[index], "g.")
+                
+
+                # parallellogram around the whole lattice
+                plt.plot([0, self.mln1*self.mlv1[0]], [0, self.mln1*self.mlv1[1]], 'k', linewidth=1)
+                plt.plot([0, self.mln2*self.mlv2[0]], [0, self.mln2*self.mlv2[1]], 'k', linewidth=1)
+                plt.plot([self.mln1*self.mlv1[0], self.mln1*self.mlv1[0] + self.mln2*self.mlv2[0]], [self.mln1*self.mlv1[1], self.mln1*self.mlv1[1] + self.mln2*self.mlv2[1]], 'k', linewidth=1)
+                plt.plot([self.mln2*self.mlv2[0], self.mln1*self.mlv1[0] + self.mln2*self.mlv2[0]], [self.mln2*self.mlv2[1], self.mln1*self.mlv1[1] + self.mln2*self.mlv2[1]], 'k', linewidth=1)
+                
+                # just plot mlv1 and mlv2 parallellogram
+                plt.plot([0, self.mlv1[0]], [0, self.mlv1[1]], 'k', linewidth=1)
+                plt.plot([0, self.mlv2[0]], [0, self.mlv2[1]], 'k', linewidth=1)
+                plt.plot([self.mlv1[0], self.mlv1[0] + self.mlv2[0]], [self.mlv1[1], self.mlv1[1] + self.mlv2[1]], 'k', linewidth=1)
+                plt.plot([self.mlv2[0], self.mlv1[0] + self.mlv2[0]], [self.            mlv2[1], self.mlv1[1] + self.mlv2[1]], 'k', linewidth=1)
+                
+                plt.grid()
+                plt.show()
+                
                 raise ValueError(f"FATAL ERROR: Distance {distance} exceeds tolerance for point {i}")
             self.mappings[i] = index
 
@@ -291,17 +319,24 @@ class Layer:  # parent class
 
         assert self.kdtree is not None, "Generate the KDTree first by calling `Layer.generate_kdtree()`."
         distances, indices = self.kdtree.query(points, k=k)
+
+        # for k=1, it returns squeezed arrays... so we need to unsqueeze them
+        if k == 1:
+            distances = distances[:, None]
+            indices = indices[:, None]
         
-        # Set minimum distance threshold
-        min_distance = distances[:, 0].min()
-        threshold = (1 + 1e-2 * self.toll_scale) * min_distance
-        
-        # Filter distances and indices based on thresholds
         distances_list, indices_list = distances.tolist(), indices.tolist()
-        for i in range(len(distances_list)):
-            while distances_list[i] and distances_list[i][-1] > threshold:
-                distances_list[i].pop()
-                indices_list[i].pop()
+        if k > 1:
+            # Set minimum distance threshold
+            min_distance = distances[:, 1].min()
+            threshold = (1 + 1e-2 * self.toll_scale) * min_distance
+            # print(f"{min_distance = }, {threshold = }")
+
+            # Filter distances and indices based on thresholds
+            for i in range(len(distances_list)):
+                while distances_list[i] and distances_list[i][-1] > threshold:
+                    distances_list[i].pop()
+                    indices_list[i].pop()
 
         if not self.pbc:
             return distances_list, indices_list
@@ -313,7 +348,7 @@ class Layer:  # parent class
             indices = np.array(indices_list)
         except ValueError as e:
             raise RuntimeError("FATAL ERROR: Uneven row lengths in PBC.") from e
-        
+
         # Apply mappings
         try:
             vectorized_fn = np.vectorize(self.mappings.get)
@@ -324,7 +359,18 @@ class Layer:  # parent class
 
     def query_non_self(self, points: np.ndarray, k: int = 1) -> Tuple[np.ndarray, np.ndarray]:
         distances, indices = self.query(points, k=k+1)
-        return distances[:, 1:], indices[:, 1:]
+        
+        if self.pbc is False:
+            for i in range(len(indices)):
+                indices[i] = indices[i][1:]
+                distances[i] = distances[i][1:]
+        else:
+            indices = indices[:, 1:]
+            distances = distances[:, 1:]
+        
+        # return distances[:, 1:], indices[:, 1:]
+        return distances, indices
+        
 
     def plot_lattice(self, plot_connections: bool = True, plot_unit_cell: bool = False) -> None:
         # plt.figure(figsize=(8, 8))
