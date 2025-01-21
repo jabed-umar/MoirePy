@@ -1,2 +1,5 @@
 - [ ] support for kth nearest neighbour (1st nearest already there)
 - [ ] allow more layers
+- [ ] compute physical observables
+- [ ] make documentation
+- [ ] provide examples
