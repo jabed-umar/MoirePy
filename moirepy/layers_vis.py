@@ -27,7 +27,7 @@ class Layer:
             for atom_type, neighbour_list in self.neighbours.items()
         }
 
-        # self.lattice_points: List[Tuple[float, float]] = self.generate_points()
+        self.lattice_points = self.generate_points()
 
     def generate_points(self) -> dict:
         points = {atom_type: [] for _, _, atom_type in self.lattice_points}
@@ -93,36 +93,38 @@ class Layer:
 
 
 class HexagonalLayer(Layer):
-    def __init__(self, rotation: float = 0, lattice_constant=1) -> None:
+    def __init__(self, nx: int, ny: int, rotation: float = 0, lattice_constant=1) -> None:
+        self.nx = nx
+        self.ny = ny
         self.rotation = rotation
         self.lattice_constant = lattice_constant
-        self.lv1 = np.array([np.sqrt(3), 0]) * lattice_constant
-        self.lv2 = np.array([np.sqrt(3) / 2, 3 / 2]) * lattice_constant
+        self.lv1 = np.array([1, 0]) # Lattice vector in the x-direction
+        self.lv2 = np.array([0.5, np.sqrt(3) / 2])
         
         self.lattice_points = (
             # coo_x, coo_y, atom_type (unique)
             [0, 0, "A"],
-            [np.sqrt(3), 1, "B"],
+            [1, 1/np.sqrt(3), "B"],
         )
         self.neighbours = {
             "A": [
-                [0, 1],
-                [-np.sqrt(3) / 2, -0.5],
-                [np.sqrt(3) / 2, -0.5],
+                [0, 1/np.sqrt(3)],
+                [-0.5, -1/(2 * np.sqrt(3))],
+                [ 0.5, -1/(2 * np.sqrt(3))],
             ],
             "B": [
-                [np.sqrt(3) / 2, 0.5],
-                [-np.sqrt(3) / 2, 0.5],
-                [0, -1],
+                [0.5, 1/(2 * np.sqrt(3))],
+                [-0.5, 1/(2 * np.sqrt(3))],
+                [0, -1/np.sqrt(3)],
             ],
         }
         super().__init__()
 
 
 class SquareLayer(Layer):
-    def __init__(self, rotation: float = 0, lattice_constant: float | int = 1) -> None:
-        # self.nx = nx
-        # self.ny = ny
+    def __init__(self, nx: int, ny: int, rotation: float = 0, lattice_constant: float | int = 1) -> None:
+        self.nx = nx
+        self.ny = ny
         self.rotation = rotation
         self.lattice_constant = lattice_constant
         self.lv1 = np.array([1, 0]) * lattice_constant  # Lattice vector in the x-direction
@@ -141,7 +143,9 @@ class SquareLayer(Layer):
         super().__init__()
 
 class TriangularLayer(Layer):
-    def __init__(self, rotation: float = 0, lattice_constant: float | int = 1) -> None:
+    def __init__(self, nx: int, ny: int, rotation: float = 0, lattice_constant: float | int = 1) -> None:
+        self.nx = nx
+        self.ny = ny
         self.rotation = rotation
         self.lattice_constant = lattice_constant
         self.lv1 = np.array([1, 0]) * lattice_constant  # Lattice vector in the x-direction
@@ -162,7 +166,9 @@ class TriangularLayer(Layer):
         super().__init__()
 
 class RhombusLayer(Layer):
-    def __init__(self, rotation: float = 0, angle: float = 60, lattice_constant: float | int = 1, restrict: bool = True) -> None:
+    def __init__(self, nx: int, ny: int, rotation: float = 0, angle: float = 60, lattice_constant: float | int = 1, restrict: bool = True) -> None:
+        self.nx = nx
+        self.ny = ny
         self.rotation = rotation
         self.lattice_constant = lattice_constant
         
@@ -190,59 +196,109 @@ class RhombusLayer(Layer):
 
 
 class KagomeLayer(Layer):
-    def __init__(self, rotation: float = 0, lattice_constant: float | int = 1) -> None:
+    def __init__(self, nx: int, ny: int, rotation: float = 0, lattice_constant: float | int = 1) -> None:
+        self.nx = nx
+        self.ny = ny
         self.rotation = rotation
         self.lattice_constant = lattice_constant
-        self.lv1 = np.array([1, 0]) * 2 * lattice_constant  # Lattice vector in the x-direction
-        self.lv2 = np.array([0.5, np.sqrt(3)/2]) * 2 * lattice_constant  # Lattice vector at 60 degrees
+        self.lv1 = np.array([1, 0])  # Lattice vector in the x-direction
+        self.lv2 = np.array([0.5, np.sqrt(3)/2])  # Lattice vector at 60 degrees
 
         self.lattice_points = (
             [0, 0, "A"],
-            [1, 0, "B"],
-            [0.5, np.sqrt(3)/2, "C"],
+            [0.5, 0, "B"],
+            [0.25, np.sqrt(3)/4, "C"],
         )
 
         self.neighbours = {
             "A": [
-                [1, 0],  # Right
-                [0.5, np.sqrt(3)/2],  # Right-up
-                [-1, 0],  # Left
-                [-0.5, -np.sqrt(3)/2],  # Left-down
+                [0.5, 0],  # Right
+                [0.25, np.sqrt(3)/4],  # Right-up
+                [-0.5, 0],  # Left
+                [-0.25, -np.sqrt(3)/4],  # Left-down
             ],
             "B": [
-                [1, 0],  # Right
-                [-0.5, np.sqrt(3)/2],  # Left-up
-                [-1, 0],  # Left
-                [0.5, -np.sqrt(3)/2],  # Right-down
+                [0.5, 0],  # Right
+                [-0.25, np.sqrt(3)/4],  # Left-up
+                [-0.5, 0],  # Left
+                [0.25, -np.sqrt(3)/4],  # Right-down
             ],
             "C": [
-                [0.5, np.sqrt(3)/2],  # Right-up
-                [-0.5, np.sqrt(3)/2],  # Left-up
-                [-0.5, -np.sqrt(3)/2],  # Left-down
-                [0.5, -np.sqrt(3)/2],  # Right-down
+                [ 0.25,  np.sqrt(3)/4],  # Right-up
+                [-0.25,  np.sqrt(3)/4],  # Left-up
+                [-0.25, -np.sqrt(3)/4],  # Left-down
+                [ 0.25, -np.sqrt(3)/4],  # Right-down
             ],
         }
-
         super().__init__()
 
+def find_close_points(points1: list, points2: list, threshold: float = 1e-4) -> list:
+    close_points = []
+    for point1 in points1:
+        for point2 in points2:
+            distance = np.linalg.norm(point1 - point2)
+            if distance < threshold:
+                print(f"{point1 = }, {point2 = }, {distance = }")
+                close_points.append(point1)
+    return np.array(close_points)
 
+
+def find_close_points(points1: list, points2: list, threshold: float = 1e-4) -> list:
+    points1 = np.array(points1)
+    points2 = np.array(points2)
+
+    distances = np.linalg.norm(points1[:, None] - points2[None, :], axis=2)
+    close_mask = distances < threshold
+    close_points = points1[close_mask.any(axis=1)]
+
+    return close_points
 
 if __name__ == "__main__":
     # layer1 = HexagonalLayer (10, 10, 0)
-    layer1 = SquareLayer    (20, 20, 0)
+    # layer1 = SquareLayer    (40, 40, 0)
     # layer1 = TriangularLayer(10, 10, 0)
-    # layer1 = RhombusLayer   (20, 20, 0)
+    layer1 = RhombusLayer   (40, 40, 0)
     # layer1 = KagomeLayer    (10, 10, 0)
     
     # layer2 = HexagonalLayer (10, 10, 10)
     # layer2 = SquareLayer    (20, 20, 22.6198)
     # layer2 = TriangularLayer(10, 10, 10)
-    # layer2 = RhombusLayer   (20, 20, 10)
-    layer2 = KagomeLayer    (10, 10, 10)
+    layer2 = RhombusLayer   (40, 40, 3.89023817)
+    # layer2 = KagomeLayer    (5, 5, 10)
     
     # print("initialized layer")
     
-    layer1.plot_lattice(0, 0, s=3)
-    layer2.plot_lattice(0, 0, s=1)
+    # layer1.plot_lattice(0, 0)
+    layer2.plot_lattice(0, 0)
+    
+    
+    
+    # highlight these points with black:
+    # - [0, 0]
+    # - [6, 5]
+    
+    
+    points_1 = np.unique(layer1.lattice_points["A"], axis=0)
+    points_2 = np.unique(layer2.lattice_points["A"], axis=0)
+    
+    # print(*points_1, sep='\n')
+    # print("\n")
+    # print(*points_2, sep='\n')
+    
+    close_points = find_close_points(points_1, points_2)
+    
+    print(close_points)
+    print(len(close_points))
+    
+    
+    
+    plt.scatter(
+        close_points[:, 0],
+        close_points[:, 1],
+        c='k',
+        s=100,
+        alpha=1
+    )
+    
     plt.grid()
     plt.show()

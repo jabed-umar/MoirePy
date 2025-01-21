@@ -1,6 +1,6 @@
 import numpy as np
 
-from layers_actual import (
+from moirepy.layers import (
     Layer,
     HexagonalLayer,
     SquareLayer,

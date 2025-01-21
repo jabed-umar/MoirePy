@@ -28,9 +28,9 @@ class Layer:  # parent class
             raise ValueError(
                 """lv1 was expected to be along the x-axis, and lv2 should have a +ve y component
                 Please refer to the documentation for more information: https://example.com
-                """  # @jabed add link to documentation 
+                """  # @jabed add link to documentation
             )
-        
+
         self.rot_m = np.eye(2)
         self.pbc = pbc
         self.points = None
@@ -150,10 +150,10 @@ class Layer:  # parent class
         return inside  # mask
 
     def _inside_boundaries(self, points: np.ndarray, mln1=None, mln2=None) -> np.ndarray:
-        
+
         v1 = (mln1 if mln1 else self.mln1) * self.mlv1
         v2 = (mln2 if mln2 else self.mln2) * self.mlv2
-        
+
         p1 = np.array([0, 0])
         p2 = np.array([v1[0], v1[1]])
         p3 = np.array([v2[0], v2[1]])
@@ -216,22 +216,22 @@ class Layer:  # parent class
 
         # plt.plot(*all_points.T, "ro")
         # plt.plot(*points.T, "b.")
-        
+
         # # parallellogram around the whole lattice
         # plt.plot([0, self.mln1*self.mlv1[0]], [0, self.mln1*self.mlv1[1]], 'k', linewidth=1)
         # plt.plot([0, self.mln2*self.mlv2[0]], [0, self.mln2*self.mlv2[1]], 'k', linewidth=1)
         # plt.plot([self.mln1*self.mlv1[0], self.mln1*self.mlv1[0] + self.mln2*self.mlv2[0]], [self.mln1*self.mlv1[1], self.mln1*self.mlv1[1] + self.mln2*self.mlv2[1]], 'k', linewidth=1)
         # plt.plot([self.mln2*self.mlv2[0], self.mln1*self.mlv1[0] + self.mln2*self.mlv2[0]], [self.mln2*self.mlv2[1], self.mln1*self.mlv1[1] + self.mln2*self.mlv2[1]], 'k', linewidth=1)
-        
+
         # # just plot mlv1 and mlv2 parallellogram
         # plt.plot([0, self.mlv1[0]], [0, self.mlv1[1]], 'k', linewidth=1)
         # plt.plot([0, self.mlv2[0]], [0, self.mlv2[1]], 'k', linewidth=1)
         # plt.plot([self.mlv1[0], self.mlv1[0] + self.mlv2[0]], [self.mlv1[1], self.mlv1[1] + self.mlv2[1]], 'k', linewidth=1)
         # plt.plot([self.mlv2[0], self.mlv1[0] + self.mlv2[0]], [self.mlv2[1], self.mlv1[1] + self.mlv2[1]], 'k', linewidth=1)
-        
+
         # plt.grid()
         # plt.show()
-        
+
         self._generate_mapping()
 
     def _generate_mapping(self) -> None:
@@ -249,24 +249,24 @@ class Layer:  # parent class
             distance, index = tree.query(point)
             if distance >= self.toll_scale * 1e-3:
                 print(f"Distance {distance} exceeds tolerance for point {i} at location {point} with translation ({dx}, {dy}).")
-                
-                
+
+
                 plt.plot(*self.bigger_points.T, "ko", alpha=0.3)
                 plt.plot(*self.points.T, "k.")
-                
-                
-                
+
+
+
                 # plt.plot(*self.bigger_points[i], "b.")
                 # plt.plot(*point, "r.")
                 # plt.plot(*self.points[index], "g.")
-                
+
 
                 # parallellogram around the whole lattice
                 plt.plot([0, self.mln1*self.mlv1[0]], [0, self.mln1*self.mlv1[1]], 'k', linewidth=1)
                 plt.plot([0, self.mln2*self.mlv2[0]], [0, self.mln2*self.mlv2[1]], 'k', linewidth=1)
                 plt.plot([self.mln1*self.mlv1[0], self.mln1*self.mlv1[0] + self.mln2*self.mlv2[0]], [self.mln1*self.mlv1[1], self.mln1*self.mlv1[1] + self.mln2*self.mlv2[1]], 'k', linewidth=1)
                 plt.plot([self.mln2*self.mlv2[0], self.mln1*self.mlv1[0] + self.mln2*self.mlv2[0]], [self.mln2*self.mlv2[1], self.mln1*self.mlv1[1] + self.mln2*self.mlv2[1]], 'k', linewidth=1)
-                
+
                 # just plot mlv1 and mlv2 parallellogram
                 plt.plot([0, self.mlv1[0]], [0, self.mlv1[1]], 'k', linewidth=1)
                 plt.plot([0, self.mlv2[0]], [0, self.mlv2[1]], 'k', linewidth=1)
@@ -275,10 +275,10 @@ class Layer:  # parent class
                 # for index, point in enumerate(self.bigger_points):
                 #     plt.text(*point, f"{index}", fontsize=6)
                 plt.gca().add_patch(plt.Circle(point, distance/2, color='r', fill=False))
-                
+
                 plt.grid()
                 plt.show()
-                
+
                 raise ValueError(f"FATAL ERROR: Distance {distance} exceeds tolerance for point {i} at location {point}.")
             self.mappings[i] = index
 
@@ -305,18 +305,18 @@ class Layer:  # parent class
 
     # def kth_nearest_neighbours(self, points, types, k = 1) -> None:
     #     distance_matrix = self.kdtree.sparse_distance_matrix(self.kdtree, k)
-        
+
 
     def first_nearest_neighbours(self, points: np.ndarray, types: np.ndarray):
         assert self.kdtree is not None, "Generate the KDTree first by calling `Layer.generate_kdtree()`."
         assert points.shape[0] == types.shape[0], "Mismatch between number of points and types."
-        
+
         distances_list, indices_list = [], []
-        
+
         for point, t in zip(points, types):
             if t not in self.neighbours:
                 raise ValueError(f"Point type '{t}' is not defined in self.neighbours.")
-            
+
             relative_neighbours = np.array(self.neighbours[t])
             absolute_neighbours = point + relative_neighbours
             distances, indices = self.kdtree.query(absolute_neighbours, k=1)
@@ -333,7 +333,7 @@ class Layer:  # parent class
                     #     raise ValueError(f"Distance {dist} exceeds tolerance.")
                     filtered_distances.append(dist)
                     filtered_indices.append(idx)
-            
+
             distances_list.append(filtered_distances)
             indices_list.append(filtered_indices)
 
@@ -359,7 +359,7 @@ class Layer:  # parent class
         if k == 1:
             distances = distances[:, None]
             indices = indices[:, None]
-        
+
         distances_list, indices_list = distances.tolist(), indices.tolist()
         if k > 1:
             # Set minimum distance threshold
@@ -394,7 +394,7 @@ class Layer:  # parent class
 
     def query_non_self(self, points: np.ndarray, k: int = 1) -> Tuple[np.ndarray, np.ndarray]:
         distances, indices = self.query(points, k=k+1)
-        
+
         if self.pbc is False:
             for i in range(len(indices)):
                 indices[i] = indices[i][1:]
@@ -402,10 +402,10 @@ class Layer:  # parent class
         else:
             indices = indices[:, 1:]
             distances = distances[:, 1:]
-        
+
         # return distances[:, 1:], indices[:, 1:]
         return distances, indices
-        
+
 
     def plot_lattice(self, plot_connections: bool = True, plot_unit_cell: bool = False) -> None:
         # plt.figure(figsize=(8, 8))
@@ -435,7 +435,7 @@ class Layer:  # parent class
                     "k:",
                     alpha=0.3,
                 )
-            
+
             for i in range(self.nx + 1):
                 # line from (lv1*i + lv2*0) to (lv1*i + lv2*ny)
                 plt.plot(
@@ -559,7 +559,7 @@ class Rhombus60Layer(Layer):
 #     def __init__(self, pbc=False) -> None:
 #         self.lv1 = np.array([1, 0]) # Lattice vector in the x-direction
 #         self.lv2 = np.array([0.5, np.sqrt(3) / 2])
-        
+
 #         self.lattice_points = (
 #             # coo_x, coo_y, atom_type (unique)
 #             [0, 0, "A"],

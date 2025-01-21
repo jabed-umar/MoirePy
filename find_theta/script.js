@@ -79,8 +79,8 @@ function check_abmn(a, b, m, n, a1, b1, a2, b2, tol) {
 	if (Math.abs(Math.round(n) - n) > 10 ** tol) return null;
 	n = Math.round(n);
 
-	// if (a === 0 || b === 0 || a === m || n <= 0) return null;
 	if (a === 0 || b === 0 || a === m || n <= 0) return null;
+	// if (a === 0 || b === 0 || a === m || a === n || n <= 0) return null;
 
 	// if HCF of a and b is not 1, return null
 	if (gcd_two_numbers(a, b) !== 1) return
@@ -94,7 +94,7 @@ function check_abmn(a, b, m, n, a1, b1, a2, b2, tol) {
 	// if thetadeg is NaN or 0, return null
 	if (isNaN(thetadeg) || thetadeg === 0) return null;
 
-	return [thetadeg.toFixed(4), thetarad.toFixed(4), a, b, m, n];
+	return [thetadeg.toFixed(8), thetarad.toFixed(8), a, b, m, n];
 }
 
 function find_values(start, end, tolerance, layer1Vectors, layer2Vectors) {
