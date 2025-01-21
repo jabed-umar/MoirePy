@@ -136,7 +136,6 @@ class Layer:  # parent class
 
         return np.column_stack((position_x, position_y)) - 1
 
-
     def _inside_polygon(self, points: np.ndarray, polygon: np.ndarray) -> np.ndarray:
         # find the points inside the polygon using the ray casting method
         x, y = points[:, 0], points[:, 1]
