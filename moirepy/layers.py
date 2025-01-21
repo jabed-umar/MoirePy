@@ -3,8 +3,6 @@ from typing import List, Tuple
 import matplotlib.pyplot as plt
 import math
 
-from tqdm import tqdm, trange
-
 from utils import get_rotation_matrix
 
 from scipy.spatial import KDTree
