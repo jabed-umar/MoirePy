@@ -25,6 +25,11 @@ function updateLatticeVectors(layerId) {
 	}
 }
 
+function gcd(x, y) {
+	if (y === 0) return x;
+	else return gcd(y, x % y);
+}
+
 function calculate() {
 	const start = parseInt(document.getElementById("start").value);
 	const end = parseInt(document.getElementById("end").value);
@@ -59,12 +64,13 @@ function find_values(start, end, layer1Vectors, layer2Vectors) {
     for (let a = start; a <= end; a++) {
         for (let b = start; b <= end; b++) {
 			// if a < b or b < 1 then skip
-			if (a <= b || b < 1) continue;
+			if (a >= b || a < 1) continue;
             const one = [a * a1x + b * b1x, a * a1y + b * b1y];
             const two = [b * a2x + a * b2x, b * a2y + a * b2y];
             const c = dot(one, two) / (norm(one) * norm(two));
             const thetaRad = Math.acos(c);
             const thetaDeg = (thetaRad * 180) / Math.PI;
+			if (gcd(a, b) !== 1) continue;
             results.push([thetaDeg.toFixed(8), thetaRad.toFixed(8), a, b]);
         }
     }
