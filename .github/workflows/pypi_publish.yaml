@@ -24,7 +24,7 @@ jobs:
 
     - name: Build package
       run: |
-        git fetch --all --tags  # Ensure tags are available for versioning
+        git fetch --all --tags
         python -m build
 
     - name: Publish to TestPyPI
