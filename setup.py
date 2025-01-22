@@ -2,11 +2,7 @@ import subprocess
 from setuptools import setup, find_packages
 
 
-VERSION = (
-    subprocess.run(["git", "describe", "--tags"], stdout=subprocess.PIPE)
-    .stdout.decode("utf-8")
-    .strip()
-)
+VERSION = subprocess.run(["git", "describe", "--tags"], stdout=subprocess.PIPE).stdout.decode("utf-8").strip()
 
 if VERSION == "":
     pwd = subprocess.run(["pwd"], stdout=subprocess.PIPE).stdout.decode("utf-8").strip()
@@ -20,11 +16,6 @@ if "-" in VERSION:
     v, i, s = VERSION.split("-")
     VERSION = v + "+" + i + ".git." + s
 
-
-print("="*20)
-print(f"VERSION: '{VERSION}'")
-print(f"pwd: {subprocess.run(['pwd'], stdout=subprocess.PIPE).stdout.decode('utf-8')}")
-print("="*20)
 
 DESCRIPTION = 'Simulate moire lattice systems in both real and momentum space and calculate various related observables.'
 with open("README.md", "r") as f:
