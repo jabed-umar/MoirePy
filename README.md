@@ -1,6 +1,6 @@
 # MoirePy: Gateway to Moiré Magic!
 
-MoirePy is a Python package for the analysis of moiré lattice. It is designed to be a user-friendly tool for studying a bilayer moiré lattices.
+MoirePy is a Python package for the analysis of moiré lattice. It is designed to be a user-friendly tool for studying bilayer moiré lattices.
 
 
 <!-- @jabed write here, the license should go at the bottom (I will write within this week)-->
