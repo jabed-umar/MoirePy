@@ -21,8 +21,8 @@ If you use this software or a modified version in academic or scientific researc
 ```BibTeX
 @misc{MoirePy2025,
 author = {Aritra Mukhopadhyay, Jabed Umar},
-title = {{MoirePy: Python package for efficient tight binding simulation of bilayer moiré lattices}},
+title = {MoirePy: Python package for efficient tight binding simulation of bilayer moiré lattices},
 year = {2025},
-url = {\url{https://jabed-umar.github.io/MoirePy/}},
+url = {https://jabed-umar.github.io/MoirePy/},
 }
 
