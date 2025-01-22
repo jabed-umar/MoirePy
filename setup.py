@@ -24,7 +24,7 @@ setup(
         "Development Status :: 2 - Pre-Alpha",
         "Intended Audience :: Education",
         "Intended Audience :: Science/Research",
-        "License :: Other/Proprietary License",  # Use this because PyPI does not have an official CC BY 4.0 classifier
+        "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
         "Programming Language :: Python",
         "Programming Language :: Python :: 3",
@@ -36,7 +36,6 @@ setup(
         "Programming Language :: Python :: 3.12",
         "Topic :: Education",
         "Topic :: Scientific/Engineering",
-        "Topic :: Scientific/Engineering :: Material Sciences",
         "Topic :: Scientific/Engineering :: Chemistry",
         "Topic :: Scientific/Engineering :: Mathematics",
         "Topic :: Scientific/Engineering :: Physics",

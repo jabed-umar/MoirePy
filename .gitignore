@@ -3,3 +3,7 @@ __pycache__
 *.pyc
 .ipynb_checkpoints
 .DS_Store
+moirepy/test.ipynb
+
+dist
+moirepy.egg-info/
