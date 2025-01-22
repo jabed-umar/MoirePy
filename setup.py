@@ -1,13 +1,29 @@
+import subprocess
 from setuptools import setup, find_packages
 
-VERSION = '0.0.1'
+
+VERSION = (
+    subprocess.run(["git", "describe", "--tags"], stdout=subprocess.PIPE)
+    .stdout.decode("utf-8")
+    .strip()
+)
+
+if "-" in VERSION:
+    # when not on tag, git describe outputs: "1.3.3-22-gdf81228"
+    # pip has gotten strict with version numbers
+    # so change it to: "1.3.3+22.git.gdf81228"
+    # See: https://peps.python.org/pep-0440/#local-version-segments
+    v, i, s = VERSION.split("-")
+    VERSION = v + "+" + i + ".git." + s
+
+
 DESCRIPTION = 'Simulate moire lattice systems in both real and momentum space and calculate various related observables.'
 with open("README.md", "r") as f:
     LONG_DESCRIPTION = f.read()
 with open("requirements.txt", "r") as f:
     INSTALL_REQUIRES = f.read().splitlines()
 
-# Setting up
+
 setup(
     name="moirepy",
     version=VERSION,
