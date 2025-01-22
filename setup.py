@@ -8,6 +8,10 @@ VERSION = (
     .strip()
 )
 
+if VERSION == "":
+    pwd = subprocess.run(["pwd"], stdout=subprocess.PIPE).stdout.decode("utf-8").strip()
+    VERSION = pwd.split("/")[-1][8:]
+
 if "-" in VERSION:
     # when not on tag, git describe outputs: "1.3.3-22-gdf81228"
     # pip has gotten strict with version numbers
@@ -16,6 +20,11 @@ if "-" in VERSION:
     v, i, s = VERSION.split("-")
     VERSION = v + "+" + i + ".git." + s
 
+
+print("="*20)
+print(f"VERSION: '{VERSION}'")
+print(f"pwd: {subprocess.run(['pwd'], stdout=subprocess.PIPE).stdout.decode('utf-8')}")
+print("="*20)
 
 DESCRIPTION = 'Simulate moire lattice systems in both real and momentum space and calculate various related observables.'
 with open("README.md", "r") as f:
