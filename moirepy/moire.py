@@ -1,12 +1,11 @@
 from typing import Union, Callable
 import numpy as np
-from layers import Layer, SquareLayer, Rhombus60Layer, TriangularLayer
+from layers import Layer
 import matplotlib.pyplot as plt
 from utils import get_rotation_matrix
-import time
 
 class MoireLattice:
-    def __init__(self, latticetype: Layer, a:int, b:int, nx:int=1, ny:int=1, interlayer_distance=1, pbc = False):
+    def __init__(self, latticetype:Layer, a:int, b:int, nx:int=1, ny:int=1, pbc:bool=True):
         # study_proximity = 1 means only studying nearest neighbours will be eabled, 2 means study of next nearest neighbours will be enabled too and so on
         lower_lattice = latticetype(pbc=pbc)
         upper_lattice = latticetype(pbc=pbc)
@@ -41,7 +40,6 @@ class MoireLattice:
         self.mlv1 = mlv1
         self.mlv2 = mlv2
         self.ham = None
-        self.interlayer_distance = interlayer_distance
 
         print(f"{len(self.lower_lattice.points)} points in lower lattice")
         print(f"{len(self.upper_lattice.points)} points in upper lattice")
@@ -54,8 +52,8 @@ class MoireLattice:
         nx = self.nx
         ny = self.ny
 
-        plt.plot(*zip(*self.lower_lattice.points), 'ro')
-        plt.plot(*zip(*self.upper_lattice.points), 'bo')
+        plt.plot(*zip(*self.lower_lattice.points), 'r.', markersize=2)
+        plt.plot(*zip(*self.upper_lattice.points), 'b.', markersize=2)
 
         # parallellogram around the whole lattice
         plt.plot([0, nx*mlv1[0]], [0, nx*mlv1[1]], 'k', linewidth=1)
@@ -69,8 +67,11 @@ class MoireLattice:
         plt.plot([mlv1[0], mlv1[0] + mlv2[0]], [mlv1[1], mlv1[1] + mlv2[1]], 'k', linewidth=1)
         plt.plot([mlv2[0], mlv1[0] + mlv2[0]], [mlv2[1], mlv1[1] + mlv2[1]], 'k', linewidth=1)
 
-        plt.grid()
-        plt.show()
+        # set equal aspect ratio
+        plt.gca().set_aspect('equal', adjustable='box')
+        # plt.grid()
+        # plt.show()
+        # plt.savefig("moire.pdf", bbox_inches='tight')
 
     def _validate_input1(self, a, name):
         if a is None:
@@ -112,10 +113,10 @@ class MoireLattice:
         # self.plot_lattice()
 
         # 1. interaction inside the lower lattice
-        ham_ll = np.zeros((len(self.lower_lattice.points), len(self.lower_lattice.points)))
+        ham_ll = np.zeros((len(self.lower_lattice.points), len(self.lower_lattice.points)), dtype=np.complex128)
         _, indices = self.lower_lattice.first_nearest_neighbours(self.lower_lattice.points, self.lower_lattice.point_types)
         for i in range(len(self.lower_lattice.points)):  # self interactions
-            ham_ll[i, i] = tlself(
+            ham_ll[i, i] += tlself(
                 self.lower_lattice.points[i],
                 self.lower_lattice.point_types[i]
             )
@@ -125,13 +126,13 @@ class MoireLattice:
             for neigh_i in indices[this_i]:
                 neigh_coo = self.lower_lattice.points[neigh_i]
                 neigh_type = self.lower_lattice.point_types[neigh_i]
-                ham_ll[this_i, neigh_i] = tuu(this_coo, neigh_coo, this_type, neigh_type)
+                ham_ll[this_i, neigh_i] += tuu(this_coo, neigh_coo, this_type, neigh_type)
 
         # 2. interaction inside the upper lattice
-        ham_uu = np.zeros((len(self.upper_lattice.points), len(self.upper_lattice.points)))
+        ham_uu = np.zeros((len(self.upper_lattice.points), len(self.upper_lattice.points)), dtype=np.complex128)
         _, indices = self.upper_lattice.first_nearest_neighbours(self.upper_lattice.points, self.upper_lattice.point_types)
         for i in range(len(self.upper_lattice.points)):  # self interactions
-            ham_uu[i, i] = tuself(
+            ham_uu[i, i] += tuself(
                 self.upper_lattice.points[i],
                 self.upper_lattice.point_types[i]
             )
@@ -141,14 +142,14 @@ class MoireLattice:
             for neigh_i in indices[this_i]:
                 neigh_coo = self.upper_lattice.points[neigh_i]
                 neigh_type = self.upper_lattice.point_types[neigh_i]
-                ham_uu[this_i, neigh_i] = tll(this_coo, neigh_coo, this_type, neigh_type)
+                ham_uu[this_i, neigh_i] += tll(this_coo, neigh_coo, this_type, neigh_type)
 
         # 3. interaction from the lower to the upper lattice
-        ham_lu = np.zeros((len(self.lower_lattice.points), len(self.upper_lattice.points)))
+        ham_lu = np.zeros((len(self.lower_lattice.points), len(self.upper_lattice.points)), dtype=np.complex128)
         _, indices = self.upper_lattice.query(self.lower_lattice.points, k=1)
         for this_i in range(len(self.lower_lattice.points)):
             neigh_i = indices[this_i]
-            ham_lu[this_i, neigh_i] = tlu(
+            ham_lu[this_i, neigh_i] += tlu(
                 self.lower_lattice.points[this_i],
                 self.upper_lattice.points[neigh_i],
                 self.lower_lattice.point_types[this_i],
@@ -156,11 +157,11 @@ class MoireLattice:
             )
 
         # 4. interaction from the upper to the lower lattice
-        ham_ul = np.zeros((len(self.upper_lattice.points), len(self.lower_lattice.points)))
+        ham_ul = np.zeros((len(self.upper_lattice.points), len(self.lower_lattice.points)), dtype=np.complex128)
         _, indices = self.lower_lattice.query(self.upper_lattice.points, k=1)
         for this_i in range(len(self.upper_lattice.points)):
             neigh_i = indices[this_i]
-            ham_ul[this_i, neigh_i] = tul(
+            ham_ul[this_i, neigh_i] += tul(
                 self.upper_lattice.points[this_i],
                 self.lower_lattice.points[neigh_i],
                 self.upper_lattice.point_types[this_i],
@@ -180,20 +181,69 @@ class MoireLattice:
             [ham_ul, ham_uu]
         ])
 
-
         return self.ham
+
+    def generate_k_space_hamiltonian(
+        self,
+        k: np.ndarray,
+        tll: Union[float, int, Callable[[float], float]] = None,
+        tuu: Union[float, int, Callable[[float], float]] = None,
+        tlu: Union[float, int, Callable[[float], float]] = None,
+        tul: Union[float, int, Callable[[float], float]] = None,
+        tuself: Union[float, int, Callable[[float], float]] = None,
+        tlself: Union[float, int, Callable[[float], float]] = None,
+        suppress_nxny_warning: bool = False,
+    ):
+        if suppress_nxny_warning is False and (self.nx != 1 or self.ny != 1):
+            print("WARNING: atleast one of nx and ny are not 1, are you sure you want to use generate_k_space_hamiltonian with this lattice?")
+        
+        if tll is None or isinstance(tll, int) or isinstance(tll, float): tll = self._validate_input1(tll, "tll")
+        if tuu is None or isinstance(tuu, int) or isinstance(tuu, float): tuu = self._validate_input1(tuu, "tuu")
+        if tlu is None or isinstance(tlu, int) or isinstance(tlu, float): tlu = self._validate_input1(tlu, "tlu")
+        if tul is None or isinstance(tul, int) or isinstance(tul, float): tul = self._validate_input1(tul, "tul")
+        if tuself is None or isinstance(tuself, int) or isinstance(tuself, float): tuself = self._validate_input2(tuself, "tuself")
+        if tlself is None or isinstance(tlself, int) or isinstance(tlself, float): tlself = self._validate_input2(tlself, "tlself")
+        assert (
+                callable(tll)
+            and callable(tuu)
+            and callable(tlu)
+            and callable(tul)
+            and callable(tuself)
+            and callable(tlself)
+        ), "tuu, tll, tlu, tul, tuself and tlself must be floats, ints or callable objects like functions"
+        
+        # print(this_coo, neigh_coo, this_type, neigh_type)
+        
+        # part = lambda k, this_coo, neigh_coo: np.exp(1j * (k @ (this_coo - neigh_coo)))
+        
+        def part(k, this_coo, neigh_coo):
+            # squeeze this_coo and neigh_coo to 1D
+            this_coo = this_coo.squeeze()
+            neigh_coo = neigh_coo.squeeze()
+            # print(this_coo.shape, neigh_coo.shape, k.shape)
+            return np.exp(1j * (k @ (this_coo - neigh_coo)))
+
+        return self.generate_hamiltonian(
+            lambda this_coo, neigh_coo, this_type, neigh_type: tll(this_coo, neigh_coo, this_type, neigh_type) * part(k, this_coo, neigh_coo),
+            lambda this_coo, neigh_coo, this_type, neigh_type: tuu(this_coo, neigh_coo, this_type, neigh_type) * part(k, this_coo, neigh_coo),
+            lambda this_coo, neigh_coo, this_type, neigh_type: tlu(this_coo, neigh_coo, this_type, neigh_type) * part(k, this_coo, neigh_coo),
+            lambda this_coo, neigh_coo, this_type, neigh_type: tul(this_coo, neigh_coo, this_type, neigh_type) * part(k, this_coo, neigh_coo),
+            tuself, tlself
+        )
 
 
 
 
 
 if __name__ == "__main__":
+    from layers import SquareLayer, Rhombus60Layer, TriangularLayer
+    import time
 
     t = time.time()
 
     # lattice = MoireLattice(TriangularLayer, 9, 10, 3+0, 2+0, pbc=False)
-    # lattice = MoireLattice(TriangularLayer, 5, 6, 2, 2, pbc=True)
-    lattice = MoireLattice(SquareLayer, 6, 7, 2, 2, pbc=True)
+    lattice = MoireLattice(TriangularLayer, 5, 6, 2, 2, pbc=True)
+    # lattice = MoireLattice(SquareLayer, 6, 7, 2, 2, pbc=True)
     # lattice = MoireLattice(TriangularLayer, 5, 6, 2, 2, pbc=True)
     # lattice = MoireLattice(TriangularLayer, 12, 13, 1, 1, pbc=True)
     # lattice = MoireLattice(TriangularLayer, 9, 10, 2, 4, pbc=False)
@@ -201,25 +251,25 @@ if __name__ == "__main__":
     print(f"initialization took: {time.time() - t:.2f} seconds")
     t = time.time()
 
-    ham = lattice.generate_hamiltonian(1, 1, 1)
+    # ham = lattice.generate_hamiltonian(1, 1, 1)
 
-    print(f"hamiltonian generation took: {time.time() - t:.2f} seconds")
+    # print(f"hamiltonian generation took: {time.time() - t:.2f} seconds")
 
-    # check if ham is hermitian
-    if np.allclose(ham, ham.T.conj()): print("Hamiltonian is hermitian.")
-    else: print("Hamiltonian is not hermitian.")
+    # # check if ham is hermitian
+    # if np.allclose(ham, ham.T.conj()): print("Hamiltonian is hermitian.")
+    # else: print("Hamiltonian is not hermitian.")
 
-    t = time.time()
+    # t = time.time()
 
-    evals, evecs = np.linalg.eigh(ham)
+    # evals, evecs = np.linalg.eigh(ham)
 
-    print(f"diagonalization took: {time.time() - t:.2f} seconds")
-
-
+    # print(f"diagonalization took: {time.time() - t:.2f} seconds")
 
 
-    plt.imshow(ham, cmap="gray")
-    plt.colorbar()
-    plt.show()
+    # plt.imshow(ham, cmap="gray")
+    # plt.colorbar()
+    # plt.show()
 
     # lattice.plot_lattice()
+
+    ham = lattice.generate_k_space_hamiltonian(np.array([0, 0]), 1, 1, 1, 1, 1, 1)

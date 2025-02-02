@@ -410,7 +410,7 @@ class Layer:  # parent class
         for atom_type, atom_points in self.lattice_points.items():
             x_coords = [point[0] for point in atom_points]
             y_coords = [point[1] for point in atom_points]
-            plt.scatter(x_coords, y_coords, s=50)
+            plt.scatter(x_coords, y_coords, s=5)
 
             if plot_connections:
                 for point in atom_points:

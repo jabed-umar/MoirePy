@@ -5,13 +5,13 @@ A list of things to do.
 ## For Jabed
 
 - [ ] Update README.md
-- [ ] Write K-space
 - [ ] Write docs
 - [ ] provide examples
 - [ ] compute physical observables
 
 ## For Aritra
 
+- [ ] Write K-space
 - [ ] fix code for all lattice types
 - [ ] n orbital
 - [ ] support for kth nearest neighbour (1st nearest already there)

@@ -1,4 +1,4 @@
-name: Upload Python Package to TestPyPI
+name: Upload Python Package to PyPI
 
 on:
   release:
@@ -27,7 +27,7 @@ jobs:
         git fetch --all --tags
         python -m build
 
-    - name: Publish to TestPyPI
+    - name: Publish to PyPI
       env:
         TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
         TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
