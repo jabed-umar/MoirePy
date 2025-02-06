@@ -7,19 +7,23 @@ from scipy.spatial import KDTree
 
 
 class Layer:  # parent class
-    def __init__(self, pbc=False, study_proximity=1) -> None:
+    def __init__(self, pbc: bool=False, study_proximity: int=1) -> None:
         """
         Initializes the Layer object
 
         Args:
             pbc (bool): Flag to indicate if periodic boundary conditions
-            (PBC) are applied. Defaults to False.
+                (PBC) are applied. Defaults to False.
             study_proximity (int): Scaling factor for proximity calculations,
-            enabiling the number of nearest neighbors. Defaults to 1.
+                **enabiling** the number of nearest neighbors. This is the upper
+                bound for the number of nearest neighbours you will be calculating
+                throughout the code. If you try to calculate higher order neighbours,
+                it might lead to errors, or worse give wrong answers without complaining.
+                Defaults to 1.
 
         Raises:
             ValueError: If `lv1` is not along the x-axis
-            or if `lv2` has a negative y-component.
+                or if `lv2` has a negative y-component.
 
         Example:
         ```python
@@ -37,7 +41,7 @@ class Layer:  # parent class
                 """lv1 was expected to be along the x-axis,
                 and lv2 should have a +ve y component
                 Please refer to the documentation for more information: https://example.com
-                """  # @jabed add link to documentation
+                """  # @jabed add link to documentation we will write this
             )
 
         self.rot_m = np.eye(2)
@@ -51,8 +55,7 @@ class Layer:  # parent class
         Rotates the lattice layer and its components by a specified angle.
 
         Args:
-            rot (float): The rotation angle in radians.
-            Default to `None`.
+            rot (float): The rotation angle in radians. Default to `None`.
 
         Returns:
             None: The function modifies the rotation matrix
@@ -97,9 +100,9 @@ class Layer:  # parent class
             mlv1 (np.array): The first Moiré lattice vector.
             mlv2 (np.array): The second Moiré lattice vector.
             mln1 (int, optional): The number of Moiré unit cells
-            along the first lattice vector. Defaults to 1.
+                along the first lattice vector. Defaults to 1.
             mln2 (int, optional): The number of Moiré unit
-            cells along the second lattice vector. Defaults to 1.
+                cells along the second lattice vector. Defaults to 1.
 
         Returns:
             None: The function modifies the object state and
@@ -213,11 +216,11 @@ class Layer:  # parent class
         Args:
             points (np.ndarray): Array of points to check.
             polygon (np.ndarray): Vertices of the polygon to
-            test against, in counterclockwise order.
+                test against, in counterclockwise order.
 
         Returns:
             np.ndarray: A boolean array where True indicates
-            that the point is inside the polygon.
+                that the point is inside the polygon.
 
         Example:
         ```python
@@ -244,13 +247,13 @@ class Layer:  # parent class
         Args:
             points (np.ndarray): Array of points to check.
             mln1 (int, optional): The number of unit cells along the first direction.
-            Defaults to the object's current value.
+                Defaults to the object's current value.
             mln2 (int, optional): The number of unit cells along the second direction.
-            Defaults to the object's current value.
+                Defaults to the object's current value.
 
         Returns:
             np.ndarray: A boolean array where True indicates that
-            the point is within the boundaries of the lattice.
+                the point is within the boundaries of the lattice.
 
         Raises:
             ValueError: If the points array has an invalid shape.
@@ -281,12 +284,9 @@ class Layer:  # parent class
         If PBC is enabled, additional points outside the primary unit cell are
         considered for accurate queries (same numbers of neigbours for all atoms).
 
-        Args:
-            None
-
         Returns:
             None: The function modifies the object state by generating
-            a KDTree for spatial queries.
+                a KDTree for spatial queries.
 
         Raises:
             ValueError: If the points in the lattice are not defined.
@@ -370,9 +370,6 @@ class Layer:  # parent class
         This function uses a KDTree to find the nearest neighbor in the smaller lattice for each point in the larger lattice.
         It stores the resulting mappings in the `self.mappings` dictionary, where keys are indices in `self.bigger_points`
         and values are the corresponding indices in `self.points`.
-
-        Args:
-            None
 
         Raises:
             ValueError: If the distance between a point and its nearest neighbor exceeds the tolerance defined by `self.toll_scale`.
@@ -606,13 +603,13 @@ class Layer:  # parent class
         Args:
             points (np.ndarray): An (N, 2) array of points for which to find the nearest neighbors.
             k (int, optional): The number of nearest neighbors to query (excluding the point itself).
-            Defaults to 1.
+                Defaults to 1.
 
         Returns:
             Tuple[np.ndarray, np.ndarray]:
                 - distances (np.ndarray): An (N, k) array containing the distances to the k nearest neighbors.
                 - indices (np.ndarray): An (N, k) array containing the indices of the k nearest neighbors
-                in `self.points`. If PBC is enabled, the indices are remapped using `self.mappings`.
+                    in `self.points`. If PBC is enabled, the indices are remapped using `self.mappings`.
 
         Behavior:
             - Calls `self.query(points, k=k+1)` to get `k+1` neighbors, including the point itself.
@@ -647,9 +644,9 @@ class Layer:  # parent class
 
         Args:
             plot_connections (bool, optional): If True, plots the connections between nearest neighbors.
-                                            Defaults to True.
+                Defaults to True.
             plot_unit_cell (bool, optional): If True, overlays the unit cell grid on the lattice.
-            Defaults to False.
+                Defaults to False.
 
         Behavior:
             - Plots all lattice points grouped by atom type.

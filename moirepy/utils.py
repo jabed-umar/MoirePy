@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def get_rotation_matrix(theta_rad):
+def get_rotation_matrix(theta_rad: float) -> np.array:
     """
     Computes a 2D rotation matrix for a given angle.
 
@@ -10,7 +10,7 @@ def get_rotation_matrix(theta_rad):
 
     Returns:
         np.array: A 2x2 rotation matrix that rotates a point
-        counterclockwise by `theta_rad`.
+            counterclockwise by `theta_rad`.
 
     ```python
     >>> get_rotation_matrix(np.pi/2)
