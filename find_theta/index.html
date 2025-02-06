@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Angle Value Calculator - MoirePy</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Angle Value Calculator";
+        var mkdocs_page_input_path = "find_theta.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> MoirePy
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../installation/">Installation</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="#">Angle Value Calculator</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#guidelines">Guidelines</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#choosing-start-and-end-values">Choosing Start and End Values</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#calculator">Calculator</a>
+    </li>
+    </ul>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">API Reference</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../api/layers/">Layers</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../api/moire/">Moire</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../api/utils/">Utils</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">MoirePy</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Angle Value Calculator</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <style>
+
+.input-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+input, select, button {
+    font-size: 16px;
+    padding: 5px;
+}
+
+button {
+    cursor: pointer;
+    background-color: rgb(41, 128, 185); 
+    color: white;
+    border: none;
+    padding: 10px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    padding: 8px;
+    text-align: center;
+    border: 1px solid #ddd;
+}
+
+thead {
+    background-color: #f2f2f2;
+}
+
+.hidden {
+    display: none;
+}
+
+.vector-inputs input {
+    width: 80px;
+    margin: 5px;
+}
+
+#end, #start {
+  border: 1px solid #000;
+  border-radius: 5px;
+  padding: 8px;
+  width: 100px;
+  font-size: 16px;
+}
+
+</style>
+
+<h1 id="angle-value-calculator">Angle Value Calculator</h1>
+<p>The <code>Moire</code> class takes two integers, <code>a</code> and <code>b</code>, to compute <code>θ</code> (the rotation angle of the upper lattice while keeping the lower lattice fixed) and other quantities like moiré lattice vectors. This tool helps you find suitable values of <code>a</code> and <code>b</code> for your desired angles.
+<em>(Finding <code>a</code> and <code>b</code> for a given <code>θ</code> is inefficient, as not all rotations are possible for finite lattice sizes.)</em></p>
+<h2 id="guidelines">Guidelines</h2>
+<ul>
+<li>Currently, <strong>both layers must be the same</strong>. We do not support different layer types yet, but we plan to in the future.</li>
+<li>Results depend <strong>only on lattice vectors</strong>, not layer types. Identical lattice vectors (e.g., <code>HexagonalLayer</code> and <code>TriangularLayer</code>) will yield the same results.</li>
+</ul>
+<h2 id="choosing-start-and-end-values">Choosing Start and End Values</h2>
+<ul>
+<li><code>Start</code> and <code>End</code> define the range for <code>a</code> and <code>b</code>. The tool computes <code>θ</code> for all valid pairs within this range.</li>
+<li>A <strong>higher LCM</strong> of <code>a</code> and <code>b</code> results in a <strong>smaller θ</strong>. <strong>Larger values of <code>a</code> and <code>b</code></strong> produce even smaller angles, but this significantly increases the number of results. Expect longer processing times.</li>
+</ul>
+<p>For details on how <code>θ</code> is calculated, see <a href="../angle_calculation_details/">Angle Calculation Details</a>.</p>
+<h2 id="calculator">Calculator</h2>
+<div class="input-form">
+<div style="display: flex; gap: 10px; align-items: center;">
+    <label for="start">Start:</label>
+    <input type="number" id="start" value="0" style="width: 30vw;">
+
+    <label for="end">End:</label>
+    <input type="number" id="end" value="20" style="width: 30vw;">
+</div>
+
+
+
+ <!-- Layer 1 Selection -->
+ <label for="layer1">Layer 1:</label>
+ <select id="layer1" onchange="updateLatticeVectors('layer1')">
+  <option value="Custom">Custom</option>
+  <option value="SquareLayer">SquareLayer</option>
+  <option value="RhombusLayer">RhombusLayer</option>
+  <option value="TriangularLayer" selected>TriangularLayer</option>
+  <option value="HexagonalLayer">HexagonalLayer</option>
+  <option value="KagomeLayer">KagomeLayer</option>
+ </select>
+
+ <div id="layer1-vectors" class="vector-inputs hidden">
+  <label>Lattice Vectors for Layer 1:</label>
+  <div>lv1: <input type="text" inputmode="decimal" id="layer1-lv1x"> x + <input type="text" inputmode="decimal"
+    id="layer1-lv1y"> y</div>
+  <div>lv2: <input type="text" inputmode="decimal" id="layer1-lv2x"> x + <input type="text" inputmode="decimal"
+    id="layer1-lv2y"> y</div>
+ </div>
+
+ <!-- Layer 2 Selection -->
+ <label for="layer2">Layer 2:</label>
+ <select id="layer2" onchange="updateLatticeVectors('layer2')">
+  <option value="Custom">Custom</option>
+  <option value="SquareLayer">SquareLayer</option>
+  <option value="RhombusLayer">RhombusLayer</option>
+  <option value="TriangularLayer" selected>TriangularLayer</option>
+  <option value="HexagonalLayer">HexagonalLayer</option>
+  <option value="KagomeLayer">KagomeLayer</option>
+ </select>
+
+ <div id="layer2-vectors" class="vector-inputs hidden">
+  <label>Lattice Vectors for Layer 2:</label>
+  <div>lv1: <input type="text" inputmode="decimal" id="layer2-lv1x"> x + <input type="text" inputmode="decimal"
+    id="layer2-lv1y"> y</div>
+  <div>lv2: <input type="text" inputmode="decimal" id="layer2-lv2x"> x + <input type="text" inputmode="decimal"
+    id="layer2-lv2y"> y</div>
+ </div>
+
+ <button onclick="calculate()">CALCULATE</button>
+</div>
+
+<table id="results-table">
+ <thead>
+  <tr>
+   <th>angle (deg)</th>
+   <th>angle (rad)</th>
+   <th>a</th>
+   <th>b</th>
+  </tr>
+ </thead>
+ <tbody id="results-body">
+  <!-- Generated results will be displayed here -->
+ </tbody>
+</table>
+</div>
+<!-- <script src="assets/script_find_theta.js"></script> -->
+
+<script>
+let root3 = Math.sqrt(3);
+
+const latticeDefaults = {
+    HexagonalLayer:  [1, 0, 0.5, root3 / 2],
+    SquareLayer:     [1, 0,   0,         1],
+    RhombusLayer:    [1, 0, 0.5, root3 / 2],
+    TriangularLayer: [1, 0, 0.5, root3 / 2],
+    KagomeLayer:     [1, 0, 0.5, root3 / 2],
+};
+
+function updateLatticeVectors(layerId) {
+    // only for custom vectors
+    const layer = document.getElementById(layerId).value;
+    const vectorContainer = document.getElementById(`${layerId}-vectors`);
+    if (layer === "Custom") {
+        vectorContainer.classList.remove("hidden");
+    } else {
+        vectorContainer.classList.add("hidden");
+        const vectors = latticeDefaults[layer] || [1, 1, 1, 1]; // Placeholder if values are unknown
+        document.getElementById(`${layerId}-lv1x`).value = vectors[0];
+        document.getElementById(`${layerId}-lv1y`).value = vectors[1];
+        document.getElementById(`${layerId}-lv2x`).value = vectors[2];
+        document.getElementById(`${layerId}-lv2y`).value = vectors[3];
+    }
+}
+
+function gcd(x, y) {
+    if (y === 0) return x;
+    else return gcd(y, x % y);
+}
+
+function calculate() {
+    const start = parseInt(document.getElementById("start").value);
+    const end = parseInt(document.getElementById("end").value);
+    const layer1Vectors = [
+        parseFloat(document.getElementById("layer1-lv1x").value),
+        parseFloat(document.getElementById("layer1-lv1y").value),
+        parseFloat(document.getElementById("layer1-lv2x").value),
+        parseFloat(document.getElementById("layer1-lv2y").value)
+    ];
+    const layer2Vectors = [
+        parseFloat(document.getElementById("layer2-lv1x").value),
+        parseFloat(document.getElementById("layer2-lv1y").value),
+        parseFloat(document.getElementById("layer2-lv2x").value),
+        parseFloat(document.getElementById("layer2-lv2y").value)
+    ];
+
+    const results = find_values(start, end, layer1Vectors, layer2Vectors);
+    console.log("Number of results: ", results.length);
+    console.log(displayResults);
+    displayResults_(results);
+}
+
+function find_values(start, end, layer1Vectors, layer2Vectors) {
+    const [a1x, a1y, b1x, b1y] = layer1Vectors;
+    const [a2x, a2y, b2x, b2y] = layer2Vectors;
+    const dot = (v1, v2) => v1[0] * v2[0] + v1[1] * v2[1];
+    const norm = (v) => Math.sqrt(v[0] * v[0] + v[1] * v[1]);
+    const results = [];
+    for (let a = start; a <= end; a++) {
+        for (let b = start; b <= end; b++) {
+            if (a >= b || a < 1) continue;  // checks
+            const one = [a * a1x + b * b1x, a * a1y + b * b1y];
+            const two = [b * a2x + a * b2x, b * a2y + a * b2y];
+            const c = dot(one, two) / (norm(one) * norm(two));
+            const thetaRad = Math.acos(c);
+            const thetaDeg = (thetaRad * 180) / Math.PI;
+            if (gcd(a, b) !== 1) continue;  // checks
+            results.push([thetaDeg.toFixed(8), thetaRad.toFixed(8), a, b]);
+        }
+    }
+    results.sort((x, y) => x[0] - y[0]);
+    return results;
+}
+
+function displayResults_(results) {
+    console.log(results);
+    const resultsBody = document.getElementById("results-body");
+    resultsBody.innerHTML = ""; // Clear previous results
+    results.forEach(tuple => {
+        const row = document.createElement("tr");
+        tuple.forEach(value => {
+            const cell = document.createElement("td");
+            cell.textContent = value;
+            row.appendChild(cell);
+        });
+        resultsBody.appendChild(row);
+    });
+}
+
+updateLatticeVectors('layer1');
+updateLatticeVectors('layer2');
+
+</script>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../installation/" class="btn btn-neutral float-left" title="Installation"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../api/layers/" class="btn btn-neutral float-right" title="Layers">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../installation/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../api/layers/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
