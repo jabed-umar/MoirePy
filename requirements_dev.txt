@@ -1,0 +1,8 @@
+numpy
+scipy
+matplotlib
+tqdm
+notebook
+
+mkdocstrings
+mkdocstrings-python
