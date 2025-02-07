@@ -21,7 +21,6 @@ plugins:
 # extra_javascript:
 #   - assets/script_find_theta.js
 
-
 nav:
   - Home: index.md
   - Installation: installation.md

@@ -6,3 +6,7 @@ notebook
 
 mkdocstrings
 mkdocstrings-python
+
+# mkdocs-material
+# mkdocs-kpn
+# mkdocs-terminal
