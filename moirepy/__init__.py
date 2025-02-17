@@ -4,4 +4,6 @@ from .layers import (
     SquareLayer,
     TriangularLayer,
     Rhombus60Layer,
+    KagomeLayer,
+    HexagonalLayer,
 )
