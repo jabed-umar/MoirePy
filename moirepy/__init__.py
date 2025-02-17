@@ -1,5 +1,5 @@
-from moire import MoireLattice
-from layers import (
+from .moire import MoireLattice
+from .layers import (
     Layer,
     SquareLayer,
     TriangularLayer,

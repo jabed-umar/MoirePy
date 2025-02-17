@@ -2,7 +2,7 @@ import numpy as np
 from typing import Tuple  # , List
 import matplotlib.pyplot as plt
 import math
-from utils import get_rotation_matrix
+from .utils import get_rotation_matrix
 from scipy.spatial import KDTree
 
 
@@ -638,7 +638,7 @@ class Layer:  # parent class
         # return distances[:, 1:], indices[:, 1:]
         return distances, indices
 
-    def plot_lattice(self, plot_connections: bool = True, plot_unit_cell: bool = False) -> None:
+    def plot_lattice(self, plot_connections: bool = True, plot_unit_cell: bool = False, colours=["r", "g", "b", "c", "m", "y", "k"]) -> None:
         """
         Plots the lattice points and optionally the connections between them and the unit cell structure.
 
@@ -666,21 +666,41 @@ class Layer:  # parent class
             - The unit cell grid (if enabled) is displayed as dotted black lines with reduced opacity.
         """
         # plt.figure(figsize=(8, 8))
-        for atom_type, atom_points in self.lattice_points.items():
-            x_coords = [point[0] for point in atom_points]
-            y_coords = [point[1] for point in atom_points]
-            plt.scatter(x_coords, y_coords, s=5)
+        
+        if len(colours) == 1: cols = {t[-1]:colours[0] for i, t, in enumerate(self.lattice_points)}
+        else: cols = {t[-1]:colours[i] for i, t, in enumerate(self.lattice_points)}
+        
+        
+        plt.scatter(
+            [self.points[:, 0]],
+            [self.points[:, 1]],
+            s=10, c=np.vectorize(cols.get)(self.point_types)
+        )
 
-            if plot_connections:
-                for point in atom_points:
-                    for neighbor in self.neighbours[atom_type]:
-                        connection = point + np.array(neighbor)
-                        plt.plot(
-                            [point[0], connection[0]],
-                            [point[1], connection[1]],
-                            "r--",
-                            alpha=0.5,
-                        )
+        if plot_connections:
+            a = []
+            for this, point_type in zip(self.points, self.point_types):
+                for delta in self.neighbours[point_type]:
+                    a.append([this[0], this[0] + delta[0]])
+                    a.append((this[1], this[1] + delta[1]))
+                    a.append(f"k--")
+            # a = a[:30]
+            # print(a)
+            plt.plot(*a, alpha=0.1)
+        
+        # for x_coord, y_coord, atom_type in self.lattice_points:
+        #     plt.scatter([x_coord], [y_coord], s=5)
+
+        #     if plot_connections:
+        #         point = np.array([x_coord, y_coord])
+        #         for neighbor in self.neighbours[atom_type]:
+        #             connection = point + np.array(neighbor)
+        #             plt.plot(
+        #                 [point[0], connection[0]],
+        #                 [point[1], connection[1]],
+        #                 "r--",
+        #                 alpha=0.5,
+        #             )
 
         if plot_unit_cell:
             for i in range(self.ny + 1):
@@ -776,60 +796,60 @@ class Rhombus60Layer(Layer):
         super().__init__(pbc=pbc)  # this has to go at the end
 
 
-# class KagomeLayer(Layer):
-#     def __init__(self, pbc=False) -> None:
-#         self.lv1 = np.array([1, 0])  # Lattice vector in the x-direction
-#         self.lv2 = np.array([0.5, np.sqrt(3)/2])  # Lattice vector at 60 degrees
+class KagomeLayer(Layer):
+    def __init__(self, pbc=False) -> None:
+        self.lv1 = np.array([1, 0])  # Lattice vector in the x-direction
+        self.lv2 = np.array([0.5, np.sqrt(3)/2])  # Lattice vector at 60 degrees
 
-#         self.lattice_points = (
-#             [0, 0, "A"],
-#             [0.5, 0, "B"],
-#             [0.25, np.sqrt(3)/4, "C"],
-#         )
+        self.lattice_points = (
+            [0, 0, "A"],
+            [0.5, 0, "B"],
+            [0.25, np.sqrt(3)/4, "C"],
+        )
 
-#         self.neighbours = {
-#             "A": [
-#                 [ 0.5,              0],  # Right
-#                 [ 0.25,  np.sqrt(3)/4],  # Right-up
-#                 [-0.5,              0],  # Left
-#                 [-0.25, -np.sqrt(3)/4],  # Left-down
-#             ],
-#             "B": [
-#                 [ 0.5,              0],  # Right
-#                 [-0.25,  np.sqrt(3)/4],  # Left-up
-#                 [-0.5,              0],  # Left
-#                 [ 0.25, -np.sqrt(3)/4],  # Right-down
-#             ],
-#             "C": [
-#                 [ 0.25,  np.sqrt(3)/4],  # Right-up
-#                 [-0.25,  np.sqrt(3)/4],  # Left-up
-#                 [-0.25, -np.sqrt(3)/4],  # Left-down
-#                 [ 0.25, -np.sqrt(3)/4],  # Right-down
-#             ],
-#         }
-#         super().__init__(pbc=pbc)
+        self.neighbours = {
+            "A": [
+                [ 0.5,              0],  # Right
+                [ 0.25,  np.sqrt(3)/4],  # Right-up
+                [-0.5,              0],  # Left
+                [-0.25, -np.sqrt(3)/4],  # Left-down
+            ],
+            "B": [
+                [ 0.5,              0],  # Right
+                [-0.25,  np.sqrt(3)/4],  # Left-up
+                [-0.5,              0],  # Left
+                [ 0.25, -np.sqrt(3)/4],  # Right-down
+            ],
+            "C": [
+                [ 0.25,  np.sqrt(3)/4],  # Right-up
+                [-0.25,  np.sqrt(3)/4],  # Left-up
+                [-0.25, -np.sqrt(3)/4],  # Left-down
+                [ 0.25, -np.sqrt(3)/4],  # Right-down
+            ],
+        }
+        super().__init__(pbc=pbc)
 
 
-# class HexagonalLayer(Layer):
-#     def __init__(self, pbc=False) -> None:
-#         self.lv1 = np.array([1, 0]) # Lattice vector in the x-direction
-#         self.lv2 = np.array([0.5, np.sqrt(3) / 2])
+class HexagonalLayer(Layer):
+    def __init__(self, pbc=False) -> None:
+        self.lv1 = np.array([1, 0]) # Lattice vector in the x-direction
+        self.lv2 = np.array([0.5, np.sqrt(3) / 2])
 
-#         self.lattice_points = (
-#             # coo_x, coo_y, atom_type (unique)
-#             [0, 0, "A"],
-#             [1, 1/np.sqrt(3), "B"],
-#         )
-#         self.neighbours = {
-#             "A": [
-#                 [0, 1/np.sqrt(3)],
-#                 [-0.5, -1/(2 * np.sqrt(3))],
-#                 [ 0.5, -1/(2 * np.sqrt(3))],
-#             ],
-#             "B": [
-#                 [0.5, 1/(2 * np.sqrt(3))],
-#                 [-0.5, 1/(2 * np.sqrt(3))],
-#                 [0, -1/np.sqrt(3)],
-#             ],
-#         }
-#         super().__init__(pbc=pbc)
+        self.lattice_points = (
+            # coo_x, coo_y, atom_type (unique)
+            [0, 0, "A"],
+            [1, 1/np.sqrt(3), "B"],
+        )
+        self.neighbours = {
+            "A": [
+                [0, 1/np.sqrt(3)],
+                [-0.5, -1/(2 * np.sqrt(3))],
+                [ 0.5, -1/(2 * np.sqrt(3))],
+            ],
+            "B": [
+                [0.5, 1/(2 * np.sqrt(3))],
+                [-0.5, 1/(2 * np.sqrt(3))],
+                [0, -1/np.sqrt(3)],
+            ],
+        }
+        super().__init__(pbc=pbc)

@@ -1,8 +1,8 @@
 from typing import Union, Callable
 import numpy as np
-from layers import Layer
+from .layers import Layer
 import matplotlib.pyplot as plt
-from utils import get_rotation_matrix
+from .utils import get_rotation_matrix
 
 class MoireLattice:
     def __init__(
@@ -13,7 +13,9 @@ class MoireLattice:
         pbc:bool=True,
         k:int=1,  # number of orbitals
     ):
-        # study_proximity = 1 means only studying nearest neighbours will be eabled, 2 means study of next nearest neighbours will be enabled too and so on
+        # study_proximity = 1 means only studying nearest neighbours will be enabled,
+        # 2 means study of next nearest neighbours will be enabled too and so on,
+        # always better to keep this value 1 or two more than what you will actually need.
         lower_lattice = latticetype(pbc=pbc)
         upper_lattice = latticetype(pbc=pbc)
 
@@ -35,6 +37,7 @@ class MoireLattice:
         upper_lattice.perform_rotation(theta)
 
         lower_lattice.generate_points(mlv1, mlv2, nx, ny)
+        # return
         upper_lattice.generate_points(mlv1, mlv2, nx, ny)
 
         self.a = a
@@ -60,8 +63,10 @@ class MoireLattice:
         nx = self.nx
         ny = self.ny
 
-        plt.plot(*zip(*self.lower_lattice.points), 'r.', markersize=2)
-        plt.plot(*zip(*self.upper_lattice.points), 'b.', markersize=2)
+        # plt.plot(*zip(*self.lower_lattice.points), 'r.', markersize=2)
+        # plt.plot(*zip(*self.upper_lattice.points), 'b.', markersize=2)
+        self.lower_lattice.plot_lattice(colours=["b"], plot_connections=True)
+        self.upper_lattice.plot_lattice(colours=["r"], plot_connections=True)
 
         # parallellogram around the whole lattice
         plt.plot([0, nx*mlv1[0]], [0, nx*mlv1[1]], 'k', linewidth=1)
@@ -194,73 +199,65 @@ class MoireLattice:
 
         return self.ham
 
-    # def generate_k_space_hamiltonian(
-    #     self,
-    #     k: np.ndarray,
-    #     tll: Union[float, int, Callable[[float], float]] = None,
-    #     tuu: Union[float, int, Callable[[float], float]] = None,
-    #     tlu: Union[float, int, Callable[[float], float]] = None,
-    #     tul: Union[float, int, Callable[[float], float]] = None,
-    #     tuself: Union[float, int, Callable[[float], float]] = None,
-    #     tlself: Union[float, int, Callable[[float], float]] = None,
-    #     suppress_nxny_warning: bool = False,
-    # ):
-    #     if suppress_nxny_warning is False and (self.nx != 1 or self.ny != 1):
-    #         print("WARNING: atleast one of nx and ny are not 1, are you sure you want to use generate_k_space_hamiltonian with this lattice?")
+    def generate_k_space_hamiltonian(
+        self,
+        k: np.ndarray,
+        tll: Union[float, int, Callable[[float], float]] = None,
+        tuu: Union[float, int, Callable[[float], float]] = None,
+        tlu: Union[float, int, Callable[[float], float]] = None,
+        tul: Union[float, int, Callable[[float], float]] = None,
+        tuself: Union[float, int, Callable[[float], float]] = None,
+        tlself: Union[float, int, Callable[[float], float]] = None,
+        suppress_nxny_warning: bool = False,
+    ):
+        if suppress_nxny_warning is False and (self.nx != 1 or self.ny != 1):
+            print("WARNING: atleast one of nx and ny are not 1, are you sure you want to use generate_k_space_hamiltonian with this lattice?")
         
-    #     if tll is None or isinstance(tll, int) or isinstance(tll, float): tll = self._validate_input1(tll, "tll")
-    #     if tuu is None or isinstance(tuu, int) or isinstance(tuu, float): tuu = self._validate_input1(tuu, "tuu")
-    #     if tlu is None or isinstance(tlu, int) or isinstance(tlu, float): tlu = self._validate_input1(tlu, "tlu")
-    #     if tul is None or isinstance(tul, int) or isinstance(tul, float): tul = self._validate_input1(tul, "tul")
-    #     if tuself is None or isinstance(tuself, int) or isinstance(tuself, float): tuself = self._validate_input2(tuself, "tuself")
-    #     if tlself is None or isinstance(tlself, int) or isinstance(tlself, float): tlself = self._validate_input2(tlself, "tlself")
-    #     assert (
-    #             callable(tll)
-    #         and callable(tuu)
-    #         and callable(tlu)
-    #         and callable(tul)
-    #         and callable(tuself)
-    #         and callable(tlself)
-    #     ), "tuu, tll, tlu, tul, tuself and tlself must be floats, ints or callable objects like functions"
+        if tll is None or isinstance(tll, int) or isinstance(tll, float): tll = self._validate_input1(tll, "tll")
+        if tuu is None or isinstance(tuu, int) or isinstance(tuu, float): tuu = self._validate_input1(tuu, "tuu")
+        if tlu is None or isinstance(tlu, int) or isinstance(tlu, float): tlu = self._validate_input1(tlu, "tlu")
+        if tul is None or isinstance(tul, int) or isinstance(tul, float): tul = self._validate_input1(tul, "tul")
+        if tuself is None or isinstance(tuself, int) or isinstance(tuself, float): tuself = self._validate_input2(tuself, "tuself")
+        if tlself is None or isinstance(tlself, int) or isinstance(tlself, float): tlself = self._validate_input2(tlself, "tlself")
+        assert (
+                callable(tll)
+            and callable(tuu)
+            and callable(tlu)
+            and callable(tul)
+            and callable(tuself)
+            and callable(tlself)
+        ), "tuu, tll, tlu, tul, tuself and tlself must be floats, ints or callable objects like functions"
         
-    #     # print(this_coo, neigh_coo, this_type, neigh_type)
-        
-    #     # part = lambda k, this_coo, neigh_coo: np.exp(1j * (k @ (this_coo - neigh_coo)))
-        
-    #     def part(k, this_coo, neigh_coo):
-    #         # squeeze this_coo and neigh_coo to 1D
-    #         this_coo = this_coo.squeeze()
-    #         neigh_coo = neigh_coo.squeeze()
-    #         # print(this_coo.shape, neigh_coo.shape, k.shape)
-    #         return np.exp(1j * (k @ (this_coo - neigh_coo)))
-
-    #     return self.generate_hamiltonian(
-    #         lambda this_coo, neigh_coo, this_type, neigh_type: tll(this_coo, neigh_coo, this_type, neigh_type) * part(k, this_coo, neigh_coo),
-    #         lambda this_coo, neigh_coo, this_type, neigh_type: tuu(this_coo, neigh_coo, this_type, neigh_type) * part(k, this_coo, neigh_coo),
-    #         lambda this_coo, neigh_coo, this_type, neigh_type: tlu(this_coo, neigh_coo, this_type, neigh_type) * part(k, this_coo, neigh_coo),
-    #         lambda this_coo, neigh_coo, this_type, neigh_type: tul(this_coo, neigh_coo, this_type, neigh_type) * part(k, this_coo, neigh_coo),
-    #         tuself, tlself
-    #     )
+        part = lambda k, this_coo, neigh_coo: np.exp(1j * (k @ (this_coo.squeeze() - neigh_coo.squeeze())))
+        return self.generate_hamiltonian(
+            lambda this_coo, neigh_coo, this_type, neigh_type: tll(this_coo, neigh_coo, this_type, neigh_type) * part(k, this_coo, neigh_coo),
+            lambda this_coo, neigh_coo, this_type, neigh_type: tuu(this_coo, neigh_coo, this_type, neigh_type) * part(k, this_coo, neigh_coo),
+            lambda this_coo, neigh_coo, this_type, neigh_type: tlu(this_coo, neigh_coo, this_type, neigh_type) * part(k, this_coo, neigh_coo),
+            lambda this_coo, neigh_coo, this_type, neigh_type: tul(this_coo, neigh_coo, this_type, neigh_type) * part(k, this_coo, neigh_coo),
+            tuself, tlself
+        )
 
 
 
 
 
 if __name__ == "__main__":
-    from layers import SquareLayer, Rhombus60Layer, TriangularLayer
+    from layers import SquareLayer, Rhombus60Layer, TriangularLayer, HexagonalLayer
     import time
 
     t = time.time()
 
     # lattice = MoireLattice(TriangularLayer, 9, 10, 3+0, 2+0, pbc=False)
-    lattice = MoireLattice(TriangularLayer, 3, 4, 2, 2, pbc=True, k=1)
-    # lattice = MoireLattice(SquareLayer, 6, 7, 2, 2, pbc=True)
+    # lattice = MoireLattice(TriangularLayer, 3, 4, 20, 20, pbc=True, k=1)
+    # lattice = MoireLattice(TriangularLayer, 3, 4, 4, 4, pbc=True, k=1)
+
+    lattice = MoireLattice(HexagonalLayer, 9, 10, 2, 2, pbc=True, k=1)
+
+    # lattice = MoireLattice(SquareLayer, 19, 20, 1, 1, pbc=True)
     # lattice = MoireLattice(TriangularLayer, 5, 6, 2, 2, pbc=True)
     # lattice = MoireLattice(TriangularLayer, 12, 13, 1, 1, pbc=True)
     # lattice = MoireLattice(TriangularLayer, 9, 10, 2, 4, pbc=False)
 
-    print(f"initialization took: {time.time() - t:.2f} seconds")
-    t = time.time()
 
     # ham = lattice.generate_hamiltonian(1, 1, 1)
 
