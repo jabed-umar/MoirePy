@@ -234,7 +234,8 @@ class MoireLattice:
             lambda this_coo, neigh_coo, this_type, neigh_type: tuu(this_coo, neigh_coo, this_type, neigh_type) * part(k, this_coo, neigh_coo),
             lambda this_coo, neigh_coo, this_type, neigh_type: tlu(this_coo, neigh_coo, this_type, neigh_type) * part(k, this_coo, neigh_coo),
             lambda this_coo, neigh_coo, this_type, neigh_type: tul(this_coo, neigh_coo, this_type, neigh_type) * part(k, this_coo, neigh_coo),
-            tuself, tlself
+            tuself, tlself,
+            data_type=np.complex128
         )
 
 
