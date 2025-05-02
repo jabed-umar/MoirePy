@@ -1,144 +1,184 @@
 <style>
+    .input-form {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
 
-.input-form {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-bottom: 20px;
-}
+    input,
+    select,
+    button {
+        font-size: 16px;
+        padding: 5px;
+    }
 
-input, select, button {
-    font-size: 16px;
-    padding: 5px;
-}
+    button {
+        cursor: pointer;
+        background-color: rgb(41, 128, 185);
+        color: white;
+        border: none;
+        padding: 10px;
+    }
 
-button {
-    cursor: pointer;
-    background-color: rgb(41, 128, 185); 
-    color: white;
-    border: none;
-    padding: 10px;
-}
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
 
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-}
+    th,
+    td {
+        padding: 8px;
+        text-align: center;
+        border: 1px solid #ddd;
+    }
 
-th, td {
-    padding: 8px;
-    text-align: center;
-    border: 1px solid #ddd;
-}
+    thead {
+        background-color: #f2f2f2;
+    }
 
-thead {
-    background-color: #f2f2f2;
-}
+    .hidden {
+        display: none;
+    }
 
-.hidden {
-    display: none;
-}
+    .vector-inputs input {
+        width: 80px;
+        margin: 5px;
+    }
 
-.vector-inputs input {
-    width: 80px;
-    margin: 5px;
-}
-
-#end, #start {
-  border: 1px solid #000;
-  border-radius: 5px;
-  padding: 8px;
-  width: 100px;
-  font-size: 16px;
-}
-
+    #end,
+    #start {
+        border: 1px solid #000;
+        border-radius: 5px;
+        padding: 8px;
+        width: 100px;
+        font-size: 16px;
+    }
 </style>
+
+
+
+
+
+
+
 
 # Angle Value Calculator
 
-The `Moire` class takes two integers, `a` and `b`, to compute `θ` (the rotation angle of the upper lattice while keeping the lower lattice fixed) and other quantities like moiré lattice vectors. This tool helps you find suitable values of `a` and `b` for your desired angles.
-*(Finding `a` and `b` for a given `θ` is inefficient, as not all rotations are possible for finite lattice sizes.)*
+The **Moiré Angle Calculator** finds all possible commensurate angles between two stacked lattices by trimming both layers within a given radius and checking for periodic overlaps. For each valid angle, it returns not just the angle itself, but also the corresponding lattice coordinates: `nx1, ny1` (from the lower lattice) and `nx2, ny2` (from the upper one). Since most angles are irrational and can't be precisely represented, the rotation is defined using these coordinate pairs instead — they mark the overlapping points between the two lattices. Once you've selected an angle from the list, just copy the `nx1, ny1, nx2, ny2` values into your code — the system will figure out the rotation angle from that. For the logic behind how angles are identified, see the [Angle Calculation Process](angle_calculation_process.md).
 
 ## Guidelines
 
-- Currently, **both layers must be the same**. We do not support different layer types yet, but we plan to in the future.
-- Results depend **only on lattice vectors**, not layer types. Identical lattice vectors (e.g., `HexagonalLayer` and `TriangularLayer`) will yield the same results.
+<details>
+    <summary>Click to Expand (and read some informal guidelines)</summary>
 
-## Choosing Start and End Values
+    <ul>
+        <li>
+          You must choose a <strong>radius</strong> which defines the size of the circular region around the origin. Both upper and lower lattices are cut using this radius.
+        </li>
+      
+        <li>
+          <strong>Currently supported systems</strong>:
+          <ul>
+            <li>Triangular on triangular.</li>
+            <li>Square on square.</li>
+            <li>
+              A <strong>custom mode</strong> allows arbitrary lattice vectors for each layer. This is experimental and <strong>not reliable</strong> — results may include:
+              <ul>
+                <li>Wrong or nonsensical outputs.</li>
+                <li>UI freezing or crashing.</li>
+                <li>Unexpected behavior.</li>
+              </ul>
+              But if you're feeling lucky (or brave), and you believe the setup (as described in <a href="angle_calculation_process.md">Angle Calculation Process</a>) <em>should</em> give meaningful results, here are some patterns that <em>might</em> work:
+              <ol>
+                <li>Both lattice angles are exact divisors of 360°</li>
+                <li>Both layers are identical (same vectors)</li>
+                <li>If 2 is broken, at least one layer's vectors are integer multiples of the other</li>
+              </ol>
+              Even then, <strong>no guarantee</strong> that the angles found are correct or meaningful — use at your own risk. After all, uncertainty is the fuel of research, right? 😉
+            </li>
+          </ul>
+        </li>
+      
+        <li><strong>Larger radius → more points → more precise and smaller angles</strong>, but slower.</li>
+        <li><strong>Smaller radius → faster results</strong>, but you will only see larger angles.</li>
+      </ul>      
 
-- `Start` and `End` define the range for `a` and `b`. The tool computes `θ` for all valid pairs within this range.
-- A **higher LCM** of `a` and `b` results in a **smaller θ**. **Larger values of `a` and `b`** produce even smaller angles, but this significantly increases the number of results. Expect longer processing times.
+</details>
 
-For details on how `θ` is calculated, see [Angle Calculation Details](angle_calculation_details.md).
+
+
+
+
+
+
+
 
 
 ## Calculator
 
 <div class="input-form">
-<div style="display: flex; gap: 10px; align-items: center;">
-    <label for="start">Start:</label>
-    <input type="number" id="start" value="0" style="width: 30vw;">
+    <div style="display: flex; gap: 10px; align-items: center;">
+        <label for="radius">Radius:</label>
+        <input type="number" id="radius" value="20" style="width: 30vw;" step="any" min="0">
+    </div>    
 
-    <label for="end">End:</label>
-    <input type="number" id="end" value="20" style="width: 30vw;">
+    <label for="latticeType">Lattice Type:</label>
+    <select id="latticeType" onchange="updateLatticeVectors()">
+        <option value="TriangularLayer">Triangle - Triangle</option>
+        <option value="SquareLayer">Square - Square</option>
+        <option value="Custom">Custom</option>
+    </select>
+
+    <div id="custom-vectors" class="vector-inputs hidden">
+        <label>Lattice Vectors for Layer 1:</label>
+        <div>
+            lv1: <input type="text" inputmode="decimal" id="layer1-lv1x"> x +
+            <input type="text" inputmode="decimal" id="layer1-lv1y"> y
+        </div>
+        <div>
+            lv2: <input type="text" inputmode="decimal" id="layer1-lv2x"> x +
+            <input type="text" inputmode="decimal" id="layer1-lv2y"> y
+        </div>
+
+        <label>Lattice Vectors for Layer 2:</label>
+        <div>
+            lv1: <input type="text" inputmode="decimal" id="layer2-lv1x"> x +
+            <input type="text" inputmode="decimal" id="layer2-lv1y"> y
+        </div>
+        <div>
+            lv2: <input type="text" inputmode="decimal" id="layer2-lv2x"> x +
+            <input type="text" inputmode="decimal" id="layer2-lv2y"> y
+        </div>
+    </div>
+
+    <div style="display: flex; gap: 10px; align-items: center;" class="hidden">
+        <label for="precision">Precision:</label>
+        <input type="range" id="precision" min="2" max="8" value="6" step="1" style="width: 30vw;">
+        <span id="precision-value">6</span>
+    </div>   
+
+    <button onclick="calculate()">CALCULATE</button>
 </div>
 
 
-
- <!-- Layer 1 Selection -->
- <label for="layer1">Layer 1:</label>
- <select id="layer1" onchange="updateLatticeVectors('layer1')">
-  <option value="Custom">Custom</option>
-  <option value="SquareLayer">SquareLayer</option>
-  <option value="RhombusLayer">RhombusLayer</option>
-  <option value="TriangularLayer" selected>TriangularLayer</option>
-  <option value="HexagonalLayer">HexagonalLayer</option>
-  <option value="KagomeLayer">KagomeLayer</option>
- </select>
-
- <div id="layer1-vectors" class="vector-inputs hidden">
-  <label>Lattice Vectors for Layer 1:</label>
-  <div>lv1: <input type="text" inputmode="decimal" id="layer1-lv1x"> x + <input type="text" inputmode="decimal"
-    id="layer1-lv1y"> y</div>
-  <div>lv2: <input type="text" inputmode="decimal" id="layer1-lv2x"> x + <input type="text" inputmode="decimal"
-    id="layer1-lv2y"> y</div>
- </div>
-
- <!-- Layer 2 Selection -->
- <label for="layer2">Layer 2:</label>
- <select id="layer2" onchange="updateLatticeVectors('layer2')">
-  <option value="Custom">Custom</option>
-  <option value="SquareLayer">SquareLayer</option>
-  <option value="RhombusLayer">RhombusLayer</option>
-  <option value="TriangularLayer" selected>TriangularLayer</option>
-  <option value="HexagonalLayer">HexagonalLayer</option>
-  <option value="KagomeLayer">KagomeLayer</option>
- </select>
-
- <div id="layer2-vectors" class="vector-inputs hidden">
-  <label>Lattice Vectors for Layer 2:</label>
-  <div>lv1: <input type="text" inputmode="decimal" id="layer2-lv1x"> x + <input type="text" inputmode="decimal"
-    id="layer2-lv1y"> y</div>
-  <div>lv2: <input type="text" inputmode="decimal" id="layer2-lv2x"> x + <input type="text" inputmode="decimal"
-    id="layer2-lv2y"> y</div>
- </div>
-
- <button onclick="calculate()">CALCULATE</button>
-</div>
 
 <table id="results-table">
- <thead>
-  <tr>
-   <th>angle (deg)</th>
-   <th>angle (rad)</th>
-   <th>a</th>
-   <th>b</th>
-  </tr>
- </thead>
- <tbody id="results-body">
-  <!-- Generated results will be displayed here -->
- </tbody>
+    <thead>
+        <tr>
+            <th></th>
+            <th>angle (deg)</th>
+            <th>angle (rad)</th>
+            <th>nx1</th>
+            <th>ny1</th>
+            <th>nx2</th>
+            <th>ny2</th>
+        </tr>
+    </thead>
+    <tbody id="results-body">
+        <!-- Generated results will be displayed here -->
+    </tbody>
 </table>
 </div>
 
@@ -146,97 +186,233 @@ For details on how `θ` is calculated, see [Angle Calculation Details](angle_cal
 
 
 <script>
-let root3 = Math.sqrt(3);
 
-const latticeDefaults = {
-    HexagonalLayer:  [1, 0, 0.5, root3 / 2],
-    SquareLayer:     [1, 0,   0,         1],
-    RhombusLayer:    [1, 0, 0.5, root3 / 2],
-    TriangularLayer: [1, 0, 0.5, root3 / 2],
-    KagomeLayer:     [1, 0, 0.5, root3 / 2],
-};
+    let root3 = Math.sqrt(3);
 
-function updateLatticeVectors(layerId) {
-    // only for custom vectors
-    const layer = document.getElementById(layerId).value;
-    const vectorContainer = document.getElementById(`${layerId}-vectors`);
-    if (layer === "Custom") {
-        vectorContainer.classList.remove("hidden");
-    } else {
-        vectorContainer.classList.add("hidden");
-        const vectors = latticeDefaults[layer] || [1, 1, 1, 1]; // Placeholder if values are unknown
-        document.getElementById(`${layerId}-lv1x`).value = vectors[0];
-        document.getElementById(`${layerId}-lv1y`).value = vectors[1];
-        document.getElementById(`${layerId}-lv2x`).value = vectors[2];
-        document.getElementById(`${layerId}-lv2y`).value = vectors[3];
-    }
-}
+    const latticeDefaults = {
+        HexagonalLayer: [1, 0, 0.5, root3 / 2],
+        SquareLayer: [1, 0, 0, 1],
+        RhombusLayer: [1, 0, 0.5, root3 / 2],
+        TriangularLayer: [1, 0, 0.5, root3 / 2],
+        KagomeLayer: [1, 0, 0.5, root3 / 2],
+    };
 
-function gcd(x, y) {
-    if (y === 0) return x;
-    else return gcd(y, x % y);
-}
+    document.getElementById("precision").addEventListener("input", function() {
+        document.getElementById("precision-value").textContent = this.value;
+    });
 
-function calculate() {
-    const start = parseInt(document.getElementById("start").value);
-    const end = parseInt(document.getElementById("end").value);
-    const layer1Vectors = [
-        parseFloat(document.getElementById("layer1-lv1x").value),
-        parseFloat(document.getElementById("layer1-lv1y").value),
-        parseFloat(document.getElementById("layer1-lv2x").value),
-        parseFloat(document.getElementById("layer1-lv2y").value)
-    ];
-    const layer2Vectors = [
-        parseFloat(document.getElementById("layer2-lv1x").value),
-        parseFloat(document.getElementById("layer2-lv1y").value),
-        parseFloat(document.getElementById("layer2-lv2x").value),
-        parseFloat(document.getElementById("layer2-lv2y").value)
-    ];
-
-    const results = find_values(start, end, layer1Vectors, layer2Vectors);
-    console.log("Number of results: ", results.length);
-    console.log(displayResults);
-    displayResults_(results);
-}
-
-function find_values(start, end, layer1Vectors, layer2Vectors) {
-    const [a1x, a1y, b1x, b1y] = layer1Vectors;
-    const [a2x, a2y, b2x, b2y] = layer2Vectors;
-    const dot = (v1, v2) => v1[0] * v2[0] + v1[1] * v2[1];
-    const norm = (v) => Math.sqrt(v[0] * v[0] + v[1] * v[1]);
-    const results = [];
-    for (let a = start; a <= end; a++) {
-        for (let b = start; b <= end; b++) {
-            if (a >= b || a < 1) continue;  // checks
-            const one = [a * a1x + b * b1x, a * a1y + b * b1y];
-            const two = [b * a2x + a * b2x, b * a2y + a * b2y];
-            const c = dot(one, two) / (norm(one) * norm(two));
-            const thetaRad = Math.acos(c);
-            const thetaDeg = (thetaRad * 180) / Math.PI;
-            if (gcd(a, b) !== 1) continue;  // checks
-            results.push([thetaDeg.toFixed(8), thetaRad.toFixed(8), a, b]);
+    function updateLatticeVectors() {
+        const type = document.getElementById("latticeType").value;
+        const customDiv = document.getElementById("custom-vectors");
+    
+        if (type === "Custom") {
+            customDiv.classList.remove("hidden");
+        } else {
+            customDiv.classList.add("hidden");
+    
+            const vec = latticeDefaults[type] || [1, 1, 1, 1];
+    
+            // Set both layers with the same vectors
+            document.getElementById("layer1-lv1x").value = vec[0];
+            document.getElementById("layer1-lv1y").value = vec[1];
+            document.getElementById("layer1-lv2x").value = vec[2];
+            document.getElementById("layer1-lv2y").value = vec[3];
+    
+            document.getElementById("layer2-lv1x").value = vec[0];
+            document.getElementById("layer2-lv1y").value = vec[1];
+            document.getElementById("layer2-lv2x").value = vec[2];
+            document.getElementById("layer2-lv2y").value = vec[3];
         }
     }
-    results.sort((x, y) => x[0] - y[0]);
-    return results;
-}
+    
 
-function displayResults_(results) {
-    console.log(results);
-    const resultsBody = document.getElementById("results-body");
-    resultsBody.innerHTML = ""; // Clear previous results
-    results.forEach(tuple => {
-        const row = document.createElement("tr");
-        tuple.forEach(value => {
-            const cell = document.createElement("td");
-            cell.textContent = value;
-            row.appendChild(cell);
+    // function gcd(x, y) {
+    //     if (y === 0) return x;
+    //     else return gcd(y, x % y);
+    // }
+
+    function calculate() {
+        const radius = parseInt(document.getElementById("radius").value);
+    
+        const layer1Vectors = [
+            parseFloat(document.getElementById("layer1-lv1x").value),
+            parseFloat(document.getElementById("layer1-lv1y").value),
+            parseFloat(document.getElementById("layer1-lv2x").value),
+            parseFloat(document.getElementById("layer1-lv2y").value)
+        ];
+    
+        const layer2Vectors = [
+            parseFloat(document.getElementById("layer2-lv1x").value),
+            parseFloat(document.getElementById("layer2-lv1y").value),
+            parseFloat(document.getElementById("layer2-lv2x").value),
+            parseFloat(document.getElementById("layer2-lv2y").value)
+        ];
+
+        const precision = parseInt(document.getElementById("precision").value);
+    
+        // console.log(radius, layer1Vectors, layer2Vectors);
+    
+        const results = find_values(radius, layer1Vectors, layer2Vectors, tol=precision);
+    
+        console.log(results);
+        console.log("Number of results:", results.length);
+        displayResults_(results);
+    }
+    
+    
+
+    // function find_values(start, end, layer1Vectors, layer2Vectors) {
+    //     const [a1x, a1y, b1x, b1y] = layer1Vectors;
+    //     const [a2x, a2y, b2x, b2y] = layer2Vectors;
+    //     const dot = (v1, v2) => v1[0] * v2[0] + v1[1] * v2[1];
+    //     const norm = (v) => Math.sqrt(v[0] * v[0] + v[1] * v[1]);
+    //     const results = [];
+    //     for (let a = start; a <= end; a++) {
+    //         for (let b = start; b <= end; b++) {
+    //             if (a >= b || a < 1) continue;  // checks
+    //             const one = [a * a1x + b * b1x, a * a1y + b * b1y];
+    //             const two = [b * a2x + a * b2x, b * a2y + a * b2y];
+    //             const c = dot(one, two) / (norm(one) * norm(two));
+    //             const thetaRad = Math.acos(c);
+    //             const thetaDeg = (thetaRad * 180) / Math.PI;
+    //             if (gcd(a, b) !== 1) continue;  // checks
+    //             results.push([thetaDeg.toFixed(8), thetaRad.toFixed(8), a, b]);
+    //         }
+    //     }
+    //     results.sort((x, y) => x[0] - y[0]);
+    //     return results;
+    // }
+
+    function calc_indices(p, lv1, lv2) {
+        const [a, b] = lv1;
+        const [c, d] = lv2;
+        const [x, y] = p;
+        const det = (a * d - b * c);
+        const nx = (d * x - c * y) / det;
+        const ny = (a * y - b * x) / det;
+
+        if (Math.abs(Math.round(nx) - nx) > 1e-5 || Math.abs(Math.round(ny) - ny) > 1e-5) {
+            throw new Error(`Calculation error for indices: ${nx}, ${ny}`);
+        }
+
+        return [Math.round(nx), Math.round(ny)];
+    }
+
+    function generate_lattice_points(lv1, lv2, radius) {
+        const points = [];
+        const maxGridSize = Math.floor(radius / Math.abs(lv2[1])) + 5;
+
+        // console.log(radius, lv1, lv2, maxGridSize);
+
+        for (let i = -maxGridSize; i <= maxGridSize; i++) {
+            for (let j = -maxGridSize; j <= maxGridSize; j++) {
+                // console.log(i, j);
+                const point = [i * lv1[0] + j * lv2[0], i * lv1[1] + j * lv2[1]];
+                const dist = Math.sqrt(point[0] ** 2 + point[1] ** 2);
+                if (dist <= radius) points.push(point);
+            }
+        }
+
+        return points;
+    }
+
+    function angle_from_x(p) {
+        return Math.atan2(p[1], p[0]) * 180 / Math.PI;
+    }
+
+    function process_lattice(points, tol) {
+        const distances = points.map(p => Math.hypot(p[0], p[1]));
+        const distMap = new Map();
+
+        // console.log(distMap);
+
+        for (let i = 0; i < points.length; i++) {
+            const d = parseFloat(distances[i].toFixed(tol));
+            if (!distMap.has(d)) distMap.set(d, {});
+            distMap.get(d)[i] = points[i];
+        }
+
+        return [distMap, new Set([...distMap.keys()])];
+    }
+
+    function find_values(radius, layer1Vectors, layer2Vectors, tol = 6) {
+
+        const [a1x, a1y, b1x, b1y] = layer1Vectors;
+        const [a2x, a2y, b2x, b2y] = layer2Vectors;
+
+        if (JSON.stringify(layer1Vectors) !== JSON.stringify(layer2Vectors)) {
+            alert("Vectors are not identical!");
+        }
+
+        const lv1 = [a1x, a1y];
+        const lv2 = [b1x, b1y];
+
+        const lattice1 = generate_lattice_points(lv1, lv2, radius);
+        const lattice2 = generate_lattice_points(lv1, lv2, radius);
+
+        const [dict1, dist_set1] = process_lattice(lattice1, tol);
+        const [dict2, dist_set2] = process_lattice(lattice2, tol);
+
+        const common_dists = [...dist_set1].filter(d => dist_set2.has(d)).sort((a, b) => a - b).slice(1);
+
+        const angle_dict = {};
+        const lattice_angle = angle_from_x(lv2) - angle_from_x(lv1);
+
+        const isValidTheta = (theta) => theta > 0 && theta < lattice_angle;
+
+        for (const d of common_dists) {
+            // console.log(d)
+            const pts1 = Object.values(dict1.get(d)).filter(p => isValidTheta(angle_from_x(p)));
+            const pts2 = Object.values(dict2.get(d)).filter(p => isValidTheta(angle_from_x(p)));
+
+            for (const p1 of pts1) {
+                const theta1 = parseFloat(angle_from_x(p1).toFixed(tol));
+
+                for (const p2 of pts2) {
+                    const theta2 = parseFloat(angle_from_x(p2).toFixed(tol));
+                    const angle = parseFloat((theta2 - theta1).toFixed(tol));
+
+                    if (
+                        theta2 <= theta1 ||
+                        angle < Math.pow(10, -tol) ||
+                        (angle in angle_dict && theta1 >= parseFloat(angle_from_x(angle_dict[angle][0]).toFixed(tol)))
+                    ) continue;
+
+                    angle_dict[angle] = [p1, p2];
+                }
+            }
+        }
+
+        const results = Object.keys(angle_dict).sort((a, b) => parseFloat(a) - parseFloat(b)).map(k => {
+            const [p1, p2] = angle_dict[k];
+            const thetaRad = (parseFloat(k) * Math.PI) / 180;
+            const thetaDeg = parseFloat(k);
+            const [i1, j1] = calc_indices(p1, lv1, lv2);
+            const [i2, j2] = calc_indices(p2, lv1, lv2);
+            return [thetaDeg.toFixed(tol), thetaRad.toFixed(tol), i1, j1, i2, j2];
         });
-        resultsBody.appendChild(row);
-    });
-}
 
-updateLatticeVectors('layer1');
-updateLatticeVectors('layer2');
+        return results;
+    }
+
+    function displayResults_(results) {
+        const resultsBody = document.getElementById("results-body");
+        resultsBody.innerHTML = ""; // Clear previous results
+        results.forEach((tuple, index) => {
+            const row = document.createElement("tr");
+            const cell = document.createElement("td");
+            cell.textContent = index + 1;  // add the index
+            row.appendChild(cell);
+            tuple.forEach(value => {
+                const cell = document.createElement("td");
+                cell.textContent = value;
+                row.appendChild(cell);
+            });
+            resultsBody.appendChild(row);
+        });
+    }
+
+    updateLatticeVectors('layer1');
+    updateLatticeVectors('layer2');
 
 </script>

@@ -1,10 +1,12 @@
 site_name: MoirePy
 theme:
-  # name: material
-  name: readthedocs
+  # name: m kdocs
+  name  : readthedocs
+  # name: material  
   # name: kpn
   # name: terminal
   # name: torillic
+  # name: topdf
 
 plugins:
   - search
@@ -24,9 +26,17 @@ plugins:
 nav:
   - Home: index.md
   - Installation: installation.md
-  # - Find a and b: find_theta/index.html
   - Angle Value Calculator: find_theta.md
+  - Angle calculation Process: angle_calculation_process.md
   - API Reference:
       - Layers: api/layers.md
       - Moire: api/moire.md
       - Utils: api/utils.md
+
+
+markdown_extensions:
+  - pymdownx.arithmatex:
+      generic: true
+
+extra_javascript:
+  - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
