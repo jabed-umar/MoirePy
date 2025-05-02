@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Angle calculation Process - MoirePy</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Angle calculation Process";
+        var mkdocs_page_input_path = "angle_calculation_process.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> MoirePy
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../installation/">Installation</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../find_theta/">Angle Value Calculator</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="#">Angle calculation Process</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#problem-definition">Problem Definition</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#traditional-diophantine-equation-approach">Traditional Diophantine Equation Approach</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#time-complexity">Time Complexity</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#observations-about-lattice-structure">Observations About Lattice Structure</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#our-method">Our Method</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#algorithm-overview">Algorithm Overview</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#time-complexity_1">Time Complexity</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#breakdown">Breakdown:</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#final-time">Final Time:</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#summary">Summary</a>
+    </li>
+    </ul>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">API Reference</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../api/layers/">Layers</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../api/moire/">Moire</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../api/utils/">Utils</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">MoirePy</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Angle calculation Process</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="angle-calculation-process">Angle Calculation Process</h1>
+<p>In this section, we describe how <strong>MoirePy</strong> determines the <em>commensurate rotation angles</em> between two lattices clipped to a bounded region. Our goal is to compute the angles where two lattices can overlap nicely, giving rise to observable moiré patterns.</p>
+<h2 id="problem-definition">Problem Definition</h2>
+<p>Let lattice <span class="arithmatex">\( A \)</span> and lattice <span class="arithmatex">\( B \)</span> be two periodic 2D point sets defined by their lattice vectors.</p>
+<p>We are interested in the following:</p>
+<blockquote>
+<p>Given a rotation <span class="arithmatex">\( \theta \)</span>, does there exist a point <span class="arithmatex">\( \mathbf{p} \in A \)</span> and a point <span class="arithmatex">\( \mathbf{q} \in B \)</span> such that  </p>
+<div class="arithmatex">\[
+\mathbf{p} = R(\theta)\mathbf{q}
+\]</div>
+</blockquote>
+<p>Where <span class="arithmatex">\( R(\theta) \)</span> is the standard 2D rotation matrix:</p>
+<div class="arithmatex">\[
+R(\theta) = 
+\begin{bmatrix}
+\cos\theta &amp; -\sin\theta \\
+\sin\theta &amp; \cos\theta
+\end{bmatrix}
+\]</div>
+<p>To make the computation finite, we consider only the lattice points within a circular cutoff of radius <span class="arithmatex">\( r \)</span>. Let’s denote the sets:</p>
+<ul>
+<li><span class="arithmatex">\( A_r = A \cap \text{circle}(r) \)</span></li>
+<li><span class="arithmatex">\( B_r = B \cap \text{circle}(r) \)</span></li>
+</ul>
+<p>We now want to find angles <span class="arithmatex">\( \theta \)</span> such that:</p>
+<div class="arithmatex">\[
+\exists \mathbf{p} \in A_r, \mathbf{q} \in B_r: \quad \mathbf{p} = R(\theta)\mathbf{q}
+\]</div>
+<h2 id="traditional-diophantine-equation-approach">Traditional Diophantine Equation Approach</h2>
+<p>A popular approach is to formulate the problem algebraically by equating integer linear combinations of lattice vectors under rotation. That is, you search for integers <span class="arithmatex">\( m_1, m_2, n_1, n_2 \)</span> such that:</p>
+<div class="arithmatex">\[
+m_1\mathbf{a}_1 + m_2\mathbf{a}_2 = R(\theta)(n_1\mathbf{b}_1 + n_2\mathbf{b}_2)
+\]</div>
+<p>This is essentially a <strong>Diophantine equation</strong> in four variables, constrained by a rotation angle <span class="arithmatex">\( \theta \)</span>.</p>
+<h3 id="time-complexity">Time Complexity</h3>
+<p>Let the radius cutoff be <span class="arithmatex">\( r \)</span>. Each lattice will have approximately <span class="arithmatex">\(n = O(r^2) \)</span> points.</p>
+<p>The Diophantine approach needs to check <span class="arithmatex">\( O(n^2) \)</span> combinations, since both lattices have n points.</p>
+<p>This gets very slow as radius increases. We wanted a simpler and faster method — not because this is slow, but because we just didn’t like it.</p>
+<h2 id="observations-about-lattice-structure">Observations About Lattice Structure</h2>
+<p>We noticed some very helpful properties in regularly spaced lattices (like triangular or square lattices).</p>
+<p>{Insert image showing how points are grouped into concentric distance shells.}</p>
+<p>If we arrange all the points in the lattice in ascending order of their distances from the origin, we can clearly see discrete levels forming, sort of like a step function. Each level — meaning, each radius from the origin where lattice points lie — contains <strong>symmetrically placed points</strong>. For example, in a triangular lattice, each such level contains a multiple of 6 points due to 6-fold symmetry.</p>
+<p>{Insert plot of number of points per radius level showing multiples of 6.}</p>
+<p>This means that if two lattices share the same level (same distance from origin), then <strong>we only need to align one pair of points on that level</strong>, and the rest 6 will align automatically due to symmetry.</p>
+<h2 id="our-method">Our Method</h2>
+<p>We approach the angle-finding task using the geometry and symmetry of lattices, avoiding algebraic equations altogether.</p>
+<h3 id="algorithm-overview">Algorithm Overview</h3>
+<p>Let <span class="arithmatex">\( A_r \)</span> and <span class="arithmatex">\( B_r \)</span> be the sets of lattice points (from lattice A and B respectively) within radius <span class="arithmatex">\( r \)</span> from the origin.</p>
+<ol>
+<li>
+<p><strong>Group points by radius</strong>:<br />
+   For each point in <span class="arithmatex">\( A_r \)</span> and <span class="arithmatex">\( B_r \)</span>, compute its distance <span class="arithmatex">\( d = \|\mathbf{p}\| \)</span> from the origin.<br />
+   Group points that lie at the same radius (up to numerical tolerance) into <em>levels</em>.</p>
+</li>
+<li>
+<p><strong>Identify shared levels</strong>:<br />
+   Let <span class="arithmatex">\( D = \{d \mid d \text{ occurs in both } A_r \text{ and } B_r \} \setminus \{0\} \)</span>.<br />
+   These are the radii at which both lattices have points.</p>
+</li>
+<li>
+<p><strong>Filter by angular sector</strong>:<br />
+   For each <span class="arithmatex">\( d \in D \)</span>, consider only those points <span class="arithmatex">\( \mathbf{p} \in A_r \)</span> and <span class="arithmatex">\( \mathbf{q} \in B_r \)</span> on level <span class="arithmatex">\( d \)</span> such that<br />
+   $$
+   0 &lt; \angle(\mathbf{p}) &lt; \theta_\text{max}, \quad
+   0 &lt; \angle(\mathbf{q}) &lt; \theta_\text{max}
+   $$<br />
+   where <span class="arithmatex">\( \theta_\text{max} \)</span> is the lattice's symmetry sector (e.g., <span class="arithmatex">\( 60^\circ \)</span> for triangular lattices).</p>
+</li>
+<li>
+<p><strong>Compute angle differences</strong>:<br />
+   For all pairs <span class="arithmatex">\( (\mathbf{p}, \mathbf{q}) \)</span> from the filtered sets on each shared level <span class="arithmatex">\( d \)</span>:</p>
+</li>
+<li>Let <span class="arithmatex">\( \theta_1 = \angle(\mathbf{p}) \)</span>, <span class="arithmatex">\( \theta_2 = \angle(\mathbf{q}) \)</span></li>
+<li>If <span class="arithmatex">\( \theta_2 &gt; \theta_1 \)</span> and <span class="arithmatex">\( \theta = \theta_2 - \theta_1 &gt; \text{tolerance} \)</span>, then:<ul>
+<li>Store angle <span class="arithmatex">\( \theta \)</span> along with the point pair <span class="arithmatex">\( (\mathbf{p}, \mathbf{q}) \)</span>, <strong>only if</strong> no existing pair has a smaller <span class="arithmatex">\( \theta_1 \)</span></li>
+</ul>
+</li>
+</ol>
+<p>{Insert illustration showing concentric circles with marked angular slices and example point pairs.}</p>
+<p>This procedure ensures we collect unique, minimal-angle configurations that could align under rotation, constrained to the symmetry of the lattice.</p>
+<h2 id="time-complexity_1">Time Complexity</h2>
+<p>Let’s denote:</p>
+<ul>
+<li><span class="arithmatex">\( n = O(r^2) \)</span>: number of points in the circular cutoff</li>
+</ul>
+<h3 id="breakdown">Breakdown:</h3>
+<ul>
+<li><strong>Sorting distances</strong>: <span class="arithmatex">\( O(n \log n) \)</span></li>
+<li><strong>Finding common radii</strong>: <span class="arithmatex">\( O(n) \)</span></li>
+<li><strong>Pairwise angle checks</strong>: Very few (multiples of 6) per level → negligible</li>
+</ul>
+<h3 id="final-time">Final Time:</h3>
+<div class="arithmatex">\[
+O(n \log n)
+\]</div>
+<p>Compared to the <span class="arithmatex">\( O(n^2) \)</span> of Diophantine, this is clearly more efficient — and arguably more intuitive.</p>
+<h2 id="summary">Summary</h2>
+<p>We avoided solving Diophantine equations by leaning on geometry and symmetry:</p>
+<ul>
+<li>Points are grouped by radius</li>
+<li>Only overlapping radii are considered</li>
+<li>Pairwise angle differences yield the commensurate angles</li>
+</ul>
+<p>This makes <strong>MoirePy</strong>’s angle detection both <strong>fast and visual</strong>, and opens up room for further optimizations or generalizations.</p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../find_theta/" class="btn btn-neutral float-left" title="Angle Value Calculator"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../api/layers/" class="btn btn-neutral float-right" title="Layers">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../find_theta/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../api/layers/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

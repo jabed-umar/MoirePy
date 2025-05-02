@@ -52,6 +52,10 @@
                 <li class="toctree-l1"><a class="reference internal" href="../../find_theta/">Angle Value Calculator</a>
                 </li>
               </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../angle_calculation_process/">Angle calculation Process</a>
+                </li>
+              </ul>
               <p class="caption"><span class="caption-text">API Reference</span></p>
               <ul class="current">
                   <li class="toctree-l1 current"><a class="reference internal current" href="#">Layers</a>
@@ -829,7 +833,46 @@
 <span class="normal">704</span>
 <span class="normal">705</span>
 <span class="normal">706</span>
-<span class="normal">707</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Layer</span><span class="p">:</span>  <span class="c1"># parent class</span>
+<span class="normal">707</span>
+<span class="normal">708</span>
+<span class="normal">709</span>
+<span class="normal">710</span>
+<span class="normal">711</span>
+<span class="normal">712</span>
+<span class="normal">713</span>
+<span class="normal">714</span>
+<span class="normal">715</span>
+<span class="normal">716</span>
+<span class="normal">717</span>
+<span class="normal">718</span>
+<span class="normal">719</span>
+<span class="normal">720</span>
+<span class="normal">721</span>
+<span class="normal">722</span>
+<span class="normal">723</span>
+<span class="normal">724</span>
+<span class="normal">725</span>
+<span class="normal">726</span>
+<span class="normal">727</span>
+<span class="normal">728</span>
+<span class="normal">729</span>
+<span class="normal">730</span>
+<span class="normal">731</span>
+<span class="normal">732</span>
+<span class="normal">733</span>
+<span class="normal">734</span>
+<span class="normal">735</span>
+<span class="normal">736</span>
+<span class="normal">737</span>
+<span class="normal">738</span>
+<span class="normal">739</span>
+<span class="normal">740</span>
+<span class="normal">741</span>
+<span class="normal">742</span>
+<span class="normal">743</span>
+<span class="normal">744</span>
+<span class="normal">745</span>
+<span class="normal">746</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Layer</span><span class="p">:</span>  <span class="c1"># parent class</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pbc</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">study_proximity</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initializes the Layer object</span>
@@ -1461,7 +1504,7 @@
         <span class="c1"># return distances[:, 1:], indices[:, 1:]</span>
         <span class="k">return</span> <span class="n">distances</span><span class="p">,</span> <span class="n">indices</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">plot_lattice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plot_connections</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">plot_unit_cell</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">plot_lattice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plot_connections</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">plot_unit_cell</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">colours</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="s2">&quot;g&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">,</span> <span class="s2">&quot;m&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="s2">&quot;k&quot;</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Plots the lattice points and optionally the connections between them and the unit cell structure.</span>
 
@@ -1489,21 +1532,41 @@
 <span class="sd">            - The unit cell grid (if enabled) is displayed as dotted black lines with reduced opacity.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># plt.figure(figsize=(8, 8))</span>
-        <span class="k">for</span> <span class="n">atom_type</span><span class="p">,</span> <span class="n">atom_points</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">lattice_points</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="n">x_coords</span> <span class="o">=</span> <span class="p">[</span><span class="n">point</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">point</span> <span class="ow">in</span> <span class="n">atom_points</span><span class="p">]</span>
-            <span class="n">y_coords</span> <span class="o">=</span> <span class="p">[</span><span class="n">point</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">point</span> <span class="ow">in</span> <span class="n">atom_points</span><span class="p">]</span>
-            <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x_coords</span><span class="p">,</span> <span class="n">y_coords</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
 
-            <span class="k">if</span> <span class="n">plot_connections</span><span class="p">:</span>
-                <span class="k">for</span> <span class="n">point</span> <span class="ow">in</span> <span class="n">atom_points</span><span class="p">:</span>
-                    <span class="k">for</span> <span class="n">neighbor</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">neighbours</span><span class="p">[</span><span class="n">atom_type</span><span class="p">]:</span>
-                        <span class="n">connection</span> <span class="o">=</span> <span class="n">point</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">neighbor</span><span class="p">)</span>
-                        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
-                            <span class="p">[</span><span class="n">point</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">connection</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span>
-                            <span class="p">[</span><span class="n">point</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">connection</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span>
-                            <span class="s2">&quot;r--&quot;</span><span class="p">,</span>
-                            <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
-                        <span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">colours</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span> <span class="n">cols</span> <span class="o">=</span> <span class="p">{</span><span class="n">t</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span><span class="n">colours</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lattice_points</span><span class="p">)}</span>
+        <span class="k">else</span><span class="p">:</span> <span class="n">cols</span> <span class="o">=</span> <span class="p">{</span><span class="n">t</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span><span class="n">colours</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lattice_points</span><span class="p">)}</span>
+
+
+        <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
+            <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]],</span>
+            <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]],</span>
+            <span class="n">s</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">cols</span><span class="o">.</span><span class="n">get</span><span class="p">)(</span><span class="bp">self</span><span class="o">.</span><span class="n">point_types</span><span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">plot_connections</span><span class="p">:</span>
+            <span class="n">a</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">this</span><span class="p">,</span> <span class="n">point_type</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">point_types</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">delta</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">neighbours</span><span class="p">[</span><span class="n">point_type</span><span class="p">]:</span>
+                    <span class="n">a</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">this</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">this</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">delta</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
+                    <span class="n">a</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">this</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">this</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">delta</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+                    <span class="n">a</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;k--&quot;</span><span class="p">)</span>
+            <span class="c1"># a = a[:30]</span>
+            <span class="c1"># print(a)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+
+        <span class="c1"># for x_coord, y_coord, atom_type in self.lattice_points:</span>
+        <span class="c1">#     plt.scatter([x_coord], [y_coord], s=5)</span>
+
+        <span class="c1">#     if plot_connections:</span>
+        <span class="c1">#         point = np.array([x_coord, y_coord])</span>
+        <span class="c1">#         for neighbor in self.neighbours[atom_type]:</span>
+        <span class="c1">#             connection = point + np.array(neighbor)</span>
+        <span class="c1">#             plt.plot(</span>
+        <span class="c1">#                 [point[0], connection[0]],</span>
+        <span class="c1">#                 [point[1], connection[1]],</span>
+        <span class="c1">#                 &quot;r--&quot;,</span>
+        <span class="c1">#                 alpha=0.5,</span>
+        <span class="c1">#             )</span>
 
         <span class="k">if</span> <span class="n">plot_unit_cell</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ny</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
@@ -1528,6 +1591,25 @@
         <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;X Coordinate&quot;</span><span class="p">)</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Y Coordinate&quot;</span><span class="p">)</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s2">&quot;equal&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">__init_subclass__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init_subclass__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">required_attrs</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;lv1&quot;</span><span class="p">,</span> <span class="s2">&quot;lv2&quot;</span><span class="p">,</span> <span class="s2">&quot;lattice_points&quot;</span><span class="p">,</span> <span class="s2">&quot;neighbours&quot;</span><span class="p">,</span> <span class="s2">&quot;study_proximity&quot;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">required_attrs</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Subclass </span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> must define &#39;</span><span class="si">{</span><span class="n">attr</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Layer(</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;    lv1 = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">lv1</span><span class="si">}</span><span class="s2">,</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;    lv2 = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">lv2</span><span class="si">}</span><span class="s2">,</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;    lattice_points = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">lattice_points</span><span class="si">}</span><span class="s2">,</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="c1"># f&quot;    neighbours = {self.neighbours},\n&quot;</span>
+            <span class="c1"># f&quot;    study_proximity = {self.study_proximity},\n&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;    pbc = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">pbc</span><span class="si">}</span><span class="s2">,</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;)&quot;</span>
+        <span class="p">)</span>
 </code></pre></div></td></tr></table></div>
               </details>
 
@@ -3290,7 +3372,7 @@ print(lattice.points)
 
 
 <h3 id="moirepy.layers.Layer.plot_lattice" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">plot_lattice</span><span class="p">(</span><span class="n">plot_connections</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">plot_unit_cell</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">plot_lattice</span><span class="p">(</span><span class="n">plot_connections</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">plot_unit_cell</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">colours</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;m&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;k&#39;</span><span class="p">])</span></code>
 
 </h3>
 
@@ -3428,7 +3510,27 @@ Defaults to False.</p>
 <span class="normal">704</span>
 <span class="normal">705</span>
 <span class="normal">706</span>
-<span class="normal">707</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">plot_lattice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plot_connections</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">plot_unit_cell</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">707</span>
+<span class="normal">708</span>
+<span class="normal">709</span>
+<span class="normal">710</span>
+<span class="normal">711</span>
+<span class="normal">712</span>
+<span class="normal">713</span>
+<span class="normal">714</span>
+<span class="normal">715</span>
+<span class="normal">716</span>
+<span class="normal">717</span>
+<span class="normal">718</span>
+<span class="normal">719</span>
+<span class="normal">720</span>
+<span class="normal">721</span>
+<span class="normal">722</span>
+<span class="normal">723</span>
+<span class="normal">724</span>
+<span class="normal">725</span>
+<span class="normal">726</span>
+<span class="normal">727</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">plot_lattice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plot_connections</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">plot_unit_cell</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">colours</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="s2">&quot;g&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">,</span> <span class="s2">&quot;m&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="s2">&quot;k&quot;</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Plots the lattice points and optionally the connections between them and the unit cell structure.</span>
 
@@ -3456,21 +3558,41 @@ Defaults to False.</p>
 <span class="sd">        - The unit cell grid (if enabled) is displayed as dotted black lines with reduced opacity.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># plt.figure(figsize=(8, 8))</span>
-    <span class="k">for</span> <span class="n">atom_type</span><span class="p">,</span> <span class="n">atom_points</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">lattice_points</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="n">x_coords</span> <span class="o">=</span> <span class="p">[</span><span class="n">point</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">point</span> <span class="ow">in</span> <span class="n">atom_points</span><span class="p">]</span>
-        <span class="n">y_coords</span> <span class="o">=</span> <span class="p">[</span><span class="n">point</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">point</span> <span class="ow">in</span> <span class="n">atom_points</span><span class="p">]</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x_coords</span><span class="p">,</span> <span class="n">y_coords</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">plot_connections</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">point</span> <span class="ow">in</span> <span class="n">atom_points</span><span class="p">:</span>
-                <span class="k">for</span> <span class="n">neighbor</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">neighbours</span><span class="p">[</span><span class="n">atom_type</span><span class="p">]:</span>
-                    <span class="n">connection</span> <span class="o">=</span> <span class="n">point</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">neighbor</span><span class="p">)</span>
-                    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
-                        <span class="p">[</span><span class="n">point</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">connection</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span>
-                        <span class="p">[</span><span class="n">point</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">connection</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span>
-                        <span class="s2">&quot;r--&quot;</span><span class="p">,</span>
-                        <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
-                    <span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">colours</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span> <span class="n">cols</span> <span class="o">=</span> <span class="p">{</span><span class="n">t</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span><span class="n">colours</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lattice_points</span><span class="p">)}</span>
+    <span class="k">else</span><span class="p">:</span> <span class="n">cols</span> <span class="o">=</span> <span class="p">{</span><span class="n">t</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span><span class="n">colours</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lattice_points</span><span class="p">)}</span>
+
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
+        <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]],</span>
+        <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]],</span>
+        <span class="n">s</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">cols</span><span class="o">.</span><span class="n">get</span><span class="p">)(</span><span class="bp">self</span><span class="o">.</span><span class="n">point_types</span><span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">plot_connections</span><span class="p">:</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">this</span><span class="p">,</span> <span class="n">point_type</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">point_types</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">delta</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">neighbours</span><span class="p">[</span><span class="n">point_type</span><span class="p">]:</span>
+                <span class="n">a</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">this</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">this</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">delta</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
+                <span class="n">a</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">this</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">this</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">delta</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+                <span class="n">a</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;k--&quot;</span><span class="p">)</span>
+        <span class="c1"># a = a[:30]</span>
+        <span class="c1"># print(a)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+
+    <span class="c1"># for x_coord, y_coord, atom_type in self.lattice_points:</span>
+    <span class="c1">#     plt.scatter([x_coord], [y_coord], s=5)</span>
+
+    <span class="c1">#     if plot_connections:</span>
+    <span class="c1">#         point = np.array([x_coord, y_coord])</span>
+    <span class="c1">#         for neighbor in self.neighbours[atom_type]:</span>
+    <span class="c1">#             connection = point + np.array(neighbor)</span>
+    <span class="c1">#             plt.plot(</span>
+    <span class="c1">#                 [point[0], connection[0]],</span>
+    <span class="c1">#                 [point[1], connection[1]],</span>
+    <span class="c1">#                 &quot;r--&quot;,</span>
+    <span class="c1">#                 alpha=0.5,</span>
+    <span class="c1">#             )</span>
 
     <span class="k">if</span> <span class="n">plot_unit_cell</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ny</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
@@ -3992,7 +4114,7 @@ Defaults to 1.</p>
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../../find_theta/" class="btn btn-neutral float-left" title="Angle Value Calculator"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../../angle_calculation_process/" class="btn btn-neutral float-left" title="Angle calculation Process"><span class="icon icon-circle-arrow-left"></span> Previous</a>
         <a href="../moire/" class="btn btn-neutral float-right" title="Moire">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
@@ -4016,7 +4138,7 @@ Defaults to 1.</p>
   <span class="rst-current-version" data-toggle="rst-current-version">
     
     
-      <span><a href="../../find_theta/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../../angle_calculation_process/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
       <span><a href="../moire/" style="color: #fcfcfc">Next &raquo;</a></span>
@@ -4027,6 +4149,7 @@ Defaults to 1.</p>
     <script>var base_url = "../..";</script>
     <script src="../../js/theme_extra.js"></script>
     <script src="../../js/theme.js"></script>
+      <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
       <script src="../../search/main.js"></script>
     <script>
         jQuery(function () {
