@@ -157,40 +157,39 @@
 <p>The <strong>Moiré Angle Calculator</strong> finds all possible commensurate angles between two stacked lattices by trimming both layers within a given radius and checking for periodic overlaps. For each valid angle, it returns not just the angle itself, but also the corresponding lattice coordinates: <code>nx1, ny1</code> (from the lower lattice) and <code>nx2, ny2</code> (from the upper one). Since most angles are irrational and can't be precisely represented, the rotation is defined using these coordinate pairs instead — they mark the overlapping points between the two lattices. Once you've selected an angle from the list, just copy the <code>nx1, ny1, nx2, ny2</code> values into your code — the system will figure out the rotation angle from that. For the logic behind how angles are identified, see the <a href="../angle_calculation_process/">Angle Calculation Process</a>.</p>
 <h2 id="guidelines">Guidelines</h2>
 <details>
-    <summary>Click to Expand (and read some informal guidelines)</summary>
+    <summary>Click to Expand</summary>
 
     <ul>
         <li>
-          You must choose a <strong>radius</strong> which defines the size of the circular region around the origin. Both upper and lower lattices are cut using this radius.
+            A <strong>radius</strong> must be specified to define the extent of the circular region centered at the origin. This radius will be used to truncate both the upper and lower lattices.
         </li>
 
         <li>
-          <strong>Currently supported systems</strong>:
-          <ul>
-            <li>Triangular on triangular.</li>
-            <li>Square on square.</li>
-            <li>
-              A <strong>custom mode</strong> allows arbitrary lattice vectors for each layer. This is experimental and <strong>not reliable</strong> — results may include:
-              <ul>
-                <li>Wrong or nonsensical outputs.</li>
-                <li>UI freezing or crashing.</li>
-                <li>Unexpected behavior.</li>
-              </ul>
-              But if you're feeling lucky (or brave), and you believe the setup (as described in <a href="angle_calculation_process.md">Angle Calculation Process</a>) <em>should</em> give meaningful results, here are some patterns that <em>might</em> work:
-              <ol>
-                <li>Both lattice angles are exact divisors of 360°</li>
-                <li>Both layers are identical (same vectors)</li>
-                <li>If 2 is broken, at least one layer's vectors are integer multiples of the other</li>
-              </ol>
-              Even then, <strong>no guarantee</strong> that the angles found are correct or meaningful — use at your own risk. After all, uncertainty is the fuel of research, right? 😉
-            </li>
-          </ul>
+            <strong>Currently Supported Systems</strong>:
+            <ul>
+                <li>Triangular on triangular lattices</li>
+                <li>Square on square lattices</li>
+                <li>
+                    A <strong>custom mode</strong> is available, allowing the input of arbitrary lattice vectors for each layer. Please note that this mode is experimental and its reliability is <strong>not guaranteed</strong>. Potential issues may include:
+                    <ul>
+                        <li>Erroneous or nonsensical output.</li>
+                        <li>Unresponsiveness or crashing of the user interface.</li>
+                        <li>Unexpected program behavior.</li>
+                    </ul>
+                    However, if you believe that your specific configuration (as detailed in <a href="angle_calculation_process.md">Angle Calculation Process</a>) <em>should</em> yield meaningful results, the following these patterns <em>might</em> be considered:
+                    <ol>
+                        <li>Both lattice angles are exact divisors of 360°.</li>
+                        <li>Both layers possess identical lattice vectors.</li>
+                        <li>If the second condition is not met, at least one layer's vectors are integer multiples of the other.</li>
+                    </ol>
+                    Even under these conditions, there is <strong>no assurance</strong> that the calculated angles will be accurate or relevant. Use this feature at your own discretion.
+                </li>
+            </ul>
         </li>
 
-        <li><strong>Larger radius → more points → more precise and smaller angles</strong>, but slower.</li>
-        <li><strong>Smaller radius → faster results</strong>, but you will only see larger angles.</li>
-      </ul>      
-
+        <li>A <strong>larger radius</strong> will encompass more lattice points, potentially leading to more precise calculations and the detection of smaller angles, but will increase computation time.</li>
+        <li>A <strong>smaller radius</strong> will yield faster results, but may only reveal larger angle values.</li>
+    </ul>
 </details>
 
 <h2 id="calculator">Calculator</h2>
@@ -204,7 +203,7 @@
     <select id="latticeType" onchange="updateLatticeVectors()">
         <option value="TriangularLayer">Triangle - Triangle</option>
         <option value="SquareLayer">Square - Square</option>
-        <option value="Custom">Custom</option>
+        <option value="Custom">Custom (experimental)</option>
     </select>
 
     <div id="custom-vectors" class="vector-inputs hidden">
@@ -227,6 +226,7 @@
             lv2: <input type="text" inputmode="decimal" id="layer2-lv2x"> x +
             <input type="text" inputmode="decimal" id="layer2-lv2y"> y
         </div>
+        <div style="color: red; border: 1px solid red; padding: 5px; text-align: center;"><b>WARNING:</b> RESULTS MIGHT BE MEANINGLESS AND INACCURATE</div>
     </div>
 
     <div style="display: flex; gap: 10px; align-items: center;" class="hidden">
@@ -413,7 +413,7 @@
         const [a2x, a2y, b2x, b2y] = layer2Vectors;
 
         if (JSON.stringify(layer1Vectors) !== JSON.stringify(layer2Vectors)) {
-            alert("Vectors are not identical!");
+            alert("Warning: Vectors are not identical! Results might be inaccurate and meaningless.");
         }
 
         const lv1 = [a1x, a1y];
