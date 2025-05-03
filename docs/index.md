@@ -7,6 +7,12 @@ MoirePy is a Python package for the analysis of moiré lattice. It is designed t
 
 
 
+**Documentation:** [https://jabed-umar.github.io/MoirePy/](https://jabed-umar.github.io/MoirePy/)
+<br>
+**Github Repository:** [https://github.com/jabed-umar/MoirePy](https://github.com/jabed-umar/MoirePy)
+<br>
+**PyPI page:** [https://pypi.org/project/moirepy/](https://pypi.org/project/moirepy/)
+
 ## License
 
 This project is licensed under the [MIT License](https://opensource.org/licenses/MIT).

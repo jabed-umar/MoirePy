@@ -11,13 +11,14 @@ A list of things to do.
 
 ## For Aritra
 
-- [ ] Write K-space
+- [x] Write K-space
 - [ ] fix code for all lattice types
-- [ ] n orbital
+- [x] n orbital
 - [ ] support for kth nearest neighbour (1st nearest already there)
 
 ## Ambitious goals
 
 - [ ] write NEGF (Non-equilibrium Green's function)
 - [ ] allow different types of layers in one moire lattice (don't even know if physically meaningful)
+    Note: not meaningful in most cases so `won't fix`
 - [ ] allow tri-layers, tetra-layers etc
