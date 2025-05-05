@@ -90,7 +90,7 @@ class Layer:  # parent class
             mlv1: np.array,
             mlv2: np.array,
             mln1: int = 1,
-            mln2: int = 1,  # bring_to_center = False
+            mln2: int = 1,
     ) -> None:
         """
         Generates points for a Moiré lattice based on the given lattice
@@ -272,10 +272,14 @@ class Layer:  # parent class
         p2 = np.array([v1[0], v1[1]])
         p3 = np.array([v2[0], v2[1]])
         p4 = np.array([v1[0] + v2[0], v1[1] + v2[1]])
+        
+        shift_dir = -(v1 + v2)
+        shift_dir = shift_dir / np.linalg.norm(shift_dir)  # normalize
+        shift = shift_dir * self.toll_scale * 1e-4
 
         return self._inside_polygon(
             points,
-            np.array([p1, p2, p4, p3]) - self.toll_scale * 1e-4
+            np.array([p1, p2, p4, p3]) + shift
         )
 
     def generate_kdtree(self) -> None:
@@ -326,7 +330,7 @@ class Layer:  # parent class
             (1 + neigh_pad_1) * v1 + (1 + neigh_pad_2) * v2,
             (-neigh_pad_1) * v1 + (1 + neigh_pad_2) * v2,
         ]))
-        print(mask.shape, mask.dtype)
+        # print(mask.shape, mask.dtype)
         points = all_points[mask]
         point_names = all_point_names[mask]
         self.bigger_points = points
@@ -726,6 +730,24 @@ class Layer:  # parent class
         plt.ylabel("Y Coordinate")
         plt.axis("equal")
 
+    # def __init_subclass__(cls, **kwargs):
+    #     super().__init_subclass__(**kwargs)
+    #     required_attrs = ["lv1", "lv2", "lattice_points", "neighbours", "study_proximity"]
+    #     for attr in required_attrs:
+    #         if not hasattr(cls, attr):
+    #             raise TypeError(f"Subclass {cls.__name__} must define '{attr}'")
+
+    def __repr__(self):
+        return (
+            f"Layer(\n"
+            f"    lv1 = {self.lv1},\n"
+            f"    lv2 = {self.lv2},\n"
+            f"    lattice_points = {self.lattice_points},\n"
+            # f"    neighbours = {self.neighbours},\n"
+            # f"    study_proximity = {self.study_proximity},\n"
+            f"    pbc = {self.pbc},\n"
+            f")"
+        )
 
 # ===============================================
 # ============= some example layers =============
@@ -770,6 +792,27 @@ class TriangularLayer(Layer):
         }
         self.study_proximity = 1
         # study_proximity = 1 means only studying nearest neighbours will be eabled, 2 means study of next nearest neighbours will be enabled too and so on
+        super().__init__(pbc=pbc)  # this has to go at the end
+
+
+class TriangularLayer(Layer):
+    def __init__(self, pbc=False) -> None:
+        self.lv1 = np.array([1, 0])  # Lattice vector in the x-direction
+        self.lv2 = np.array([0.5, np.sqrt(3) / 2])  # Lattice vector at 60 degrees
+        self.lattice_points = (
+            [0, 0, "A"],
+        )
+        self.neighbours = {
+            "A": [
+                [1, 0],  # Right
+                [0.5, np.sqrt(3) / 2],  # Right-up
+                [-0.5, np.sqrt(3) / 2],  # Left-up
+                [-1, 0],  # Left
+                [-0.5, -np.sqrt(3) / 2],  # Left-down
+                [0.5, -np.sqrt(3) / 2],  # Right-down
+            ],
+        }
+        self.study_proximity = 1
         super().__init__(pbc=pbc)  # this has to go at the end
 
 

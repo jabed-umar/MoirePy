@@ -12,7 +12,7 @@ A list of things to do.
 ## For Aritra
 
 - [x] Write K-space
-- [ ] fix code for all lattice types
+- [x] fix code for all lattice types
 - [x] n orbital
 - [ ] support for kth nearest neighbour (1st nearest already there)
 

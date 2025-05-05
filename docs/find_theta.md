@@ -74,6 +74,7 @@ The **Moiré Angle Calculator** finds all possible commensurate angles between t
     <summary>Click to Expand</summary>
 
     <ul>
+
         <li>
             A <strong>radius</strong> must be specified to define the extent of the circular region centered at the origin. This radius will be used to truncate both the upper and lower lattices.
         </li>
@@ -103,6 +104,7 @@ The **Moiré Angle Calculator** finds all possible commensurate angles between t
 
         <li>A <strong>larger radius</strong> will encompass more lattice points, potentially leading to more precise calculations and the detection of smaller angles, but will increase computation time.</li>
         <li>A <strong>smaller radius</strong> will yield faster results, but may only reveal larger angle values.</li>
+
     </ul>
 </details>
 
@@ -153,9 +155,9 @@ The **Moiré Angle Calculator** finds all possible commensurate angles between t
         <div style="color: red; border: 1px solid red; padding: 5px; text-align: center;"><b>WARNING:</b> RESULTS MIGHT BE MEANINGLESS AND INACCURATE</div>
     </div>
 
-    <div style="display: flex; gap: 10px; align-items: center;" class="hidden">
+    <div style="display: flex; gap: 10px; align-items: center;">
         <label for="precision">Precision:</label>
-        <input type="range" id="precision" min="2" max="8" value="6" step="1" style="width: 30vw;">
+        <input type="range" id="precision" min="2" max="12" value="6" step="1" style="width: 30vw;">
         <span id="precision-value">6</span>
     </div>   
 
@@ -204,27 +206,27 @@ The **Moiré Angle Calculator** finds all possible commensurate angles between t
     function updateLatticeVectors() {
         const type = document.getElementById("latticeType").value;
         const customDiv = document.getElementById("custom-vectors");
-    
+
         if (type === "Custom") {
             customDiv.classList.remove("hidden");
         } else {
             customDiv.classList.add("hidden");
-    
+
             const vec = latticeDefaults[type] || [1, 1, 1, 1];
-    
+
             // Set both layers with the same vectors
             document.getElementById("layer1-lv1x").value = vec[0];
             document.getElementById("layer1-lv1y").value = vec[1];
             document.getElementById("layer1-lv2x").value = vec[2];
             document.getElementById("layer1-lv2y").value = vec[3];
-    
+
             document.getElementById("layer2-lv1x").value = vec[0];
             document.getElementById("layer2-lv1y").value = vec[1];
             document.getElementById("layer2-lv2x").value = vec[2];
             document.getElementById("layer2-lv2y").value = vec[3];
         }
     }
-    
+
 
     // function gcd(x, y) {
     //     if (y === 0) return x;
@@ -233,14 +235,14 @@ The **Moiré Angle Calculator** finds all possible commensurate angles between t
 
     function calculate() {
         const radius = parseInt(document.getElementById("radius").value);
-    
+
         const layer1Vectors = [
             parseFloat(document.getElementById("layer1-lv1x").value),
             parseFloat(document.getElementById("layer1-lv1y").value),
             parseFloat(document.getElementById("layer1-lv2x").value),
             parseFloat(document.getElementById("layer1-lv2y").value)
         ];
-    
+
         const layer2Vectors = [
             parseFloat(document.getElementById("layer2-lv1x").value),
             parseFloat(document.getElementById("layer2-lv1y").value),
@@ -249,17 +251,15 @@ The **Moiré Angle Calculator** finds all possible commensurate angles between t
         ];
 
         const precision = parseInt(document.getElementById("precision").value);
-    
+
         // console.log(radius, layer1Vectors, layer2Vectors);
-    
+
         const results = find_values(radius, layer1Vectors, layer2Vectors, tol=precision);
-    
+
         console.log(results);
         console.log("Number of results:", results.length);
         displayResults_(results);
     }
-    
-    
 
     // function find_values(start, end, layer1Vectors, layer2Vectors) {
     //     const [a1x, a1y, b1x, b1y] = layer1Vectors;
@@ -375,7 +375,8 @@ The **Moiré Angle Calculator** finds all possible commensurate angles between t
                     if (
                         theta2 <= theta1 ||
                         angle < Math.pow(10, -tol) ||
-                        (angle in angle_dict && theta1 >= parseFloat(angle_from_x(angle_dict[angle][0]).toFixed(tol)))
+                        // (angle in angle_dict && theta1 >= parseFloat(angle_from_x(angle_dict[angle][0]).toFixed(tol)))
+                        angle in angle_dict
                     ) continue;
 
                     angle_dict[angle] = [p1, p2];
