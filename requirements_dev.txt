@@ -2,8 +2,8 @@ numpy
 scipy
 matplotlib
 tqdm
-notebook
 
+notebook
 mkdocstrings
 mkdocstrings-python
 

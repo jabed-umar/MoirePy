@@ -44,11 +44,12 @@ class Layer:  # parent class
                 """  # @jabed add link to documentation we will write this
             )
 
-        self.rot_m = np.eye(2)
+        self.rot_m = np.eye(2)  # will be replaced if called perform_rotation
         self.pbc = pbc
         self.points = None
         self.kdtree = None
         self.study_proximity = study_proximity
+        self.lattice_angle = np.arccos(np.dot(self.lv1, self.lv2) / (np.linalg.norm(self.lv1) * np.linalg.norm(self.lv2)))
 
     def perform_rotation(self, rot=None) -> None:
         """
