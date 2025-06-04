@@ -152,7 +152,7 @@ The **Moiré Angle Calculator** finds all possible commensurate angles between t
             lv2: <input type="text" inputmode="decimal" id="layer2-lv2x"> x +
             <input type="text" inputmode="decimal" id="layer2-lv2y"> y
         </div>
-        <div style="color: red; border: 1px solid red; padding: 5px; text-align: center;"><b>WARNING:</b> RESULTS MIGHT BE MEANINGLESS AND INACCURATE</div>
+        <div style="color: red; border: 1px solid red; padding: 5px; text-align: center;"><b>WARNING:</b> RESULTS MIGHT BE MEANINGLESS OR INACCURATE</div>
     </div>
 
     <div style="display: flex; gap: 10px; align-items: center;">
@@ -261,28 +261,6 @@ The **Moiré Angle Calculator** finds all possible commensurate angles between t
         displayResults_(results);
     }
 
-    // function find_values(start, end, layer1Vectors, layer2Vectors) {
-    //     const [a1x, a1y, b1x, b1y] = layer1Vectors;
-    //     const [a2x, a2y, b2x, b2y] = layer2Vectors;
-    //     const dot = (v1, v2) => v1[0] * v2[0] + v1[1] * v2[1];
-    //     const norm = (v) => Math.sqrt(v[0] * v[0] + v[1] * v[1]);
-    //     const results = [];
-    //     for (let a = start; a <= end; a++) {
-    //         for (let b = start; b <= end; b++) {
-    //             if (a >= b || a < 1) continue;  // checks
-    //             const one = [a * a1x + b * b1x, a * a1y + b * b1y];
-    //             const two = [b * a2x + a * b2x, b * a2y + a * b2y];
-    //             const c = dot(one, two) / (norm(one) * norm(two));
-    //             const thetaRad = Math.acos(c);
-    //             const thetaDeg = (thetaRad * 180) / Math.PI;
-    //             if (gcd(a, b) !== 1) continue;  // checks
-    //             results.push([thetaDeg.toFixed(8), thetaRad.toFixed(8), a, b]);
-    //         }
-    //     }
-    //     results.sort((x, y) => x[0] - y[0]);
-    //     return results;
-    // }
-
     function calc_indices(p, lv1, lv2) {
         const [a, b] = lv1;
         const [c, d] = lv2;
@@ -341,7 +319,7 @@ The **Moiré Angle Calculator** finds all possible commensurate angles between t
         const [a2x, a2y, b2x, b2y] = layer2Vectors;
 
         if (JSON.stringify(layer1Vectors) !== JSON.stringify(layer2Vectors)) {
-            alert("Warning: Vectors are not identical! Results might be inaccurate and meaningless.");
+            alert("Warning: Vectors are not identical! Results might be inaccurate or meaningless.");
         }
 
         const lv1 = [a1x, a1y];
@@ -369,25 +347,26 @@ The **Moiré Angle Calculator** finds all possible commensurate angles between t
                 const theta1 = parseFloat(angle_from_x(p1).toFixed(tol));
 
                 for (const p2 of pts2) {
-                    const theta2 = parseFloat(angle_from_x(p2).toFixed(tol));
-                    const angle = parseFloat((theta2 - theta1).toFixed(tol));
+                    const theta2 = parseFloat(angle_from_x(p2));
+                    const angle = parseFloat((theta2 - theta1));
+                    // use cos theta square between p1 and p2 as uid
+                    const uid = ((p1[0]*p2[0] + p1[1]*p2[1]) ** 2) / ((p1[0]**2 + p1[1]**2) * (p2[0]**2 + p2[1]**2));
 
                     if (
                         theta2 <= theta1 ||
                         angle < Math.pow(10, -tol) ||
-                        // (angle in angle_dict && theta1 >= parseFloat(angle_from_x(angle_dict[angle][0]).toFixed(tol)))
-                        angle in angle_dict
+                        uid in angle_dict
                     ) continue;
 
-                    angle_dict[angle] = [p1, p2];
+                    angle_dict[uid] = [p1, p2, angle];
                 }
             }
         }
 
-        const results = Object.keys(angle_dict).sort((a, b) => parseFloat(a) - parseFloat(b)).map(k => {
-            const [p1, p2] = angle_dict[k];
-            const thetaRad = (parseFloat(k) * Math.PI) / 180;
-            const thetaDeg = parseFloat(k);
+        const results = Object.keys(angle_dict).sort((a, b) => parseFloat(b) - parseFloat(a)).map(k => {
+            const [p1, p2, angle] = angle_dict[k];
+            const thetaRad = (parseFloat(angle) * Math.PI) / 180;
+            const thetaDeg = parseFloat(angle);
             const [i1, j1] = calc_indices(p1, lv1, lv2);
             const [i2, j2] = calc_indices(p2, lv1, lv2);
             return [thetaDeg.toFixed(tol), thetaRad.toFixed(tol), i1, j1, i2, j2];

@@ -7,7 +7,7 @@ from .utils import get_rotation_matrix
 class MoireLattice:
     def __init__(
         self,
-        latticetype:Layer,
+        latticetype: Layer,
         a:int, b:int,
         nx:int=1, ny:int=1,
         pbc:bool=True,
@@ -26,7 +26,7 @@ class MoireLattice:
         beta = np.arccos(c)
         mlv1 = lv1 * a + lv2 * b
         mlv2 = get_rotation_matrix(beta).dot(mlv1)
-        
+
         # the actual theta is the angle between a*lv1 + b*lv2 and b*lv1 + a*lv2
         one = a * lv1 + b * lv2
         two = b * lv1 + a * lv2
@@ -212,7 +212,7 @@ class MoireLattice:
     ):
         if suppress_nxny_warning is False and (self.nx != 1 or self.ny != 1):
             print("WARNING: atleast one of nx and ny are not 1, are you sure you want to use generate_k_space_hamiltonian with this lattice?")
-        
+
         if tll is None or isinstance(tll, int) or isinstance(tll, float): tll = self._validate_input1(tll, "tll")
         if tuu is None or isinstance(tuu, int) or isinstance(tuu, float): tuu = self._validate_input1(tuu, "tuu")
         if tlu is None or isinstance(tlu, int) or isinstance(tlu, float): tlu = self._validate_input1(tlu, "tlu")
@@ -227,7 +227,7 @@ class MoireLattice:
             and callable(tuself)
             and callable(tlself)
         ), "tuu, tll, tlu, tul, tuself and tlself must be floats, ints or callable objects like functions"
-        
+
         part = lambda k, this_coo, neigh_coo: np.exp(1j * (k @ (this_coo.squeeze() - neigh_coo.squeeze())))
         return self.generate_hamiltonian(
             lambda this_coo, neigh_coo, this_type, neigh_type: tll(this_coo, neigh_coo, this_type, neigh_type) * part(k, this_coo, neigh_coo),
@@ -282,6 +282,6 @@ if __name__ == "__main__":
     # lattice.plot_lattice()
 
     ham = lattice.generate_hamiltonian(1, 1, 1, 1, 1, 1)
-    
+
     plt.imshow(ham, cmap="gray")
     plt.show()

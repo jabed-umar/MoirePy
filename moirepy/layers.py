@@ -51,7 +51,7 @@ class Layer:  # parent class
         self.study_proximity = study_proximity
         self.lattice_angle = np.arccos(np.dot(self.lv1, self.lv2) / (np.linalg.norm(self.lv1) * np.linalg.norm(self.lv2)))
 
-    def perform_rotation(self, rot=None) -> None:
+    def perform_rotation(self, rot:float) -> None:
         """
         Rotates the lattice layer and its components by a specified angle.
 
@@ -88,8 +88,8 @@ class Layer:  # parent class
 
     def generate_points(
             self,
-            mlv1: np.array,
-            mlv2: np.array,
+            mlv1: np.ndarray,
+            mlv2: np.ndarray,
             mln1: int = 1,
             mln2: int = 1,
     ) -> None:
@@ -98,8 +98,8 @@ class Layer:  # parent class
         vectors and the number of unit cells along each direction.
 
         Args:
-            mlv1 (np.array): The first Moiré lattice vector.
-            mlv2 (np.array): The second Moiré lattice vector.
+            mlv1 (np.ndarray): The first Moiré lattice vector.
+            mlv2 (np.ndarray): The second Moiré lattice vector.
             mln1 (int, optional): The number of Moiré unit cells
                 along the first lattice vector. Defaults to 1.
             mln2 (int, optional): The number of Moiré unit
@@ -273,7 +273,7 @@ class Layer:  # parent class
         p2 = np.array([v1[0], v1[1]])
         p3 = np.array([v2[0], v2[1]])
         p4 = np.array([v1[0] + v2[0], v1[1] + v2[1]])
-        
+
         shift_dir = -(v1 + v2)
         shift_dir = shift_dir / np.linalg.norm(shift_dir)  # normalize
         shift = shift_dir * self.toll_scale * 1e-4
@@ -671,11 +671,10 @@ class Layer:  # parent class
             - The unit cell grid (if enabled) is displayed as dotted black lines with reduced opacity.
         """
         # plt.figure(figsize=(8, 8))
-        
+
         if len(colours) == 1: cols = {t[-1]:colours[0] for i, t, in enumerate(self.lattice_points)}
         else: cols = {t[-1]:colours[i] for i, t, in enumerate(self.lattice_points)}
-        
-        
+
         plt.scatter(
             [self.points[:, 0]],
             [self.points[:, 1]],
@@ -688,11 +687,11 @@ class Layer:  # parent class
                 for delta in self.neighbours[point_type]:
                     a.append([this[0], this[0] + delta[0]])
                     a.append((this[1], this[1] + delta[1]))
-                    a.append(f"k--")
+                    a.append("k--")
             # a = a[:30]
             # print(a)
             plt.plot(*a, alpha=0.1)
-        
+
         # for x_coord, y_coord, atom_type in self.lattice_points:
         #     plt.scatter([x_coord], [y_coord], s=5)
 
@@ -793,27 +792,6 @@ class TriangularLayer(Layer):
         }
         self.study_proximity = 1
         # study_proximity = 1 means only studying nearest neighbours will be eabled, 2 means study of next nearest neighbours will be enabled too and so on
-        super().__init__(pbc=pbc)  # this has to go at the end
-
-
-class TriangularLayer(Layer):
-    def __init__(self, pbc=False) -> None:
-        self.lv1 = np.array([1, 0])  # Lattice vector in the x-direction
-        self.lv2 = np.array([0.5, np.sqrt(3) / 2])  # Lattice vector at 60 degrees
-        self.lattice_points = (
-            [0, 0, "A"],
-        )
-        self.neighbours = {
-            "A": [
-                [1, 0],  # Right
-                [0.5, np.sqrt(3) / 2],  # Right-up
-                [-0.5, np.sqrt(3) / 2],  # Left-up
-                [-1, 0],  # Left
-                [-0.5, -np.sqrt(3) / 2],  # Left-down
-                [0.5, -np.sqrt(3) / 2],  # Right-down
-            ],
-        }
-        self.study_proximity = 1
         super().__init__(pbc=pbc)  # this has to go at the end
 
 
