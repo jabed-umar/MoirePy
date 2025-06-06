@@ -105,6 +105,7 @@
 
 
 
+
   <div class="doc doc-children">
 
 
@@ -126,6 +127,7 @@
 
 
     <div class="doc doc-contents ">
+
 
 
 
@@ -872,7 +874,11 @@
 <span class="normal">743</span>
 <span class="normal">744</span>
 <span class="normal">745</span>
-<span class="normal">746</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Layer</span><span class="p">:</span>  <span class="c1"># parent class</span>
+<span class="normal">746</span>
+<span class="normal">747</span>
+<span class="normal">748</span>
+<span class="normal">749</span>
+<span class="normal">750</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Layer</span><span class="p">:</span>  <span class="c1"># parent class</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pbc</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">study_proximity</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initializes the Layer object</span>
@@ -910,13 +916,14 @@
 <span class="sd">                &quot;&quot;&quot;</span>  <span class="c1"># @jabed add link to documentation we will write this</span>
             <span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">rot_m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rot_m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>  <span class="c1"># will be replaced if called perform_rotation</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pbc</span> <span class="o">=</span> <span class="n">pbc</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">points</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">kdtree</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">study_proximity</span> <span class="o">=</span> <span class="n">study_proximity</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lattice_angle</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lv1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lv2</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lv1</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lv2</span><span class="p">)))</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">perform_rotation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rot</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">perform_rotation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rot</span><span class="p">:</span><span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Rotates the lattice layer and its components by a specified angle.</span>
 
@@ -953,18 +960,18 @@
 
     <span class="k">def</span><span class="w"> </span><span class="nf">generate_points</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
-            <span class="n">mlv1</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">,</span>
-            <span class="n">mlv2</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">,</span>
+            <span class="n">mlv1</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+            <span class="n">mlv2</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
             <span class="n">mln1</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-            <span class="n">mln2</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>  <span class="c1"># bring_to_center = False</span>
+            <span class="n">mln2</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Generates points for a Moiré lattice based on the given lattice</span>
 <span class="sd">        vectors and the number of unit cells along each direction.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            mlv1 (np.array): The first Moiré lattice vector.</span>
-<span class="sd">            mlv2 (np.array): The second Moiré lattice vector.</span>
+<span class="sd">            mlv1 (np.ndarray): The first Moiré lattice vector.</span>
+<span class="sd">            mlv2 (np.ndarray): The second Moiré lattice vector.</span>
 <span class="sd">            mln1 (int, optional): The number of Moiré unit cells</span>
 <span class="sd">                along the first lattice vector. Defaults to 1.</span>
 <span class="sd">            mln2 (int, optional): The number of Moiré unit</span>
@@ -1139,9 +1146,13 @@
         <span class="n">p3</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">v2</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">v2</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
         <span class="n">p4</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">v1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">v2</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">v1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">v2</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
 
+        <span class="n">shift_dir</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="n">v1</span> <span class="o">+</span> <span class="n">v2</span><span class="p">)</span>
+        <span class="n">shift_dir</span> <span class="o">=</span> <span class="n">shift_dir</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">shift_dir</span><span class="p">)</span>  <span class="c1"># normalize</span>
+        <span class="n">shift</span> <span class="o">=</span> <span class="n">shift_dir</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">toll_scale</span> <span class="o">*</span> <span class="mf">1e-4</span>
+
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inside_polygon</span><span class="p">(</span>
             <span class="n">points</span><span class="p">,</span>
-            <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">,</span> <span class="n">p4</span><span class="p">,</span> <span class="n">p3</span><span class="p">])</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">toll_scale</span> <span class="o">*</span> <span class="mf">1e-4</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">,</span> <span class="n">p4</span><span class="p">,</span> <span class="n">p3</span><span class="p">])</span> <span class="o">+</span> <span class="n">shift</span>
         <span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">generate_kdtree</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -1192,7 +1203,7 @@
             <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">neigh_pad_1</span><span class="p">)</span> <span class="o">*</span> <span class="n">v1</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">neigh_pad_2</span><span class="p">)</span> <span class="o">*</span> <span class="n">v2</span><span class="p">,</span>
             <span class="p">(</span><span class="o">-</span><span class="n">neigh_pad_1</span><span class="p">)</span> <span class="o">*</span> <span class="n">v1</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">neigh_pad_2</span><span class="p">)</span> <span class="o">*</span> <span class="n">v2</span><span class="p">,</span>
         <span class="p">]))</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">mask</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">mask</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="c1"># print(mask.shape, mask.dtype)</span>
         <span class="n">points</span> <span class="o">=</span> <span class="n">all_points</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
         <span class="n">point_names</span> <span class="o">=</span> <span class="n">all_point_names</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bigger_points</span> <span class="o">=</span> <span class="n">points</span>
@@ -1536,7 +1547,6 @@
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">colours</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span> <span class="n">cols</span> <span class="o">=</span> <span class="p">{</span><span class="n">t</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span><span class="n">colours</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lattice_points</span><span class="p">)}</span>
         <span class="k">else</span><span class="p">:</span> <span class="n">cols</span> <span class="o">=</span> <span class="p">{</span><span class="n">t</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span><span class="n">colours</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lattice_points</span><span class="p">)}</span>
 
-
         <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
             <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]],</span>
             <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]],</span>
@@ -1549,7 +1559,7 @@
                 <span class="k">for</span> <span class="n">delta</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">neighbours</span><span class="p">[</span><span class="n">point_type</span><span class="p">]:</span>
                     <span class="n">a</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">this</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">this</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">delta</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
                     <span class="n">a</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">this</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">this</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">delta</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
-                    <span class="n">a</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;k--&quot;</span><span class="p">)</span>
+                    <span class="n">a</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;k--&quot;</span><span class="p">)</span>
             <span class="c1"># a = a[:30]</span>
             <span class="c1"># print(a)</span>
             <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
@@ -1592,12 +1602,12 @@
         <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Y Coordinate&quot;</span><span class="p">)</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s2">&quot;equal&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">__init_subclass__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init_subclass__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="n">required_attrs</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;lv1&quot;</span><span class="p">,</span> <span class="s2">&quot;lv2&quot;</span><span class="p">,</span> <span class="s2">&quot;lattice_points&quot;</span><span class="p">,</span> <span class="s2">&quot;neighbours&quot;</span><span class="p">,</span> <span class="s2">&quot;study_proximity&quot;</span><span class="p">]</span>
-        <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">required_attrs</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Subclass </span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> must define &#39;</span><span class="si">{</span><span class="n">attr</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+    <span class="c1"># def __init_subclass__(cls, **kwargs):</span>
+    <span class="c1">#     super().__init_subclass__(**kwargs)</span>
+    <span class="c1">#     required_attrs = [&quot;lv1&quot;, &quot;lv2&quot;, &quot;lattice_points&quot;, &quot;neighbours&quot;, &quot;study_proximity&quot;]</span>
+    <span class="c1">#     for attr in required_attrs:</span>
+    <span class="c1">#         if not hasattr(cls, attr):</span>
+    <span class="c1">#             raise TypeError(f&quot;Subclass {cls.__name__} must define &#39;{attr}&#39;&quot;)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">(</span>
@@ -1651,7 +1661,7 @@
         <ul class="first simple">
             <li>
               <b><code>pbc</code></b>
-                  (<code>bool</code>, default:
+                  (<code><span title="bool">bool</span></code>, default:
                       <code>False</code>
 )
               –
@@ -1662,7 +1672,7 @@
             </li>
             <li>
               <b><code>study_proximity</code></b>
-                  (<code>int</code>, default:
+                  (<code><span title="int">int</span></code>, default:
                       <code>1</code>
 )
               –
@@ -1692,7 +1702,7 @@ Defaults to 1.</p>
       <td class="field-body">
         <ul class="first simple">
             <li>
-                  <code>ValueError</code>
+                  <code><span title="ValueError">ValueError</span></code>
               –
               <div class="doc-md-description">
                 <p>If <code>lv1</code> is not along the x-axis
@@ -1707,6 +1717,7 @@ or if <code>lv2</code> has a negative y-component.</p>
 <pre><code class="language-python">layer = Layer(pbc=True, study_proximity=2)
 Create a Layer object with PBC and study of second nearest neighbours
 </code></pre>
+
 
             <details class="quote">
               <summary>Source code in <code>moirepy/layers.py</code></summary>
@@ -1751,7 +1762,8 @@ Create a Layer object with PBC and study of second nearest neighbours
 <span class="normal">48</span>
 <span class="normal">49</span>
 <span class="normal">50</span>
-<span class="normal">51</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pbc</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">study_proximity</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">51</span>
+<span class="normal">52</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pbc</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">study_proximity</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Initializes the Layer object</span>
 
@@ -1788,723 +1800,12 @@ Create a Layer object with PBC and study of second nearest neighbours
 <span class="sd">            &quot;&quot;&quot;</span>  <span class="c1"># @jabed add link to documentation we will write this</span>
         <span class="p">)</span>
 
-    <span class="bp">self</span><span class="o">.</span><span class="n">rot_m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">rot_m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>  <span class="c1"># will be replaced if called perform_rotation</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">pbc</span> <span class="o">=</span> <span class="n">pbc</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">points</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">kdtree</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">study_proximity</span> <span class="o">=</span> <span class="n">study_proximity</span>
-</code></pre></div></td></tr></table></div>
-            </details>
-    </div>
-
-</div>
-
-<div class="doc doc-object doc-function">
-
-
-<h3 id="moirepy.layers.Layer._generate_mapping" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">_generate_mapping</span><span class="p">()</span></code>
-
-</h3>
-
-
-    <div class="doc doc-contents ">
-
-        <p>Generates a mapping between two sets of points (larger and smaller lattices) based on their positions
-and computes the distances between corresponding points. If the distance between a point in the larger lattice
-and its nearest neighbor in the smaller lattice exceeds a specified tolerance, it raises a <code>ValueError</code> and plots
-the lattice points for visualization.</p>
-<p>This function uses a KDTree to find the nearest neighbor in the smaller lattice for each point in the larger lattice.
-It stores the resulting mappings in the <code>self.mappings</code> dictionary, where keys are indices in <code>self.bigger_points</code>
-and values are the corresponding indices in <code>self.points</code>.</p>
-
-
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-      <th class="field-name">Raises:</th>
-      <td class="field-body">
-        <ul class="first simple">
-            <li>
-                  <code>ValueError</code>
-              –
-              <div class="doc-md-description">
-                <p>If the distance between a point and its nearest neighbor exceeds the tolerance defined by <code>self.toll_scale</code>.</p>
-              </div>
-            </li>
-        </ul>
-      </td>
-    </tr>
-  </tbody>
-</table>        <p>Example:</p>
-<pre><code class="language-python">my_lattice._generate_mapping()
-</code></pre>
-<p>The function performs the following steps:
-1. Initializes an empty dictionary <code>self.mappings</code>.
-2. Uses a KDTree to query the neighbors for each point in the larger lattice (<code>self.bigger_points</code>).
-3. Computes the translation needed for each point based on a lattice scaling factor.
-4. If the distance between the corresponding points exceeds the tolerance, it raises a <code>ValueError</code> and plots the points.
-5. Stores the index mappings of the larger lattice points to smaller lattice points in <code>self.mappings</code>.
-6. The lattice plots show the parallelograms formed by <code>mlv1</code> and <code>mlv2</code> vectors for visualization.</p>
-
-
-<details class="note" open>
-  <summary>Note</summary>
-  <ul>
-<li>The function assumes <code>self.points</code> and <code>self.bigger_points</code>
-are defined as numpy arrays with the coordinates of the points in the lattices.</li>
-<li>The translations used in the function are calculated based on <code>mln1</code>, <code>mln2</code>,
-<code>mlv1</code>, and <code>mlv2</code>, which define the lattice scaling and vectors.</li>
-</ul>
-</details>
-            <details class="quote">
-              <summary>Source code in <code>moirepy/layers.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">363</span>
-<span class="normal">364</span>
-<span class="normal">365</span>
-<span class="normal">366</span>
-<span class="normal">367</span>
-<span class="normal">368</span>
-<span class="normal">369</span>
-<span class="normal">370</span>
-<span class="normal">371</span>
-<span class="normal">372</span>
-<span class="normal">373</span>
-<span class="normal">374</span>
-<span class="normal">375</span>
-<span class="normal">376</span>
-<span class="normal">377</span>
-<span class="normal">378</span>
-<span class="normal">379</span>
-<span class="normal">380</span>
-<span class="normal">381</span>
-<span class="normal">382</span>
-<span class="normal">383</span>
-<span class="normal">384</span>
-<span class="normal">385</span>
-<span class="normal">386</span>
-<span class="normal">387</span>
-<span class="normal">388</span>
-<span class="normal">389</span>
-<span class="normal">390</span>
-<span class="normal">391</span>
-<span class="normal">392</span>
-<span class="normal">393</span>
-<span class="normal">394</span>
-<span class="normal">395</span>
-<span class="normal">396</span>
-<span class="normal">397</span>
-<span class="normal">398</span>
-<span class="normal">399</span>
-<span class="normal">400</span>
-<span class="normal">401</span>
-<span class="normal">402</span>
-<span class="normal">403</span>
-<span class="normal">404</span>
-<span class="normal">405</span>
-<span class="normal">406</span>
-<span class="normal">407</span>
-<span class="normal">408</span>
-<span class="normal">409</span>
-<span class="normal">410</span>
-<span class="normal">411</span>
-<span class="normal">412</span>
-<span class="normal">413</span>
-<span class="normal">414</span>
-<span class="normal">415</span>
-<span class="normal">416</span>
-<span class="normal">417</span>
-<span class="normal">418</span>
-<span class="normal">419</span>
-<span class="normal">420</span>
-<span class="normal">421</span>
-<span class="normal">422</span>
-<span class="normal">423</span>
-<span class="normal">424</span>
-<span class="normal">425</span>
-<span class="normal">426</span>
-<span class="normal">427</span>
-<span class="normal">428</span>
-<span class="normal">429</span>
-<span class="normal">430</span>
-<span class="normal">431</span>
-<span class="normal">432</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">_generate_mapping</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Generates a mapping between two sets of points (larger and smaller lattices) based on their positions</span>
-<span class="sd">    and computes the distances between corresponding points. If the distance between a point in the larger lattice</span>
-<span class="sd">    and its nearest neighbor in the smaller lattice exceeds a specified tolerance, it raises a `ValueError` and plots</span>
-<span class="sd">    the lattice points for visualization.</span>
-
-<span class="sd">    This function uses a KDTree to find the nearest neighbor in the smaller lattice for each point in the larger lattice.</span>
-<span class="sd">    It stores the resulting mappings in the `self.mappings` dictionary, where keys are indices in `self.bigger_points`</span>
-<span class="sd">    and values are the corresponding indices in `self.points`.</span>
-
-<span class="sd">    Raises:</span>
-<span class="sd">        ValueError: If the distance between a point and its nearest neighbor exceeds the tolerance defined by `self.toll_scale`.</span>
-
-<span class="sd">    Example:</span>
-<span class="sd">    ```python</span>
-<span class="sd">    my_lattice._generate_mapping()</span>
-<span class="sd">    ```</span>
-<span class="sd">    The function performs the following steps:</span>
-<span class="sd">    1. Initializes an empty dictionary `self.mappings`.</span>
-<span class="sd">    2. Uses a KDTree to query the neighbors for each point in the larger lattice (`self.bigger_points`).</span>
-<span class="sd">    3. Computes the translation needed for each point based on a lattice scaling factor.</span>
-<span class="sd">    4. If the distance between the corresponding points exceeds the tolerance, it raises a `ValueError` and plots the points.</span>
-<span class="sd">    5. Stores the index mappings of the larger lattice points to smaller lattice points in `self.mappings`.</span>
-<span class="sd">    6. The lattice plots show the parallelograms formed by `mlv1` and `mlv2` vectors for visualization.</span>
-
-<span class="sd">    Note:</span>
-<span class="sd">        - The function assumes `self.points` and `self.bigger_points`</span>
-<span class="sd">        are defined as numpy arrays with the coordinates of the points in the lattices.</span>
-<span class="sd">        - The translations used in the function are calculated based on `mln1`, `mln2`,</span>
-<span class="sd">        `mlv1`, and `mlv2`, which define the lattice scaling and vectors.</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">mappings</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="n">tree</span> <span class="o">=</span> <span class="n">KDTree</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">)</span>
-    <span class="n">translations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_point_positions</span><span class="p">(</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">bigger_points</span><span class="p">,</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">mln1</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">mlv1</span><span class="p">,</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">mln2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">mlv2</span>
-    <span class="p">)</span>
-    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">translations</span><span class="p">):</span>
-        <span class="n">point</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bigger_points</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="n">dx</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">mlv1</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">mln1</span> <span class="o">+</span> <span class="n">dy</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">mlv2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">mln2</span><span class="p">)</span>
-        <span class="n">distance</span><span class="p">,</span> <span class="n">index</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">point</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">distance</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">toll_scale</span> <span class="o">*</span> <span class="mf">1e-3</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Distance </span><span class="si">{</span><span class="n">distance</span><span class="si">}</span><span class="s2"> exceeds tolerance for point </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> at location </span><span class="si">{</span><span class="n">point</span><span class="si">}</span><span class="s2"> with translation (</span><span class="si">{</span><span class="n">dx</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">dy</span><span class="si">}</span><span class="s2">).&quot;</span><span class="p">)</span>
-            <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">bigger_points</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="s2">&quot;ko&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
-            <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="s2">&quot;k.&quot;</span><span class="p">)</span>
-            <span class="c1"># plt.plot(*self.bigger_points[i], &quot;b.&quot;)</span>
-            <span class="c1"># plt.plot(*point, &quot;r.&quot;)</span>
-            <span class="c1"># plt.plot(*self.points[index], &quot;g.&quot;)</span>
-            <span class="c1"># parallellogram around the whole lattice</span>
-            <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mln1</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">mlv1</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mln1</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">mlv1</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-            <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mln2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">mlv2</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mln2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">mlv2</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-            <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">mln1</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">mlv1</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">mln1</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">mlv1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">mln2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">mlv2</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">mln1</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">mlv1</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">mln1</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">mlv1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">mln2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">mlv2</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-            <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">mln2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">mlv2</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">mln1</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">mlv1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">mln2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">mlv2</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">mln2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">mlv2</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">mln1</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">mlv1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">mln2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">mlv2</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-
-            <span class="c1"># just plot mlv1 and mlv2 parallellogram</span>
-            <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mlv1</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mlv1</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-            <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mlv2</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mlv2</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-            <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">mlv1</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">mlv1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">mlv2</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">mlv1</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">mlv1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">mlv2</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-            <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">mlv2</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">mlv1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">mlv2</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span>            <span class="n">mlv2</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">mlv1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">mlv2</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-            <span class="c1"># for index, point in enumerate(self.bigger_points):</span>
-            <span class="c1">#     plt.text(*point, f&quot;{index}&quot;, fontsize=6)</span>
-            <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">add_patch</span><span class="p">(</span><span class="n">plt</span><span class="o">.</span><span class="n">Circle</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">distance</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
-
-            <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
-            <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;FATAL ERROR: Distance </span><span class="si">{</span><span class="n">distance</span><span class="si">}</span><span class="s2"> exceeds tolerance for point </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> at location </span><span class="si">{</span><span class="n">point</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">mappings</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">index</span>
-</code></pre></div></td></tr></table></div>
-            </details>
-    </div>
-
-</div>
-
-<div class="doc doc-object doc-function">
-
-
-<h3 id="moirepy.layers.Layer._inside_boundaries" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">_inside_boundaries</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">mln1</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mln2</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
-
-</h3>
-
-
-    <div class="doc doc-contents ">
-
-        <p>Determines if the given points lie within the boundaries of the Moiré lattice pattern.</p>
-
-
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-      <th class="field-name">Parameters:</th>
-      <td class="field-body">
-        <ul class="first simple">
-            <li>
-              <b><code>points</code></b>
-                  (<code><span title="numpy.ndarray">ndarray</span></code>)
-              –
-              <div class="doc-md-description">
-                <p>Array of points to check.</p>
-              </div>
-            </li>
-            <li>
-              <b><code>mln1</code></b>
-                  (<code>int</code>, default:
-                      <code>None</code>
-)
-              –
-              <div class="doc-md-description">
-                <p>The number of unit cells along the first direction.
-Defaults to the object's current value.</p>
-              </div>
-            </li>
-            <li>
-              <b><code>mln2</code></b>
-                  (<code>int</code>, default:
-                      <code>None</code>
-)
-              –
-              <div class="doc-md-description">
-                <p>The number of unit cells along the second direction.
-Defaults to the object's current value.</p>
-              </div>
-            </li>
-        </ul>
-      </td>
-    </tr>
-  </tbody>
-</table>
-
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-      <th class="field-name">Returns:</th>
-      <td class="field-body">
-        <ul class="first simple">
-            <li>
-                  <code><span title="numpy.ndarray">ndarray</span></code>
-              –
-              <div class="doc-md-description">
-                <p>np.ndarray: A boolean array where True indicates that
-the point is within the boundaries of the lattice.</p>
-              </div>
-            </li>
-        </ul>
-      </td>
-    </tr>
-  </tbody>
-</table>
-
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-      <th class="field-name">Raises:</th>
-      <td class="field-body">
-        <ul class="first simple">
-            <li>
-                  <code>ValueError</code>
-              –
-              <div class="doc-md-description">
-                <p>If the points array has an invalid shape.</p>
-              </div>
-            </li>
-        </ul>
-      </td>
-    </tr>
-  </tbody>
-</table>        <p>Example:</p>
-<pre><code class="language-python">points = np.array([[0.5, 0.5], [2, 2], [-1, -1]])
-lattice_boundaries = _inside_boundaries(points, mln1=3, mln2=3)
-print(lattice_boundaries)
-</code></pre>
-
-            <details class="quote">
-              <summary>Source code in <code>moirepy/layers.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">243</span>
-<span class="normal">244</span>
-<span class="normal">245</span>
-<span class="normal">246</span>
-<span class="normal">247</span>
-<span class="normal">248</span>
-<span class="normal">249</span>
-<span class="normal">250</span>
-<span class="normal">251</span>
-<span class="normal">252</span>
-<span class="normal">253</span>
-<span class="normal">254</span>
-<span class="normal">255</span>
-<span class="normal">256</span>
-<span class="normal">257</span>
-<span class="normal">258</span>
-<span class="normal">259</span>
-<span class="normal">260</span>
-<span class="normal">261</span>
-<span class="normal">262</span>
-<span class="normal">263</span>
-<span class="normal">264</span>
-<span class="normal">265</span>
-<span class="normal">266</span>
-<span class="normal">267</span>
-<span class="normal">268</span>
-<span class="normal">269</span>
-<span class="normal">270</span>
-<span class="normal">271</span>
-<span class="normal">272</span>
-<span class="normal">273</span>
-<span class="normal">274</span>
-<span class="normal">275</span>
-<span class="normal">276</span>
-<span class="normal">277</span>
-<span class="normal">278</span>
-<span class="normal">279</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">_inside_boundaries</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">mln1</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mln2</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Determines if the given points lie within the boundaries of the Moiré lattice pattern.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        points (np.ndarray): Array of points to check.</span>
-<span class="sd">        mln1 (int, optional): The number of unit cells along the first direction.</span>
-<span class="sd">            Defaults to the object&#39;s current value.</span>
-<span class="sd">        mln2 (int, optional): The number of unit cells along the second direction.</span>
-<span class="sd">            Defaults to the object&#39;s current value.</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        np.ndarray: A boolean array where True indicates that</span>
-<span class="sd">            the point is within the boundaries of the lattice.</span>
-
-<span class="sd">    Raises:</span>
-<span class="sd">        ValueError: If the points array has an invalid shape.</span>
-
-<span class="sd">    Example:</span>
-<span class="sd">    ```python</span>
-<span class="sd">    points = np.array([[0.5, 0.5], [2, 2], [-1, -1]])</span>
-<span class="sd">    lattice_boundaries = _inside_boundaries(points, mln1=3, mln2=3)</span>
-<span class="sd">    print(lattice_boundaries)</span>
-<span class="sd">    ```</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">v1</span> <span class="o">=</span> <span class="p">(</span><span class="n">mln1</span> <span class="k">if</span> <span class="n">mln1</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">mln1</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">mlv1</span>
-    <span class="n">v2</span> <span class="o">=</span> <span class="p">(</span><span class="n">mln2</span> <span class="k">if</span> <span class="n">mln2</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">mln2</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">mlv2</span>
-
-    <span class="n">p1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
-    <span class="n">p2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">v1</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">v1</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
-    <span class="n">p3</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">v2</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">v2</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
-    <span class="n">p4</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">v1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">v2</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">v1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">v2</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
-
-    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inside_polygon</span><span class="p">(</span>
-        <span class="n">points</span><span class="p">,</span>
-        <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">,</span> <span class="n">p4</span><span class="p">,</span> <span class="n">p3</span><span class="p">])</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">toll_scale</span> <span class="o">*</span> <span class="mf">1e-4</span>
-    <span class="p">)</span>
-</code></pre></div></td></tr></table></div>
-            </details>
-    </div>
-
-</div>
-
-<div class="doc doc-object doc-function">
-
-
-<h3 id="moirepy.layers.Layer._inside_polygon" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">_inside_polygon</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">polygon</span><span class="p">)</span></code>
-
-</h3>
-
-
-    <div class="doc doc-contents ">
-
-        <p>Determines if each point is inside a polygon using the ray-casting method.</p>
-
-
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-      <th class="field-name">Parameters:</th>
-      <td class="field-body">
-        <ul class="first simple">
-            <li>
-              <b><code>points</code></b>
-                  (<code><span title="numpy.ndarray">ndarray</span></code>)
-              –
-              <div class="doc-md-description">
-                <p>Array of points to check.</p>
-              </div>
-            </li>
-            <li>
-              <b><code>polygon</code></b>
-                  (<code><span title="numpy.ndarray">ndarray</span></code>)
-              –
-              <div class="doc-md-description">
-                <p>Vertices of the polygon to
-test against, in counterclockwise order.</p>
-              </div>
-            </li>
-        </ul>
-      </td>
-    </tr>
-  </tbody>
-</table>
-
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-      <th class="field-name">Returns:</th>
-      <td class="field-body">
-        <ul class="first simple">
-            <li>
-                  <code><span title="numpy.ndarray">ndarray</span></code>
-              –
-              <div class="doc-md-description">
-                <p>np.ndarray: A boolean array where True indicates
-that the point is inside the polygon.</p>
-              </div>
-            </li>
-        </ul>
-      </td>
-    </tr>
-  </tbody>
-</table>        <p>Example:</p>
-<pre><code class="language-python">points = np.array([[0.5, 0.5], [1, 1], [-1, -1]])
-polygon = np.array([[0, 0], [1, 0], [1, 1], [0, 1]])
-inside = _inside_polygon(points, polygon)
-print(inside)
-</code></pre>
-
-            <details class="quote">
-              <summary>Source code in <code>moirepy/layers.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">211</span>
-<span class="normal">212</span>
-<span class="normal">213</span>
-<span class="normal">214</span>
-<span class="normal">215</span>
-<span class="normal">216</span>
-<span class="normal">217</span>
-<span class="normal">218</span>
-<span class="normal">219</span>
-<span class="normal">220</span>
-<span class="normal">221</span>
-<span class="normal">222</span>
-<span class="normal">223</span>
-<span class="normal">224</span>
-<span class="normal">225</span>
-<span class="normal">226</span>
-<span class="normal">227</span>
-<span class="normal">228</span>
-<span class="normal">229</span>
-<span class="normal">230</span>
-<span class="normal">231</span>
-<span class="normal">232</span>
-<span class="normal">233</span>
-<span class="normal">234</span>
-<span class="normal">235</span>
-<span class="normal">236</span>
-<span class="normal">237</span>
-<span class="normal">238</span>
-<span class="normal">239</span>
-<span class="normal">240</span>
-<span class="normal">241</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">_inside_polygon</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">polygon</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Determines if each point is inside a polygon using the ray-casting method.</span>
-
-
-<span class="sd">    Args:</span>
-<span class="sd">        points (np.ndarray): Array of points to check.</span>
-<span class="sd">        polygon (np.ndarray): Vertices of the polygon to</span>
-<span class="sd">            test against, in counterclockwise order.</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        np.ndarray: A boolean array where True indicates</span>
-<span class="sd">            that the point is inside the polygon.</span>
-
-<span class="sd">    Example:</span>
-<span class="sd">    ```python</span>
-<span class="sd">    points = np.array([[0.5, 0.5], [1, 1], [-1, -1]])</span>
-<span class="sd">    polygon = np.array([[0, 0], [1, 0], [1, 1], [0, 1]])</span>
-<span class="sd">    inside = _inside_polygon(points, polygon)</span>
-<span class="sd">    print(inside)</span>
-<span class="sd">    ```</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">points</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">points</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
-    <span class="n">px</span><span class="p">,</span> <span class="n">py</span> <span class="o">=</span> <span class="n">polygon</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">polygon</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
-    <span class="n">px_next</span><span class="p">,</span> <span class="n">py_next</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">px</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">py</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">edge_cond</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">py</span><span class="p">,</span> <span class="n">py_next</span><span class="p">))</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">y</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">py</span><span class="p">,</span> <span class="n">py_next</span><span class="p">))</span>
-    <span class="k">with</span> <span class="n">np</span><span class="o">.</span><span class="n">errstate</span><span class="p">(</span><span class="n">divide</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">,</span> <span class="n">invalid</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">):</span>
-        <span class="n">xinters</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">py</span> <span class="o">!=</span> <span class="n">py_next</span><span class="p">,</span> <span class="p">(</span><span class="n">y</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">-</span> <span class="n">py</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">px_next</span> <span class="o">-</span> <span class="n">px</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">py_next</span> <span class="o">-</span> <span class="n">py</span><span class="p">)</span> <span class="o">+</span> <span class="n">px</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">)</span>
-    <span class="n">ray_crosses</span> <span class="o">=</span> <span class="n">edge_cond</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">x</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">xinters</span><span class="p">)</span>
-    <span class="n">inside</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">ray_crosses</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">1</span>
-    <span class="k">return</span> <span class="n">inside</span>  <span class="c1"># mask</span>
-</code></pre></div></td></tr></table></div>
-            </details>
-    </div>
-
-</div>
-
-<div class="doc doc-object doc-function">
-
-
-<h3 id="moirepy.layers.Layer._point_positions" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">_point_positions</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">)</span></code>
-
-</h3>
-
-
-    <div class="doc doc-contents ">
-
-        <p>Determines the position of each point relative to a parallelogram defined by vectors A and B.</p>
-
-
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-      <th class="field-name">Parameters:</th>
-      <td class="field-body">
-        <ul class="first simple">
-            <li>
-              <b><code>points</code></b>
-                  (<code><span title="numpy.ndarray">ndarray</span></code>)
-              –
-              <div class="doc-md-description">
-                <p>Array of points to be analyzed.</p>
-              </div>
-            </li>
-            <li>
-              <b><code>A</code></b>
-                  (<code><span title="numpy.ndarray">ndarray</span></code>)
-              –
-              <div class="doc-md-description">
-                <p>The first vector of the parallelogram.</p>
-              </div>
-            </li>
-            <li>
-              <b><code>B</code></b>
-                  (<code><span title="numpy.ndarray">ndarray</span></code>)
-              –
-              <div class="doc-md-description">
-                <p>The second vector of the parallelogram.</p>
-              </div>
-            </li>
-        </ul>
-      </td>
-    </tr>
-  </tbody>
-</table>
-
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-      <th class="field-name">Returns:</th>
-      <td class="field-body">
-        <ul class="first simple">
-            <li>
-                  <code><span title="numpy.ndarray">ndarray</span></code>
-              –
-              <div class="doc-md-description">
-                <p>np.ndarray: An array indicating the position of each point:
-- (0, 0) for points inside the parallelogram.
-- (-1, 1) or (1, -1) for points outside on specific sides.
-left side and right side will give -1 and 1 respectively
-top side and bottom side will give -1 and 1 respectively</p>
-              </div>
-            </li>
-        </ul>
-      </td>
-    </tr>
-  </tbody>
-</table>        <p>Example:</p>
-<pre><code class="language-python">points = np.array([[0, 0], [1, 1], [-1, -1]])
-A = np.array([1, 0])
-B = np.array([0, 1])
-positions = _point_positions(points, A, B)
-print(positions)
-</code></pre>
-
-            <details class="quote">
-              <summary>Source code in <code>moirepy/layers.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">174</span>
-<span class="normal">175</span>
-<span class="normal">176</span>
-<span class="normal">177</span>
-<span class="normal">178</span>
-<span class="normal">179</span>
-<span class="normal">180</span>
-<span class="normal">181</span>
-<span class="normal">182</span>
-<span class="normal">183</span>
-<span class="normal">184</span>
-<span class="normal">185</span>
-<span class="normal">186</span>
-<span class="normal">187</span>
-<span class="normal">188</span>
-<span class="normal">189</span>
-<span class="normal">190</span>
-<span class="normal">191</span>
-<span class="normal">192</span>
-<span class="normal">193</span>
-<span class="normal">194</span>
-<span class="normal">195</span>
-<span class="normal">196</span>
-<span class="normal">197</span>
-<span class="normal">198</span>
-<span class="normal">199</span>
-<span class="normal">200</span>
-<span class="normal">201</span>
-<span class="normal">202</span>
-<span class="normal">203</span>
-<span class="normal">204</span>
-<span class="normal">205</span>
-<span class="normal">206</span>
-<span class="normal">207</span>
-<span class="normal">208</span>
-<span class="normal">209</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">_point_positions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">A</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">B</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Determines the position of each point relative to a parallelogram defined by vectors A and B.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        points (np.ndarray): Array of points to be analyzed.</span>
-<span class="sd">        A (np.ndarray): The first vector of the parallelogram.</span>
-<span class="sd">        B (np.ndarray): The second vector of the parallelogram.</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        np.ndarray: An array indicating the position of each point:</span>
-<span class="sd">            - (0, 0) for points inside the parallelogram.</span>
-<span class="sd">            - (-1, 1) or (1, -1) for points outside on specific sides.</span>
-<span class="sd">            left side and right side will give -1 and 1 respectively</span>
-<span class="sd">            top side and bottom side will give -1 and 1 respectively</span>
-
-<span class="sd">    Example:</span>
-<span class="sd">    ```python</span>
-<span class="sd">    points = np.array([[0, 0], [1, 1], [-1, -1]])</span>
-<span class="sd">    A = np.array([1, 0])</span>
-<span class="sd">    B = np.array([0, 1])</span>
-<span class="sd">    positions = _point_positions(points, A, B)</span>
-<span class="sd">    print(positions)</span>
-<span class="sd">    ```</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Compute determinants for positions relative to OA and BC</span>
-    <span class="n">det_OA</span> <span class="o">=</span> <span class="p">(</span><span class="n">points</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">A</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">points</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">A</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">toll_scale</span> <span class="o">*</span> <span class="mf">1e-2</span>
-    <span class="n">det_BC</span> <span class="o">=</span> <span class="p">((</span><span class="n">points</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">B</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="n">A</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="n">points</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">B</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="n">A</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">toll_scale</span> <span class="o">*</span> <span class="mf">1e-2</span>
-    <span class="n">position_y</span> <span class="o">=</span> <span class="n">det_OA</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span> <span class="o">+</span> <span class="n">det_BC</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
-
-    <span class="c1"># Compute determinants for positions relative to OB and AC</span>
-    <span class="n">det_OB</span> <span class="o">=</span> <span class="p">(</span><span class="n">points</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">B</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">points</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">B</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&gt;</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">toll_scale</span> <span class="o">*</span> <span class="mf">1e-2</span>
-    <span class="n">det_AC</span> <span class="o">=</span> <span class="p">((</span><span class="n">points</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">A</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="n">B</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="n">points</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">A</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="n">B</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&gt;</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">toll_scale</span> <span class="o">*</span> <span class="mf">1e-2</span>
-    <span class="n">position_x</span> <span class="o">=</span> <span class="n">det_OB</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span> <span class="o">+</span> <span class="n">det_AC</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">((</span><span class="n">position_x</span><span class="p">,</span> <span class="n">position_y</span><span class="p">))</span> <span class="o">-</span> <span class="mi">1</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">lattice_angle</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lv1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lv2</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lv1</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lv2</span><span class="p">)))</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -2552,14 +1853,10 @@ Example:
 </code></pre>
 <p>```</p>
 
+
             <details class="quote">
               <summary>Source code in <code>moirepy/layers.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">456</span>
-<span class="normal">457</span>
-<span class="normal">458</span>
-<span class="normal">459</span>
-<span class="normal">460</span>
-<span class="normal">461</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">461</span>
 <span class="normal">462</span>
 <span class="normal">463</span>
 <span class="normal">464</span>
@@ -2614,7 +1911,12 @@ Example:
 <span class="normal">513</span>
 <span class="normal">514</span>
 <span class="normal">515</span>
-<span class="normal">516</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">first_nearest_neighbours</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">types</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+<span class="normal">516</span>
+<span class="normal">517</span>
+<span class="normal">518</span>
+<span class="normal">519</span>
+<span class="normal">520</span>
+<span class="normal">521</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">first_nearest_neighbours</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">types</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Finds the first nearest neighbors for each point in the given array.</span>
 
@@ -2732,7 +2034,7 @@ a KDTree for spatial queries.</p>
       <td class="field-body">
         <ul class="first simple">
             <li>
-                  <code>ValueError</code>
+                  <code><span title="ValueError">ValueError</span></code>
               –
               <div class="doc-md-description">
                 <p>If the points in the lattice are not defined.</p>
@@ -2749,14 +2051,10 @@ kdtree = lattice.kdtree
 print(kdtree)
 </code></pre>
 
+
             <details class="quote">
               <summary>Source code in <code>moirepy/layers.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">281</span>
-<span class="normal">282</span>
-<span class="normal">283</span>
-<span class="normal">284</span>
-<span class="normal">285</span>
-<span class="normal">286</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">286</span>
 <span class="normal">287</span>
 <span class="normal">288</span>
 <span class="normal">289</span>
@@ -2831,7 +2129,12 @@ print(kdtree)
 <span class="normal">358</span>
 <span class="normal">359</span>
 <span class="normal">360</span>
-<span class="normal">361</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">generate_kdtree</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">361</span>
+<span class="normal">362</span>
+<span class="normal">363</span>
+<span class="normal">364</span>
+<span class="normal">365</span>
+<span class="normal">366</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">generate_kdtree</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generates a KDTree for spatial queries of points in the Moiré lattice.</span>
 <span class="sd">    If PBC is enabled, additional points outside the primary unit cell are</span>
@@ -2879,7 +2182,7 @@ print(kdtree)
         <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">neigh_pad_1</span><span class="p">)</span> <span class="o">*</span> <span class="n">v1</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">neigh_pad_2</span><span class="p">)</span> <span class="o">*</span> <span class="n">v2</span><span class="p">,</span>
         <span class="p">(</span><span class="o">-</span><span class="n">neigh_pad_1</span><span class="p">)</span> <span class="o">*</span> <span class="n">v1</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">neigh_pad_2</span><span class="p">)</span> <span class="o">*</span> <span class="n">v2</span><span class="p">,</span>
     <span class="p">]))</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">mask</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">mask</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="c1"># print(mask.shape, mask.dtype)</span>
     <span class="n">points</span> <span class="o">=</span> <span class="n">all_points</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
     <span class="n">point_names</span> <span class="o">=</span> <span class="n">all_point_names</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">bigger_points</span> <span class="o">=</span> <span class="n">points</span>
@@ -2945,7 +2248,7 @@ vectors and the number of unit cells along each direction.</p>
         <ul class="first simple">
             <li>
               <b><code>mlv1</code></b>
-                  (<code><span title="numpy.array">array</span></code>)
+                  (<code><span title="numpy.ndarray">ndarray</span></code>)
               –
               <div class="doc-md-description">
                 <p>The first Moiré lattice vector.</p>
@@ -2953,7 +2256,7 @@ vectors and the number of unit cells along each direction.</p>
             </li>
             <li>
               <b><code>mlv2</code></b>
-                  (<code><span title="numpy.array">array</span></code>)
+                  (<code><span title="numpy.ndarray">ndarray</span></code>)
               –
               <div class="doc-md-description">
                 <p>The second Moiré lattice vector.</p>
@@ -2961,7 +2264,7 @@ vectors and the number of unit cells along each direction.</p>
             </li>
             <li>
               <b><code>mln1</code></b>
-                  (<code>int</code>, default:
+                  (<code><span title="int">int</span></code>, default:
                       <code>1</code>
 )
               –
@@ -2972,7 +2275,7 @@ along the first lattice vector. Defaults to 1.</p>
             </li>
             <li>
               <b><code>mln2</code></b>
-                  (<code>int</code>, default:
+                  (<code><span title="int">int</span></code>, default:
                       <code>1</code>
 )
               –
@@ -3028,7 +2331,7 @@ cells along the second lattice vector. Defaults to 1.</p>
       <td class="field-body">
         <ul class="first simple">
             <li>
-                  <code>ValueError</code>
+                  <code><span title="ValueError">ValueError</span></code>
               –
               <div class="doc-md-description">
                 <p>If the number of unit cells is non-positive.</p>
@@ -3044,10 +2347,10 @@ lattice.generate_points(np.array([1, 0]), np.array([0.5, np.sqrt(3)/2]), mln1=3,
 print(lattice.points)
 </code></pre>
 
+
             <details class="quote">
               <summary>Source code in <code>moirepy/layers.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 88</span>
-<span class="normal"> 89</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 89</span>
 <span class="normal"> 90</span>
 <span class="normal"> 91</span>
 <span class="normal"> 92</span>
@@ -3130,20 +2433,21 @@ print(lattice.points)
 <span class="normal">169</span>
 <span class="normal">170</span>
 <span class="normal">171</span>
-<span class="normal">172</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">generate_points</span><span class="p">(</span>
+<span class="normal">172</span>
+<span class="normal">173</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">generate_points</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">mlv1</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">,</span>
-        <span class="n">mlv2</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">,</span>
+        <span class="n">mlv1</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+        <span class="n">mlv2</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
         <span class="n">mln1</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-        <span class="n">mln2</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>  <span class="c1"># bring_to_center = False</span>
+        <span class="n">mln2</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generates points for a Moiré lattice based on the given lattice</span>
 <span class="sd">    vectors and the number of unit cells along each direction.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        mlv1 (np.array): The first Moiré lattice vector.</span>
-<span class="sd">        mlv2 (np.array): The second Moiré lattice vector.</span>
+<span class="sd">        mlv1 (np.ndarray): The first Moiré lattice vector.</span>
+<span class="sd">        mlv2 (np.ndarray): The second Moiré lattice vector.</span>
 <span class="sd">        mln1 (int, optional): The number of Moiré unit cells</span>
 <span class="sd">            along the first lattice vector. Defaults to 1.</span>
 <span class="sd">        mln2 (int, optional): The number of Moiré unit</span>
@@ -3225,7 +2529,7 @@ print(lattice.points)
 
 
 <h3 id="moirepy.layers.Layer.perform_rotation" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">perform_rotation</span><span class="p">(</span><span class="n">rot</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">perform_rotation</span><span class="p">(</span><span class="n">rot</span><span class="p">)</span></code>
 
 </h3>
 
@@ -3247,9 +2551,7 @@ print(lattice.points)
         <ul class="first simple">
             <li>
               <b><code>rot</code></b>
-                  (<code>float</code>, default:
-                      <code>None</code>
-)
+                  (<code><span title="float">float</span></code>)
               –
               <div class="doc-md-description">
                 <p>The rotation angle in radians. Default to <code>None</code>.</p>
@@ -3293,10 +2595,10 @@ print(lattice.points)
 <pre><code class="language-python">layer.perform_rotation(np.pi/4)
 </code></pre>
 
+
             <details class="quote">
               <summary>Source code in <code>moirepy/layers.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">53</span>
-<span class="normal">54</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">54</span>
 <span class="normal">55</span>
 <span class="normal">56</span>
 <span class="normal">57</span>
@@ -3328,7 +2630,8 @@ print(lattice.points)
 <span class="normal">83</span>
 <span class="normal">84</span>
 <span class="normal">85</span>
-<span class="normal">86</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">perform_rotation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rot</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">86</span>
+<span class="normal">87</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">perform_rotation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rot</span><span class="p">:</span><span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Rotates the lattice layer and its components by a specified angle.</span>
 
@@ -3394,7 +2697,7 @@ print(lattice.points)
         <ul class="first simple">
             <li>
               <b><code>plot_connections</code></b>
-                  (<code>bool</code>, default:
+                  (<code><span title="bool">bool</span></code>, default:
                       <code>True</code>
 )
               –
@@ -3405,7 +2708,7 @@ Defaults to True.</p>
             </li>
             <li>
               <b><code>plot_unit_cell</code></b>
-                  (<code>bool</code>, default:
+                  (<code><span title="bool">bool</span></code>, default:
                       <code>False</code>
 )
               –
@@ -3442,14 +2745,10 @@ Defaults to False.</p>
 <li>The unit cell grid (if enabled) is displayed as dotted black lines with reduced opacity.</li>
 </ul>
 </details>
+
             <details class="quote">
               <summary>Source code in <code>moirepy/layers.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">641</span>
-<span class="normal">642</span>
-<span class="normal">643</span>
-<span class="normal">644</span>
-<span class="normal">645</span>
-<span class="normal">646</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">646</span>
 <span class="normal">647</span>
 <span class="normal">648</span>
 <span class="normal">649</span>
@@ -3530,7 +2829,11 @@ Defaults to False.</p>
 <span class="normal">724</span>
 <span class="normal">725</span>
 <span class="normal">726</span>
-<span class="normal">727</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">plot_lattice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plot_connections</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">plot_unit_cell</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">colours</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="s2">&quot;g&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">,</span> <span class="s2">&quot;m&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="s2">&quot;k&quot;</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">727</span>
+<span class="normal">728</span>
+<span class="normal">729</span>
+<span class="normal">730</span>
+<span class="normal">731</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">plot_lattice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plot_connections</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">plot_unit_cell</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">colours</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="s2">&quot;g&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">,</span> <span class="s2">&quot;m&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="s2">&quot;k&quot;</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Plots the lattice points and optionally the connections between them and the unit cell structure.</span>
 
@@ -3562,7 +2865,6 @@ Defaults to False.</p>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">colours</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span> <span class="n">cols</span> <span class="o">=</span> <span class="p">{</span><span class="n">t</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span><span class="n">colours</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lattice_points</span><span class="p">)}</span>
     <span class="k">else</span><span class="p">:</span> <span class="n">cols</span> <span class="o">=</span> <span class="p">{</span><span class="n">t</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span><span class="n">colours</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lattice_points</span><span class="p">)}</span>
 
-
     <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
         <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]],</span>
         <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]],</span>
@@ -3575,7 +2877,7 @@ Defaults to False.</p>
             <span class="k">for</span> <span class="n">delta</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">neighbours</span><span class="p">[</span><span class="n">point_type</span><span class="p">]:</span>
                 <span class="n">a</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">this</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">this</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">delta</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
                 <span class="n">a</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">this</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">this</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">delta</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
-                <span class="n">a</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;k--&quot;</span><span class="p">)</span>
+                <span class="n">a</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;k--&quot;</span><span class="p">)</span>
         <span class="c1"># a = a[:30]</span>
         <span class="c1"># print(a)</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
@@ -3657,7 +2959,7 @@ Defaults to False.</p>
             </li>
             <li>
               <b><code>k</code></b>
-                  (<code>int</code>, default:
+                  (<code><span title="int">int</span></code>, default:
                       <code>1</code>
 )
               –
@@ -3708,21 +3010,21 @@ in <code>self.points</code>. If PBC is enabled, the indices are remapped using <
       <td class="field-body">
         <ul class="first simple">
             <li>
-                  <code>AssertionError</code>
+                  <code><span title="AssertionError">AssertionError</span></code>
               –
               <div class="doc-md-description">
                 <p>If <code>self.kdtree</code> is not initialized.</p>
               </div>
             </li>
             <li>
-                  <code>RuntimeError</code>
+                  <code><span title="RuntimeError">RuntimeError</span></code>
               –
               <div class="doc-md-description">
                 <p>If PBC is enabled and the mapping process fails.</p>
               </div>
             </li>
             <li>
-                  <code>RuntimeError</code>
+                  <code><span title="RuntimeError">RuntimeError</span></code>
               –
               <div class="doc-md-description">
                 <p>If there are uneven row lengths in the returned arrays due to inconsistent filtering.</p>
@@ -3748,14 +3050,10 @@ to periodic boundary conditions.</li>
 &gt;&gt;&gt; distances, indices = layer.query(points, k=2)
 </code></pre>
 
+
             <details class="quote">
               <summary>Source code in <code>moirepy/layers.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">518</span>
-<span class="normal">519</span>
-<span class="normal">520</span>
-<span class="normal">521</span>
-<span class="normal">522</span>
-<span class="normal">523</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">523</span>
 <span class="normal">524</span>
 <span class="normal">525</span>
 <span class="normal">526</span>
@@ -3829,7 +3127,12 @@ to periodic boundary conditions.</li>
 <span class="normal">594</span>
 <span class="normal">595</span>
 <span class="normal">596</span>
-<span class="normal">597</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+<span class="normal">597</span>
+<span class="normal">598</span>
+<span class="normal">599</span>
+<span class="normal">600</span>
+<span class="normal">601</span>
+<span class="normal">602</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Queries the KDTree for the nearest neighbors of given points and applies PBC if enabled.</span>
 
@@ -3949,7 +3252,7 @@ to periodic boundary conditions.</li>
             </li>
             <li>
               <b><code>k</code></b>
-                  (<code>int</code>, default:
+                  (<code><span title="int">int</span></code>, default:
                       <code>1</code>
 )
               –
@@ -4005,14 +3308,10 @@ Defaults to 1.</p>
 &gt;&gt;&gt; distances, indices = layer.query_non_self(points, k=2)
 </code></pre>
 
+
             <details class="quote">
               <summary>Source code in <code>moirepy/layers.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">599</span>
-<span class="normal">600</span>
-<span class="normal">601</span>
-<span class="normal">602</span>
-<span class="normal">603</span>
-<span class="normal">604</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">604</span>
 <span class="normal">605</span>
 <span class="normal">606</span>
 <span class="normal">607</span>
@@ -4047,7 +3346,12 @@ Defaults to 1.</p>
 <span class="normal">636</span>
 <span class="normal">637</span>
 <span class="normal">638</span>
-<span class="normal">639</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">query_non_self</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+<span class="normal">639</span>
+<span class="normal">640</span>
+<span class="normal">641</span>
+<span class="normal">642</span>
+<span class="normal">643</span>
+<span class="normal">644</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">query_non_self</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Queries the KDTree for the k nearest neighbors of given points, excluding the point itself.</span>
 

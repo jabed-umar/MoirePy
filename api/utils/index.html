@@ -105,6 +105,7 @@
 
 
 
+
   <div class="doc doc-children">
 
 
@@ -141,7 +142,7 @@
         <ul class="first simple">
             <li>
               <b><code>theta_rad</code></b>
-                  (<code>float</code>)
+                  (<code><span title="float">float</span></code>)
               –
               <div class="doc-md-description">
                 <p>The rotation angle in radians.</p>
@@ -164,10 +165,10 @@
       <td class="field-body">
         <ul class="first simple">
             <li>
-                  <code><span title="numpy.array">array</span></code>
+                  <code><span title="numpy.ndarray">ndarray</span></code>
               –
               <div class="doc-md-description">
-                <p>np.array: A 2x2 rotation matrix that rotates a point
+                <p>np.ndarray: A 2x2 rotation matrix that rotates a point
 counterclockwise by <code>theta_rad</code>.</p>
               </div>
             </li>
@@ -179,6 +180,7 @@ counterclockwise by <code>theta_rad</code>.</p>
 array([[ 6.123234e-17, -1.000000e+00],
        [ 1.000000e+00,  6.123234e-17]])
 </code></pre>
+
 
             <details class="quote">
               <summary>Source code in <code>moirepy/utils.py</code></summary>
@@ -204,7 +206,7 @@ array([[ 6.123234e-17, -1.000000e+00],
 <span class="normal">23</span>
 <span class="normal">24</span>
 <span class="normal">25</span>
-<span class="normal">26</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_rotation_matrix</span><span class="p">(</span><span class="n">theta_rad</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">:</span>
+<span class="normal">26</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_rotation_matrix</span><span class="p">(</span><span class="n">theta_rad</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes a 2D rotation matrix for a given angle.</span>
 
@@ -212,7 +214,7 @@ array([[ 6.123234e-17, -1.000000e+00],
 <span class="sd">        theta_rad (float): The rotation angle in radians.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        np.array: A 2x2 rotation matrix that rotates a point</span>
+<span class="sd">        np.ndarray: A 2x2 rotation matrix that rotates a point</span>
 <span class="sd">            counterclockwise by `theta_rad`.</span>
 
 <span class="sd">    ```python</span>
