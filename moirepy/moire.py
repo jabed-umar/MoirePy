@@ -1,15 +1,17 @@
-from typing import Union, Callable
+from typing import Union, Callable, Sequence
 import numpy as np
 from .layers import Layer
 import matplotlib.pyplot as plt
-from .utils import get_rotation_matrix
+from .utils import get_rotation_matrix, are_coeffs_integers
 
-class MoireLattice:
+class BilayerMoireLattice:  # both layers same, only one point in one unit cell
     def __init__(
         self,
         latticetype: Layer,
-        a:int, b:int,
+        ll1:int, ll2:int,  # lower lattice
+        ul1:int, ul2:int,  # upper lattice
         nx:int=1, ny:int=1,
+        translate_upper=(0, 0),
         pbc:bool=True,
         k:int=1,  # number of orbitals
     ):
@@ -21,29 +23,35 @@ class MoireLattice:
 
         lv1, lv2 = lower_lattice.lv1, lower_lattice.lv2
 
-        # c = cos(theta) between lv1 and lv2
+        # c = cos(theta) between lv1 and lv2 (60 degree for triangular, 90 for square and so on)
         c = np.dot(lv1, lv2) / (np.linalg.norm(lv1) * np.linalg.norm(lv2))
         beta = np.arccos(c)
-        mlv1 = lv1 * a + lv2 * b
+        mlv1 = ll1*lv1 + ll2*lv2  # because lower latice is fixed
         mlv2 = get_rotation_matrix(beta).dot(mlv1)
 
-        # the actual theta is the angle between a*lv1 + b*lv2 and b*lv1 + a*lv2
-        one = a * lv1 + b * lv2
-        two = b * lv1 + a * lv2
+        # calculating the moire twist angle
+        one = ll1*lv1 + ll2*lv2  # the coords of overlapping point in the lower lattice
+        two = ul1*lv1 + ul2*lv2  # the coords of overlapping point in the upper lattice
+        assert np.isclose(np.linalg.norm(one), np.linalg.norm(two)), "INPUT ERROR: the two points are not overlapping, check ll1, ll2, ul1, ul2 values"
         c = np.dot(one, two) / (np.linalg.norm(one) * np.linalg.norm(two))
         theta = np.arccos(c)  # in radians
-        print(f"theta = {theta:.4f} rad ({np.rad2deg(theta):.4f} deg)")
+        print(f"twist angle = {theta:.4f} rad ({np.rad2deg(theta):.4f} deg)")
 
-        upper_lattice.perform_rotation(theta)
-
+        upper_lattice.perform_rotation_translation(theta, translate_upper)
+        assert (
+            are_coeffs_integers(lower_lattice.lv1, lower_lattice.lv2, mlv1) and
+            are_coeffs_integers(upper_lattice.lv1, upper_lattice.lv2, mlv1)
+        ), "FATAL ERROR: calculated mlv2 is incorrect"
         lower_lattice.generate_points(mlv1, mlv2, nx, ny)
-        # return
         upper_lattice.generate_points(mlv1, mlv2, nx, ny)
 
-        self.a = a
-        self.b = b
+        self.ll1 = ll1
+        self.ll2 = ll2
+        self.ul1 = ul1
+        self.ul2 = ul2
         self.nx = nx
         self.ny = ny
+        self.translate_upper = translate_upper
         self.lower_lattice = lower_lattice
         self.upper_lattice = upper_lattice
         self.theta = theta
@@ -54,6 +62,7 @@ class MoireLattice:
 
         print(f"{len(self.lower_lattice.points)} points in lower lattice")
         print(f"{len(self.upper_lattice.points)} points in upper lattice")
+        assert len(self.lower_lattice.points) == len(self.upper_lattice.points), "FATAL ERROR: number of points in lower and upper lattice are not equal, take different ll1, ll2, ul1, ul2 values"
 
         # self.plot_lattice()
 
@@ -102,12 +111,12 @@ class MoireLattice:
 
     def generate_hamiltonian(
         self,
-        tll: Union[float, int, Callable[[float], float]] = None,
-        tuu: Union[float, int, Callable[[float], float]] = None,
-        tlu: Union[float, int, Callable[[float], float]] = None,
-        tul: Union[float, int, Callable[[float], float]] = None,
-        tuself: Union[float, int, Callable[[float], float]] = None,
-        tlself: Union[float, int, Callable[[float], float]] = None,
+        tll: Union[float, int, Callable[[Sequence[float], Sequence[float], str, str], float]] = None,
+        tuu: Union[float, int, Callable[[Sequence[float], Sequence[float], str, str], float]] = None,
+        tlu: Union[float, int, Callable[[Sequence[float], Sequence[float], str, str], float]] = None,
+        tul: Union[float, int, Callable[[Sequence[float], Sequence[float], str, str], float]] = None,
+        tuself: Union[float, int, Callable[[Sequence[float], str], float]] = None,
+        tlself: Union[float, int, Callable[[Sequence[float], str], float]] = None,
         data_type: np.dtype = np.float64,  # set to np.complex128 if you want complex numbers
     ):
         k = self.orbitals
@@ -202,12 +211,12 @@ class MoireLattice:
     def generate_k_space_hamiltonian(
         self,
         k: np.ndarray,
-        tll: Union[float, int, Callable[[float], float]] = None,
-        tuu: Union[float, int, Callable[[float], float]] = None,
-        tlu: Union[float, int, Callable[[float], float]] = None,
-        tul: Union[float, int, Callable[[float], float]] = None,
-        tuself: Union[float, int, Callable[[float], float]] = None,
-        tlself: Union[float, int, Callable[[float], float]] = None,
+        tll: Union[float, int, Callable[[Sequence[float], Sequence[float], str, str], float]] = None,
+        tuu: Union[float, int, Callable[[Sequence[float], Sequence[float], str, str], float]] = None,
+        tlu: Union[float, int, Callable[[Sequence[float], Sequence[float], str, str], float]] = None,
+        tul: Union[float, int, Callable[[Sequence[float], Sequence[float], str, str], float]] = None,
+        tuself: Union[float, int, Callable[[Sequence[float], str], float]] = None,
+        tlself: Union[float, int, Callable[[Sequence[float], str], float]] = None,
         suppress_nxny_warning: bool = False,
     ):
         if suppress_nxny_warning is False and (self.nx != 1 or self.ny != 1):
@@ -237,6 +246,21 @@ class MoireLattice:
             tuself, tlself,
             data_type=np.complex128
         )
+
+
+
+class BilayerMPMoireLattice(BilayerMoireLattice):
+    def __init__(
+        self,
+        latticetype: Layer,
+        ll1:int, ll2:int,  # lower lattice
+        ul1:int, ul2:int,  # upper lattice
+        nx:int=1, ny:int=1,
+        translate_upper=(0, 0),
+        pbc:bool=True,
+        k:int=1,  # number of orbitals
+    ):
+        pass
 
 
 

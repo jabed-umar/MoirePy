@@ -1,4 +1,7 @@
-from .moire import MoireLattice
+from .moire import (
+    BilayerMoireLattice,
+    
+)
 from .layers import (
     Layer,
     SquareLayer,

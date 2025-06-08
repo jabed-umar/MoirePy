@@ -66,7 +66,7 @@
 
 # Angle Value Calculator
 
-The **Moiré Angle Calculator** finds all possible commensurate angles between two stacked lattices by trimming both layers within a given radius and checking for periodic overlaps. For each valid angle, it returns not just the angle itself, but also the corresponding lattice coordinates: `nx1, ny1` (from the lower lattice) and `nx2, ny2` (from the upper one). Since most angles are irrational and can't be precisely represented, the rotation is defined using these coordinate pairs instead — they mark the overlapping points between the two lattices. Once you've selected an angle from the list, just copy the `nx1, ny1, nx2, ny2` values into your code — the system will figure out the rotation angle from that. For the logic behind how angles are identified, see the [Angle Calculation Process](angle_calculation_process.md).
+The **Moiré Angle Calculator** finds all possible commensurate angles between two stacked lattices by trimming both layers within a given radius and checking for periodic overlaps. For each valid angle, it returns not just the angle itself, but also the corresponding lattice coordinates: `ll1, ll2` (from the lower lattice) and `ul1, ul2` (from the upper one). Since most angles are irrational and can't be precisely represented, the rotation is defined using these coordinate pairs instead — they mark the overlapping points between the two lattices. Once you've selected an angle from the list, just copy the `ll1, ll2, ul1, ul2` values into your code — the system will figure out the rotation angle from that. For the logic behind how angles are identified, see the [Angle Calculation Process](angle_calculation_process.md).
 
 ## Guidelines
 
@@ -107,12 +107,6 @@ The **Moiré Angle Calculator** finds all possible commensurate angles between t
 
     </ul>
 </details>
-
-
-
-
-
-
 
 
 
@@ -166,16 +160,19 @@ The **Moiré Angle Calculator** finds all possible commensurate angles between t
 
 
 
+**Note:** The last column (number of points per unit cell in the moire lattice) is just an estimate. The actual value might differ by a couple of units.
+
 <table id="results-table">
     <thead>
         <tr>
             <th></th>
             <th>angle (deg)</th>
             <th>angle (rad)</th>
-            <th>nx1</th>
-            <th>ny1</th>
-            <th>nx2</th>
-            <th>ny2</th>
+            <th>ll1</th>
+            <th>ll2</th>
+            <th>ul1</th>
+            <th>ul2</th>
+            <th>points/cell</th>
         </tr>
     </thead>
     <tbody id="results-body">
@@ -185,6 +182,16 @@ The **Moiré Angle Calculator** finds all possible commensurate angles between t
 </div>
 
 <!-- <script src="assets/script_find_theta.js"></script> -->
+
+
+
+
+
+
+
+
+
+
 
 
 <script>
@@ -227,11 +234,29 @@ The **Moiré Angle Calculator** finds all possible commensurate angles between t
         }
     }
 
+    function gcd(x, y) {
+        if (y === 0) return x;
+        else return gcd(y, x % y);
+    }
 
-    // function gcd(x, y) {
-    //     if (y === 0) return x;
-    //     else return gcd(y, x % y);
-    // }
+    function angleId(p1, p2) {
+        // Dot product
+        const dot = p1[0] * p2[0] + p1[1] * p2[1];
+        const dotSq = dot * dot;
+
+        // Norms squared
+        const norm1Sq = p1[0] ** 2 + p1[1] ** 2;
+        const norm2Sq = p2[0] ** 2 + p2[1] ** 2;
+        const denom = norm1Sq * norm2Sq;
+
+        // Reduce the fraction dotSq / denom
+        const commonDivisor = gcd(dotSq, denom);
+        const num = dotSq / commonDivisor;
+        const den = denom / commonDivisor;
+
+        // Return as a string ID
+        return `${num}/${den}`;
+    }
 
     function calculate() {
         const radius = parseInt(document.getElementById("radius").value);
@@ -350,7 +375,7 @@ The **Moiré Angle Calculator** finds all possible commensurate angles between t
                     const theta2 = parseFloat(angle_from_x(p2));
                     const angle = parseFloat((theta2 - theta1));
                     // use cos theta square between p1 and p2 as uid
-                    const uid = ((p1[0]*p2[0] + p1[1]*p2[1]) ** 2) / ((p1[0]**2 + p1[1]**2) * (p2[0]**2 + p2[1]**2));
+                    const uid = angleId(p1, p2);
 
                     if (
                         theta2 <= theta1 ||
@@ -363,13 +388,16 @@ The **Moiré Angle Calculator** finds all possible commensurate angles between t
             }
         }
 
-        const results = Object.keys(angle_dict).sort((a, b) => parseFloat(b) - parseFloat(a)).map(k => {
-            const [p1, p2, angle] = angle_dict[k];
+        const results = Object.entries(angle_dict)
+        .sort(([, a], [, b]) => parseFloat(a[2]) - parseFloat(b[2]))  // ascending by angle
+        .map(([k, [p1, p2, angle]]) => {
             const thetaRad = (parseFloat(angle) * Math.PI) / 180;
             const thetaDeg = parseFloat(angle);
             const [i1, j1] = calc_indices(p1, lv1, lv2);
             const [i2, j2] = calc_indices(p2, lv1, lv2);
-            return [thetaDeg.toFixed(tol), thetaRad.toFixed(tol), i1, j1, i2, j2];
+            const num_pts =   (p1[0] * p1[0] + p1[1] * p1[1]) * 1
+                            + (p2[0] * p2[0] + p2[1] * p2[1]) * 1;
+            return [thetaDeg.toFixed(tol), thetaRad.toFixed(tol), i2, j2, i1, j1, num_pts];
         });
 
         return results;

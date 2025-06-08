@@ -51,12 +51,15 @@ class Layer:  # parent class
         self.study_proximity = study_proximity
         self.lattice_angle = np.arccos(np.dot(self.lv1, self.lv2) / (np.linalg.norm(self.lv1) * np.linalg.norm(self.lv2)))
 
-    def perform_rotation(self, rot:float) -> None:
+    def perform_rotation_translation(self, rot:float, translation:Tuple[float, float]=(0, 0)) -> None:
         """
-        Rotates the lattice layer and its components by a specified angle.
+        Rotates and translates the lattice layer and its components. Has to be applied before point generation.
 
         Args:
             rot (float): The rotation angle in radians. Default to `None`.
+            translation (Tuple[float, float]): The translation vector (dx, dy) for each point on the lattice.
+                new position = old position + translation
+                translation will be applied after the rotation
 
         Returns:
             None: The function modifies the rotation matrix
@@ -64,11 +67,14 @@ class Layer:  # parent class
 
         Example:
         ```python
-        layer.perform_rotation(np.pi/4)
+        layer.perform_rotation_translation(np.pi/4, (1, 1))
         ```
         """
+        assert self.points is None, "Cannot perform rotation and translation after points have been generated."
+        
         rot_m = get_rotation_matrix(rot)
         self.rot_m = rot_m
+        translation = rot_m @ np.array(translation)
 
         # Rotate lv1 and lv2 vectors
         self.lv1 = rot_m @ self.lv1
@@ -76,7 +82,7 @@ class Layer:  # parent class
 
         # Rotate lattice_points
         self.lattice_points = [
-            [*(rot_m @ np.array([x, y])), atom_type]
+            [*(rot_m @ np.array([x, y]) + translation), atom_type]
             for x, y, atom_type in self.lattice_points
         ]
 
@@ -85,6 +91,7 @@ class Layer:  # parent class
             atom_type: [rot_m @ np.array(neighbour) for neighbour in neighbour_list]
             for atom_type, neighbour_list in self.neighbours.items()
         }
+        
 
     def generate_points(
             self,
