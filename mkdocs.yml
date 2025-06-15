@@ -17,8 +17,8 @@ plugins:
           options:
             show_source: true
 
-# extra_css:
-#   - assets/style_find_theta.css
+extra_css:
+  - assets/style.css
 
 # extra_javascript:
 #   - assets/script_find_theta.js

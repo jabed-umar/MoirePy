@@ -68,13 +68,13 @@
 
 The **Moiré Angle Calculator** finds all possible commensurate angles between two stacked lattices by trimming both layers within a given radius and checking for periodic overlaps. For each valid angle, it returns not just the angle itself, but also the corresponding lattice coordinates: `ll1, ll2` (from the lower lattice) and `ul1, ul2` (from the upper one). Since most angles are irrational and can't be precisely represented, the rotation is defined using these coordinate pairs instead — they mark the overlapping points between the two lattices. Once you've selected an angle from the list, just copy the `ll1, ll2, ul1, ul2` values into your code — the system will figure out the rotation angle from that. For the logic behind how angles are identified, see the [Angle Calculation Process](angle_calculation_process.md).
 
+
 ## Guidelines
 
 <details>
     <summary>Click to Expand</summary>
 
     <ul>
-
         <li>
             A <strong>radius</strong> must be specified to define the extent of the circular region centered at the origin. This radius will be used to truncate both the upper and lower lattices.
         </li>
@@ -85,17 +85,16 @@ The **Moiré Angle Calculator** finds all possible commensurate angles between t
                 <li>Triangular on triangular lattices</li>
                 <li>Square on square lattices</li>
                 <li>
-                    A <strong>custom mode</strong> is available, allowing the input of arbitrary lattice vectors for each layer. Please note that this mode is experimental and its reliability is <strong>not guaranteed</strong>. Potential issues may include:
+                    A <strong>custom mode</strong> is available, allowing the input of arbitrary lattice vectors for each layer. Please note that this mode is experimental and its <strong>reliability is NOT guaranteed</strong>. Potential issues may include:
                     <ul>
                         <li>Erroneous or nonsensical output.</li>
-                        <li>Unresponsiveness or crashing of the user interface.</li>
+                        <li>Unresponsiveness or infinite loops.</li>
                         <li>Unexpected program behavior.</li>
                     </ul>
-                    However, if you believe that your specific configuration (as detailed in <a href="angle_calculation_process.md">Angle Calculation Process</a>) <em>should</em> yield meaningful results, the following these patterns <em>might</em> be considered:
+                    However, if you believe that your specific configuration (as detailed in <a href="angle_calculation_process.md">Angle Calculation Process</a>) <em>should</em> yield meaningful results, then following these patterns <em>might</em> be considered:
                     <ol>
                         <li>Both lattice angles are exact divisors of 360°.</li>
-                        <li>Both layers possess identical lattice vectors.</li>
-                        <li>If the second condition is not met, at least one layer's vectors are integer multiples of the other.</li>
+                        <li>One of them should exactly divide the other.</li>
                     </ol>
                     Even under these conditions, there is <strong>no assurance</strong> that the calculated angles will be accurate or relevant. Use this feature at your own discretion.
                 </li>
@@ -160,7 +159,7 @@ The **Moiré Angle Calculator** finds all possible commensurate angles between t
 
 
 
-**Note:** The last column (number of points per unit cell in the moire lattice) is just an estimate. The actual value might differ by a couple of units.
+**Note:** The last column (number of points per unit cell in the moire lattice) has been calculated assuming only one point per unit cell. If you are using lattices which have multiple points per unit cell like hexagonal (2) or kagome (3), multiply this value by the number of points per unit cell in your lattice to get the actual number of points in the moire lattice.
 
 <table id="results-table">
     <thead>
@@ -395,8 +394,7 @@ The **Moiré Angle Calculator** finds all possible commensurate angles between t
             const thetaDeg = parseFloat(angle);
             const [i1, j1] = calc_indices(p1, lv1, lv2);
             const [i2, j2] = calc_indices(p2, lv1, lv2);
-            const num_pts =   (p1[0] * p1[0] + p1[1] * p1[1]) * 1
-                            + (p2[0] * p2[0] + p2[1] * p2[1]) * 1;
+            const num_pts =   2*(p1[0] * p1[0] + p1[1] * p1[1]) * 1;  // 1 for one point per unit cell
             return [thetaDeg.toFixed(tol), thetaRad.toFixed(tol), i2, j2, i1, j1, num_pts];
         });
 
