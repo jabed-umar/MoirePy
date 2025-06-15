@@ -37,4 +37,4 @@ Here, \( h_{LL} \) and \( h_{UU} \) are the *first-quantized* \( n \times n \) H
 
 1. Neil Ashcroft, and David Mermin, Solid State Physics, Saunders College Publishing, 1976.
 
-2. H. Bruus and K. Flensberg, Many-Body Quantum Theory in Condensed Matter Physics: An Introduction, OUP publication, 2004.
+2. H. Bruus and K. Flensberg, Many-Body Quantum Theory in Condensed Matter Physics: An Introduction, OUP Oxford, 2004.

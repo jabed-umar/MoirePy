@@ -42,7 +42,7 @@ These angles correspond to commensurate alignments between the two lattices, yie
 In commensurate moiré superlattices, specific periodic points exist where atoms from the top and bottom layers align exactly. To analyze these alignments, let $\vec{a}_1$, $\vec{b}_1$ and $\vec{m}_1$, $\vec{n}_1$ denote the primitive lattice vectors of the lower and upper layers, respectively. The atomic positions in each layer are given by:
 
 $$
-\vec{R}^1_{p,q} = a\vec{a}_1 + b\vec{b}_1 \quad \text{and} \quad
+\vec{R}^1_{a, b} = a\vec{a}_1 + b\vec{b}_1 \quad \text{and} \quad
 \vec{R}^2_{m,n} = R(\theta)(m\vec{m}_1 + n\vec{n}_1), \quad a, b, m, n \in \mathbb{Z}
 $$
 
