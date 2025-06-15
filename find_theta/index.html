@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
         <link href="../assets/_mkdocstrings.css" rel="stylesheet" />
+        <link href="../assets/style.css" rel="stylesheet" />
     
       <script>
         // Current page data
@@ -60,6 +61,10 @@
               </ul>
               <ul>
                 <li class="toctree-l1"><a class="reference internal" href="../angle_calculation_process/">Angle calculation Process</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../tight_binding_ham/">Tight Binding Hamiltonian Construction</a>
                 </li>
               </ul>
               <p class="caption"><span class="caption-text">API Reference</span></p>
@@ -160,7 +165,6 @@
     <summary>Click to Expand</summary>
 
     <ul>
-
         <li>
             A <strong>radius</strong> must be specified to define the extent of the circular region centered at the origin. This radius will be used to truncate both the upper and lower lattices.
         </li>
@@ -171,17 +175,16 @@
                 <li>Triangular on triangular lattices</li>
                 <li>Square on square lattices</li>
                 <li>
-                    A <strong>custom mode</strong> is available, allowing the input of arbitrary lattice vectors for each layer. Please note that this mode is experimental and its reliability is <strong>not guaranteed</strong>. Potential issues may include:
+                    A <strong>custom mode</strong> is available, allowing the input of arbitrary lattice vectors for each layer. Please note that this mode is experimental and its <strong>reliability is NOT guaranteed</strong>. Potential issues may include:
                     <ul>
                         <li>Erroneous or nonsensical output.</li>
-                        <li>Unresponsiveness or crashing of the user interface.</li>
+                        <li>Unresponsiveness or infinite loops.</li>
                         <li>Unexpected program behavior.</li>
                     </ul>
-                    However, if you believe that your specific configuration (as detailed in <a href="angle_calculation_process.md">Angle Calculation Process</a>) <em>should</em> yield meaningful results, the following these patterns <em>might</em> be considered:
+                    However, if you believe that your specific configuration (as detailed in <a href="angle_calculation_process.md">Angle Calculation Process</a>) <em>should</em> yield meaningful results, then following these patterns <em>might</em> be considered:
                     <ol>
                         <li>Both lattice angles are exact divisors of 360°.</li>
-                        <li>Both layers possess identical lattice vectors.</li>
-                        <li>If the second condition is not met, at least one layer's vectors are integer multiples of the other.</li>
+                        <li>One of them should exactly divide the other.</li>
                     </ol>
                     Even under these conditions, there is <strong>no assurance</strong> that the calculated angles will be accurate or relevant. Use this feature at your own discretion.
                 </li>
@@ -240,7 +243,7 @@
     <button onclick="calculate()">CALCULATE</button>
 </div>
 
-<p><strong>Note:</strong> The last column (number of points per unit cell in the moire lattice) is just an estimate. The actual value might differ by a couple of units.</p>
+<p><strong>Note:</strong> The last column (number of points per unit cell in the moire lattice) has been calculated assuming only one point per unit cell. If you are using lattices which have multiple points per unit cell like hexagonal (2) or kagome (3), multiply this value by the number of points per unit cell in your lattice to get the actual number of points in the moire lattice.</p>
 <table id="results-table">
     <thead>
         <tr>
@@ -462,8 +465,7 @@
             const thetaDeg = parseFloat(angle);
             const [i1, j1] = calc_indices(p1, lv1, lv2);
             const [i2, j2] = calc_indices(p2, lv1, lv2);
-            const num_pts =   (p1[0] * p1[0] + p1[1] * p1[1]) * 1
-                            + (p2[0] * p2[0] + p2[1] * p2[1]) * 1;
+            const num_pts =   2*(p1[0] * p1[0] + p1[1] * p1[1]) * 1;  // 1 for one point per unit cell
             return [thetaDeg.toFixed(tol), thetaRad.toFixed(tol), i2, j2, i1, j1, num_pts];
         });
 
