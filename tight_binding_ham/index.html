@@ -60,7 +60,7 @@
               <ul class="current">
                 <li class="toctree-l1 current"><a class="reference internal current" href="#">Tight Binding Hamiltonian Construction</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#simplified-case-nearest-neighbor-hopping">Simplified Case: Nearest-Neighbor Hopping</a>
+    <li class="toctree-l2"><a class="reference internal" href="#references">References</a>
     </li>
     </ul>
                 </li>
@@ -97,32 +97,21 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h2 id="tight-binding-moire-hamiltonian-construction">Tight Binding Moiré Hamiltonian Construction</h2>
-<p>The <strong>tight-binding Hamiltonian</strong> is a widely used model in solid-state physics and quantum chemistry to describe the electronic structure of solids — especially in crystals and layered materials. In this model, electrons are considered <em>localized</em> around atomic sites but can <em>hop</em> to neighboring atoms. To describe such a Hamiltonian for a <strong>Moiré system</strong>, we use the second quantized form:</p>
+                <h1 id="tight-binding-moire-hamiltonian-construction">Tight Binding Moiré Hamiltonian Construction</h1>
+<p>The <strong>tight-binding Hamiltonian</strong> [1] is a widely used model in solid-state physics and quantum chemistry to describe the electronic structure of solids — especially in crystals and layered materials. In this model, electrons are considered <em>localized</em> around atomic sites but can <em>hop</em> to neighbouring atoms. To describe such a Hamiltonian for a <strong>Moiré system</strong>, we use the second quantized [2] form:</p>
 <div class="arithmatex">\[
 H = \sum_{\alpha, \beta;\, r,r' \in L} t^1_{rr', \alpha\beta}c^{\dagger}_{r,\beta}c_{r',\alpha} 
 + \sum_{\alpha, \beta;\, r,r' \in U} t^2_{rr', \alpha\beta}d^{\dagger}_{r,\beta}d_{r',\alpha} 
 + \sum_{\alpha, \beta;\, r,r'} t^{\perp}_{rr', \alpha\beta}c^{\dagger}_{r,\beta}d_{r',\alpha} + \text{h.c.}
 \]</div>
-<p>Here, 
-* <span class="arithmatex">\(c^{\dagger}_{r,\beta}\)</span>, (<span class="arithmatex">\(c_{r',\alpha}\)</span>): creation (annihilation) operators at sites <span class="arithmatex">\(r\)</span>, <span class="arithmatex">\(r'\)</span> for orbitals <span class="arithmatex">\(\beta\)</span>, <span class="arithmatex">\(\alpha\)</span> in the <strong>lower layer</strong> <span class="arithmatex">\(L\)</span>.
-* <span class="arithmatex">\(d^{\dagger}_{r,\beta}\)</span>, <span class="arithmatex">\(d_{r',\alpha}\)</span>: corresponding operators in the <strong>upper layer</strong> <span class="arithmatex">\(U\)</span>.
-* <span class="arithmatex">\(t^1_{rr', \alpha\beta}\)</span>, <span class="arithmatex">\(t^2_{rr', \alpha\beta}\)</span>: hopping amplitudes within the lower and upper layers, respectively.
-* <span class="arithmatex">\(t^{\perp}_{rr', \alpha\beta}\)</span>: interlayer hopping amplitude from orbital <span class="arithmatex">\(\alpha\)</span> at <span class="arithmatex">\(r'\)</span> in the upper layer to orbital <span class="arithmatex">\(\beta\)</span> at <span class="arithmatex">\(r\)</span> in the lower layer.
-* When <span class="arithmatex">\(r = r'\)</span> and <span class="arithmatex">\(\alpha = \beta\)</span>, the hopping term reduces to the <strong>on-site potential</strong>.</p>
-<hr />
-<h3 id="simplified-case-nearest-neighbor-hopping">Simplified Case: Nearest-Neighbor Hopping</h3>
-<p>For many purposes, we can simplify the model by assuming:</p>
-<ul>
-<li>Only <strong>nearest-neighbor hopping</strong>, and</li>
-<li>A <strong>single orbital per site</strong>.</li>
-</ul>
-<p>In this case, we can omit the orbital indices <span class="arithmatex">\(\alpha\)</span>, <span class="arithmatex">\(\beta\)</span>, and write the Hamiltonian in matrix form.</p>
-<p>Let the basis be:</p>
+<p>Here, <span class="arithmatex">\(c^{\dagger}_{r,\beta}\)</span> and <span class="arithmatex">\(c_{r',\alpha}\)</span> denote the electron creation and annihilation operators at lattice sites <span class="arithmatex">\(r\)</span> and <span class="arithmatex">\(r'\)</span> in the <strong>lower layer</strong> (<span class="arithmatex">\(L\)</span>), associated with orbitals <span class="arithmatex">\(\beta\)</span> and <span class="arithmatex">\(\alpha\)</span>, respectively. Likewise, <span class="arithmatex">\(d^{\dagger}_{r,\beta}\)</span> and <span class="arithmatex">\(d_{r',\alpha}\)</span> are the corresponding operators in the <strong>upper layer</strong> (<span class="arithmatex">\(U\)</span>).</p>
+<p>The terms <span class="arithmatex">\(t^1_{rr', \alpha\beta}\)</span> and <span class="arithmatex">\(t^2_{rr', \alpha\beta}\)</span> represent the <em>intralayer hopping amplitudes</em>, describing electron tunneling from orbital <span class="arithmatex">\(\alpha\)</span> at site <span class="arithmatex">\(r'\)</span> to orbital <span class="arithmatex">\(\beta\)</span> at site <span class="arithmatex">\(r\)</span> within the lower and upper layers, respectively. In the special case where <span class="arithmatex">\(r = r'\)</span> and <span class="arithmatex">\(\alpha = \beta\)</span>, these terms correspond to the <em>on-site potential</em>—the energy of an electron residing in a particular orbital. The <em>interlayer coupling</em> is described by <span class="arithmatex">\(t^{\perp}_{rr', \alpha\beta}\)</span>, which governs the hopping of an electron from orbital <span class="arithmatex">\(\alpha\)</span> at site <span class="arithmatex">\(r'\)</span> in the upper layer to orbital <span class="arithmatex">\(\beta\)</span> at site <span class="arithmatex">\(r\)</span> in the lower layer.</p>
+<p>For simplicity, consider only <strong>nearest-neighbour hopping</strong> with a single orbital per site (<strong>MoirePy</strong> can handle any arbitrary number of orbital systems). In such cases, the orbital indices <span class="arithmatex">\( \alpha \)</span> and <span class="arithmatex">\( \beta \)</span> can be omitted to simplify the notation. We can define the basis as:</p>
 <div class="arithmatex">\[
-\Psi^{\dagger} = \left(c^{\dagger}_{1}, c^{\dagger}_{2}, \dots, c^{\dagger}_{n}, d^{\dagger}_{1}, d^{\dagger}_{2}, \dots, d^{\dagger}_{n} \right)
+\Psi^{\dagger} = (c^{\dagger}_{1}, c^{\dagger}_{2}, \dots, c^{\dagger}_{n}, d^{\dagger}_{1}, d^{\dagger}_{2}, \dots, d^{\dagger}_{n})
 \]</div>
-<p>Then the Hamiltonian becomes:</p>
+<p>Here, <span class="arithmatex">\( c^{\dagger}_{i} \)</span> (<span class="arithmatex">\( d^{\dagger}_{i} \)</span>) is the creation operator at site <span class="arithmatex">\( i \)</span> in the lower (upper) layer.</p>
+<p>Then, the Hamiltonian takes the block matrix form:</p>
 <div class="arithmatex">\[
 H = \Psi^{\dagger}
 \begin{pmatrix}
@@ -131,23 +120,16 @@ h_{UL} &amp; h_{UU}
 \end{pmatrix}
 \Psi
 \]</div>
-<p>Where:</p>
-<ul>
-<li><span class="arithmatex">\(h_{LL}\)</span> and <span class="arithmatex">\(h_{UU}\)</span>: first-quantized <span class="arithmatex">\(n \times n\)</span> Hamiltonians for the lower and upper layers.</li>
-<li><span class="arithmatex">\(h_{LU}\)</span> and <span class="arithmatex">\(h_{UL}\)</span>: interlayer coupling blocks.</li>
-</ul>
-<p>In <strong>Chapter 2</strong>, we will explore how to construct such Hamiltonians using the <code>MoirePy</code> library with minimal effort.</p>
-<hr />
-<h2 id="k-space-hamiltonian">K-space Hamiltonian</h2>
-<p>If the system exhibits <strong>translational invariance</strong>, then <strong>momentum</strong> (or crystal momentum) becomes a good quantum number. In that case, we can <strong>diagonalize</strong> the Hamiltonian in momentum space, making it easier to:</p>
-<ul>
-<li>Obtain the <strong>band structure</strong>, and</li>
-<li>Visualize the energy spectrum as a function of momentum.</li>
-</ul>
-<p>In the next section, we will explain how to obtain the <strong>K-space Hamiltonian</strong>, i.e., the Hamiltonian expressed in the <strong>momentum eigenbasis</strong>.</p>
-<hr />
-<p>Let me know if you'd like this exported to a <code>.md</code> file or adapted for a specific renderer like Jupyter or MkDocs.</p>
-<h3 id="rerefences">Rerefences</h3>
+<p>Here, <span class="arithmatex">\( h_{LL} \)</span> and <span class="arithmatex">\( h_{UU} \)</span> are the <em>first-quantized</em> <span class="arithmatex">\( n \times n \)</span> Hamiltonians of the lower and upper layers, respectively. The blocks <span class="arithmatex">\( h_{LU} \)</span> and <span class="arithmatex">\( h_{UL} \)</span> represent interlayer couplings.</p>
+<h2 id="references">References</h2>
+<ol>
+<li>
+<p>Neil Ashcroft, and David Mermin, Solid State Physics, Saunders College Publishing, 1976.</p>
+</li>
+<li>
+<p>H. Bruus and K. Flensberg, Many-Body Quantum Theory in Condensed Matter Physics: An Introduction, OUP publication, 2004.</p>
+</li>
+</ol>
               
             </div>
           </div><footer>
