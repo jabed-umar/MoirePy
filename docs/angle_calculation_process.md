@@ -56,7 +56,7 @@ In commensurate moiré superlattices, there exist specific periodic points where
 \]
 
 <p align="center">
-  <img src="/home/jabed/Documents/Moire/MoirePy/Images/dip.png" width="800"/>
+  <img src="/images/moire.jpeg" width="400"/>
 </p>
 
 For a commensurate moiré superlattice to form, there must exist integers \( a, b, m, n \) such that:
@@ -103,6 +103,7 @@ Finally, the twist angle \( \theta \) between the two layers is given by the dif
 
 \[
 \theta = \alpha - \gamma = \sin^{-1}\left(\frac{b \sin\beta}{r}\right) - \sin^{-1}\left(\frac{n \sin\beta}{r}\right)
+\tag{4}
 \]
 
 This classical approach, based on solving Diophantine conditions, provides a rigorous framework to determine commensurate twist angles where the lattice vectors of the two layers form periodic overlaps.
@@ -119,14 +120,14 @@ $$
 
 This is essentially a **Diophantine equation** in four variables, constrained by a rotation angle \( \theta \).-->
 
-### Time Complexity
+<div style="text-align: justify;">
+<div style="height: 10px;"></div>
+<h3>Time Complexity of Diophantine Approach</h3>
 
-Let the radius cutoff be \( r \). Each lattice will have approximately \(n = O(r^2) \) points.
+Let the radius cutoff be r. Then, each lattice contains approximately \( n = O(r^2) \) points. As a result, the Diophantine approach requires checking \( O(n^2) \) combinations. Thus, this becomes increasingly slow as the radius grows. However, our motivation for seeking a simpler and faster method wasn't primarily performance — we just found the Diophantine approach inelegant and unsatisfying.
 
-The Diophantine approach needs to check \( O(n^2) \) combinations, since both lattices have n points.
-
-This gets very slow as radius increases. We wanted a simpler and faster method — not because this is slow, but because we just didn’t like it.
-
+</div>
+<div style="height: 10px;"></div>
 ## Observations About Lattice Structure
 
 We noticed some very helpful properties in regularly spaced lattices (like triangular or square lattices).
