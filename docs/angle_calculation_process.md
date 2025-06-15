@@ -1,49 +1,123 @@
-# Angle Calculation Process
+<div style="text-align: justify;">
+<h1>Angle Calculation Process</h1>
 
-In this section, we describe how **MoirePy** determines the *commensurate rotation angles* between two lattices clipped to a bounded region. Our goal is to compute the angles where two lattices can overlap nicely, giving rise to observable moiré patterns.
+When two single layers of a 2D material are stacked on top of each other with a small misalignment, they produce a moiré pattern of much larger length scale than the periodicity of each layer. At a certain angle of twist, this results in a <em>commensurate moiré pattern</em>—structures where atoms from one layer exactly overlap atoms from the other. <br>
 
-## Problem Definition
+In this section, we describe how <strong>MoirePy</strong> determines the <em>commensurate rotation angles</em> between two lattices confined to a bounded region. The objective is to identify angles at which the two lattices align in a periodic fashion, resulting in well-ordered, physically observable moiré patterns.
 
-Let lattice \( A \) and lattice \( B \) be two periodic 2D point sets defined by their lattice vectors.
+</div>
 
-We are interested in the following:
+<div style="text-align: justify;">
+<div style="height: 10px;"></div>
 
-> Given a rotation \( \theta \), does there exist a point \( \mathbf{p} \in A \) and a point \( \mathbf{q} \in B \) such that  
-> 
-> $$
+<h2>Problem Statement</h2>
+
+Let lattices \( A \) and \( B \) be two periodic point sets in two dimensions, each defined by their respective lattice vectors.
+
+We are interested in the following geometric question:
+
+Given a rotation angle \( \theta \), does there exist a point \( \mathbf{p} \in A \) and a point \( \mathbf{q} \in B \) such that
+$$
 \mathbf{p} = R(\theta)\mathbf{q}
 $$
 
-Where \( R(\theta) \) is the standard 2D rotation matrix:
+Here, \( R(\theta) \) denotes the standard two-dimensional rotation matrix:
 
 $$
-R(\theta) = 
+R(\theta) =
 \begin{bmatrix}
 \cos\theta & -\sin\theta \\
 \sin\theta & \cos\theta
 \end{bmatrix}
 $$
 
-To make the computation finite, we consider only the lattice points within a circular cutoff of radius \( r \). Let’s denote the sets:
-
-- \( A_r = A \cap \text{circle}(r) \)
-- \( B_r = B \cap \text{circle}(r) \)
-
-We now want to find angles \( \theta \) such that:
+To make the computation finite, we restrict our attention to a finite region by considering only lattice points within a circular region of radius \( r \). Let the truncated sets be:
+\( A_r = A \cap \text{circle}(r) \) and \( B_r = B \cap \text{circle}(r) \).
+<br>
+Our objective is to determine the set of angles \( \theta \) for which there exists a pair of points \( \mathbf{p} \in A_r \) and \( \mathbf{q} \in B_r \) such that:
 
 $$
-\exists \mathbf{p} \in A_r, \mathbf{q} \in B_r: \quad \mathbf{p} = R(\theta)\mathbf{q}
+\mathbf{p} = R(\theta)\mathbf{q}
 $$
 
-## Traditional Diophantine Equation Approach
+These angles correspond to potential commensurate alignments between the two lattices, giving rise to physically meaningful moiré patterns.
+</div>
 
-A popular approach is to formulate the problem algebraically by equating integer linear combinations of lattice vectors under rotation. That is, you search for integers \( m_1, m_2, n_1, n_2 \) such that:
+<div style="text-align: justify;">
+<div style="height: 10px;"></div>
+
+<h2>Traditional Diophantine Equation Approach</h2>
+
+In commensurate moiré superlattices, there exist specific periodic points where atoms from the top and bottom layers align exactly. To analyze these alignments, we consider the primitive lattice vectors of the lower and upper layers as \( \vec{a}_1\), \(\vec{b}_1 \) and \( \vec{m}_1\), \(\vec{n}_1 \), respectively. The atomic positions in each layer are then given by:
+
+\[
+\vec{R}^1_{p,q} = a\vec{a}_1 + b\vec{b}_1 \quad \text{and} \quad
+\vec{R}^2_{m,n} = R(\theta)(m\vec{m}_1 + n\vec{n}_1), \quad a, b, m, n \in \mathbb{Z}
+\]
+
+<p align="center">
+  <img src="/home/jabed/Documents/Moire/MoirePy/Images/dip.png" width="800"/>
+</p>
+
+For a commensurate moiré superlattice to form, there must exist integers \( a, b, m, n \) such that:
+
+\[
+|a\vec{a}_1 + b\vec{b}_1| = |m\vec{m}_1 + n\vec{n}_1|
+\]
+
+This leads to a condition based on vector magnitudes and orientations, expressed as:
+
+\[
+\vec{a}_1 \cdot \vec{b}_1 = \vec{m}_1 \cdot \vec{n}_1 = \cos{\beta} = \frac{m^2 + n^2 - a^2 - b^2}{2(ab - mn)}
+\tag{1}
+\label{Diiii}
+\]
+
+Given a pair \( (a, b) \in \mathbb{Z} \), the objective is to find integer values \( (m, n) \) that satisfy Eqn. (1). Once such a solution is found, the corresponding twist angle \( \theta \) can be computed.
+
+<br><br>
+
+The procedure for computing \( \theta \) proceeds as follows. The length of the moiré lattice vector \( \vec{r} \) connecting equivalent lattice points is:
+
+\[
+r = |\vec{r}| = \sqrt{a^2 + b^2 + 2ab\cos\beta}
+\]
+
+Using the Law of Sines, the intermediate angles \( \alpha \) and \( \gamma \) in the triangle are calculated as:
+
+\[
+\frac{b}{\sin\alpha} = \frac{r}{\sin(180^\circ - \beta)} \quad \Rightarrow \quad 
+\alpha = \sin^{-1}\left(\frac{b \sin\beta}{r}\right)
+\tag{2}
+\label{one}
+\]
+
+\[
+\frac{n}{\sin\gamma} = \frac{r}{\sin(180^\circ - \beta)} \quad \Rightarrow \quad 
+\gamma = \sin^{-1}\left(\frac{n \sin\beta}{r}\right)
+\tag{3}
+\label{two}
+\]
+
+Finally, the twist angle \( \theta \) between the two layers is given by the difference between these two angles:
+
+\[
+\theta = \alpha - \gamma = \sin^{-1}\left(\frac{b \sin\beta}{r}\right) - \sin^{-1}\left(\frac{n \sin\beta}{r}\right)
+\]
+
+This classical approach, based on solving Diophantine conditions, provides a rigorous framework to determine commensurate twist angles where the lattice vectors of the two layers form periodic overlaps.
+
+</div>
+
+
+
+<!--A popular approach is to formulate the problem algebraically by equating integer linear combinations of lattice vectors under rotation. That is, you search for integers \( m_1, m_2, n_1, n_2 \) such that:
 
 $$
 m_1\mathbf{a}_1 + m_2\mathbf{a}_2 = R(\theta)(n_1\mathbf{b}_1 + n_2\mathbf{b}_2)
 $$
 
-This is essentially a **Diophantine equation** in four variables, constrained by a rotation angle \( \theta \).
+This is essentially a **Diophantine equation** in four variables, constrained by a rotation angle \( \theta \).-->
 
 ### Time Complexity
 
