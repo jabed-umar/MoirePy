@@ -10,6 +10,7 @@ theme:
 
 plugins:
   - search
+  - mkdocs-jupyter
   - mkdocstrings:
       handlers:
         python:
@@ -28,7 +29,8 @@ nav:
   - Installation: installation.md
   - Angle Value Calculator: find_theta.md
   - Angle calculation Process: angle_calculation_process.md
-  - Tight Binding Hamiltonian Construction: tight_binding_ham.md
+  # - Tight Binding Hamiltonian Construction: tight_binding_ham.md
+  - Tight Binding Hamiltonian Construction: examples/Tight_binding_Ham.ipynb
   - API Reference:
       - Layers: api/layers.md
       - Moire: api/moire.md

@@ -6,6 +6,7 @@ tqdm
 notebook
 mkdocstrings
 mkdocstrings-python
+mkdocs-jupyter
 
 # mkdocs-material
 # mkdocs-kpn
