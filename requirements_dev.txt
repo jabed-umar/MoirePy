@@ -2,6 +2,7 @@ numpy
 scipy
 matplotlib
 tqdm
+kwant
 
 notebook
 mkdocstrings
