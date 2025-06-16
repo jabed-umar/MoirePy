@@ -44,7 +44,7 @@ $$
 \vec{R}^2_{m,n} = R(\theta)(m\vec{m} + n\vec{n}), \quad a, b, m, n \in \mathbb{Z}
 $$
 
-<img src="/images/angle_calculation_process/moire.svg" alt="Moiré Diagram" style="max-width: 100%; width: 600px; margin: auto; display: block;">
+<img src="../images/angle_calculation_process/moire.svg" alt="Moiré Diagram" style="max-width: 100%; width: 600px; margin: auto; display: block;">
 
 *<center><strong>Fig 1:</strong> Illustration of vector matching for commensurate moiré patterns. Here vectors m and n are already rotated by angle theta. </center>*
 
@@ -102,12 +102,12 @@ When examining regularly spaced lattices (like triangular or square lattices), w
 <div style="display: flex; justify-content: center; gap: 20px; align-items: flex-start; flex-wrap: wrap;">
 
   <figure style="margin: 0; text-align: center;">
-    <img src="/images/angle_calculation_process/concentric_shells.svg" alt="Concentric Lattice Points" style="max-width: 100%; width: 300px;">
+    <img src="../images/angle_calculation_process/concentric_shells.svg" alt="Concentric Lattice Points" style="max-width: 100%; width: 300px;">
     <figcaption style="margin-top: 8px; font-style: italic;"><strong>Fig 2:</strong> Lattice points reside in concentric circles</figcaption>
   </figure>
 
   <figure style="margin: 0; text-align: center;">
-    <img src="/images/angle_calculation_process/points_per_radius.svg" alt="Number of Points per Radius Level" style="max-width: 100%; width: 300px;">
+    <img src="../images/angle_calculation_process/points_per_radius.svg" alt="Number of Points per Radius Level" style="max-width: 100%; width: 300px;">
     <figcaption style="margin-top: 8px; font-style: italic;"><strong>Fig 3:</strong> Number of points in each shell is<br>a multiple of 6 (Triangle lattice)</figcaption>
   </figure>
 
@@ -126,7 +126,7 @@ Let $A_r$ and $B_r$ be the sets of lattice points (from lattice A and B respecti
 
 1. **Group points by radius**:
     For each point ($\mathbf{p}$) in $A_r$ and $B_r$, compute its distance $d = \|\mathbf{p}\|$ from the origin.
-    In each lattice group points that lie at the same radius into *levels*.
+    In each lattice, group points that lie at the same radius into *levels*.
 
 2. **Identify shared levels**:
     Let $D = \{d \mid d \text{ occurs in both } A_r \text{ and } B_r \} \setminus \{0\}$.
@@ -140,50 +140,36 @@ Let $A_r$ and $B_r$ be the sets of lattice points (from lattice A and B respecti
     0 < \angle\mathbf{q} \le \theta_\text{max}
     $$
 
-    where $\theta_\text{max}$ is the lattice's symmetry sector (e.g., $60^\circ$ for triangular lattices, $90^\circ$ for square lattices). If the two lattices have diffferent symmetry then we take the LCM of the two sectors. For example, if one lattice has a $30^\circ$ sector and the other has a $20^\circ$ sector, we would use $\theta_\text{max} = 60^\circ$.
-
-    Because of symmetry, we will consider the other corresponding points in the other sectors as clones of points of this sector.
+    where $\theta_\text{max}$ is the lattice's symmetry sector (e.g., $60^\circ$ for triangular lattices, $90^\circ$ for square lattices). Although till now we have discussed as if the upper lattice and lower lattice can be different, in practice we have never tested this code on different lattices. Neither do we know if those cases will yield any commensurate angles. For now, we will assume that both lattices are the same. So here when we say lattice's symmetry sector, we mean the symmetry sectors of both are same.
 
 4. **Compute angle differences**:
-   Now we will pair points from $\{\mathbf{p}\}$ with $\{\mathbf{q}\}$ at each level $d$. For each point from $\{\mathbf{p}\}$, we will pair it with every point from $\{\mathbf{q}\}$ or it's clones from the neighbouring sector whoever is nearer. For each pair, compute the angle differences.
+   Now we will pair points from $\{\mathbf{p}\}$ with $\{\mathbf{q}\}$ at each level $d$. For each point from $\{\mathbf{p}\}$, we will pair it with every point from $\{\mathbf{q}\}$. For each pair, compute the angle differences.
 
 {Insert illustration showing concentric circles with marked angular slices and example point pairs.}
 
 This procedure ensures we collect unique, minimal-angle configurations that could align under rotation, constrained to the symmetry of the lattice.
 
 
+<details>
+  <summary>Some Practical Optimizations</summary>
+
+    <ul>
+        <li>
+          In <strong>Step 4</strong> after calculating the angle difference (say \(\theta\)), we keep the angle only if it is in the range \(0 < \theta < \theta_\text{max}\). Note that we exclude \(0\) because it corresponds to the trivial case where no rotation is applied, and we exclude \(\theta_\text{max}\) because it corresponds to the case where the two lattices are again perfectly aligned, as if no rotation is applied. Also we do not take angles more than \(\theta_\text{max}\) because they are equivalent to angles less than \(\theta_\text{max}\) due to periodicity.
+        </li>
+        <li>
+          In <strong>Step 1</strong>, when using same lattice as both upper and lower layer, after grouping points that lie at the same distance from the origin, we discard those \(d\)s who just have 6 points (4 points for square lattice). This is because it will lead us to no rotation anyway. We keep only those \(d\)s which have more than 6 points (12, 18, etc. for triangular lattice; 8, 12, etc. for square lattice) where we can form pairs of points that yield non-trivial angles.
+        </li>
+    </ul>
+    
+</details>
 
 
-
-
-
-
-
-
-
-
-
-
+<br>
 
 ### Time Complexity
 
-Let’s denote:
-
-- $n = O(r^2)$: number of points in the circular cutoff
-
-### Breakdown
-
-- **Sorting distances**: $O(n \log n)$
-- **Finding common radii**: $O(n)$
-- **Pairwise angle checks**: Very few (multiples of 6) per level → negligible
-
-### Final Time
-
-$$
-O(n \log n)
-$$
-
-Compared to the $O(n^2)$ of Diophantine, this is clearly more efficient — and arguably more intuitive.
+If the number points is of the order $O(n^2)$ and they are sorted by distance, the time complexity of this part becomes $O(n^2 \log n^2)$. Apart from this all other steps are multiple order smaller than this cost, hence can be ignored. That makes this algorithm much less than the $O(n^3)$ of the Diophantine approach and arguably more intuitive.
 
 ## Summary
 

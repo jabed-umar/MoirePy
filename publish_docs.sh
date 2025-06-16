@@ -1,2 +1,2 @@
 cat README.md > docs/index.md
-mkdocs gh-deploy -b docs
+JUPYTER_PLATFORM_DIRS=1 mkdocs gh-deploy -b docs

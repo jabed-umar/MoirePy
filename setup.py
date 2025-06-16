@@ -37,7 +37,7 @@ setup(
     url="https://github.com/jabed-umar/MoirePy",
     keywords=['python', 'moire', 'lattice', 'physics', 'materials', 'condensed matter'],
     classifiers=[
-        "Development Status :: 2 - Pre-Alpha",
+        "Development Status :: 4 - Beta",
         "Intended Audience :: Education",
         "Intended Audience :: Science/Research",
         "License :: OSI Approved :: MIT License",

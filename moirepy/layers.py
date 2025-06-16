@@ -59,7 +59,7 @@ class Layer:  # parent class
             rot (float): The rotation angle in radians. Default to `None`.
             translation (Tuple[float, float]): The translation vector (dx, dy) for each point on the lattice.
                 new position = old position + translation
-                translation will be applied after the rotation
+                translation will be applied before the rotation
 
         Returns:
             None: The function modifies the rotation matrix
@@ -74,7 +74,6 @@ class Layer:  # parent class
         
         rot_m = get_rotation_matrix(rot)
         self.rot_m = rot_m
-        translation = rot_m @ np.array(translation)
 
         # Rotate lv1 and lv2 vectors
         self.lv1 = rot_m @ self.lv1
@@ -82,7 +81,7 @@ class Layer:  # parent class
 
         # Rotate lattice_points
         self.lattice_points = [
-            [*(rot_m @ np.array([x, y]) + translation), atom_type]
+            [*(rot_m @ (np.array([x, y]) + np.array(translation))), atom_type]
             for x, y, atom_type in self.lattice_points
         ]
 
@@ -677,7 +676,6 @@ class Layer:  # parent class
             - Nearest neighbor connections (if enabled) are shown as dashed red lines.
             - The unit cell grid (if enabled) is displayed as dotted black lines with reduced opacity.
         """
-        # plt.figure(figsize=(8, 8))
 
         if len(colours) == 1: cols = {t[-1]:colours[0] for i, t, in enumerate(self.lattice_points)}
         else: cols = {t[-1]:colours[i] for i, t, in enumerate(self.lattice_points)}
@@ -882,3 +880,4 @@ class HexagonalLayer(Layer):
             ],
         }
         super().__init__(pbc=pbc)
+
