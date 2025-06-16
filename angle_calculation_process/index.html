@@ -56,9 +56,9 @@
               <ul class="current">
                 <li class="toctree-l1 current"><a class="reference internal current" href="#">Angle calculation Process</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#problem-statement">Problem Statement</a>
+    <li class="toctree-l2"><a class="reference internal" href="#1-problem-statement">1. Problem Statement</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#traditional-diophantine-equation-approach">Traditional Diophantine Equation Approach</a>
+    <li class="toctree-l2"><a class="reference internal" href="#2-traditional-diophantine-equation-approach">2. Traditional Diophantine Equation Approach</a>
         <ul>
     <li class="toctree-l3"><a class="reference internal" href="#time-complexity">Time Complexity</a>
     </li>
@@ -84,7 +84,7 @@
                 </li>
               </ul>
               <ul>
-                <li class="toctree-l1"><a class="reference internal" href="../tight_binding_ham/">Tight Binding Hamiltonian Construction</a>
+                <li class="toctree-l1"><a class="reference internal" href="../examples/Tight_binding_Ham/">Tight Binding Moiré Hamiltonian Construction</a>
                 </li>
               </ul>
               <p class="caption"><span class="caption-text">API Reference</span></p>
@@ -122,44 +122,42 @@
                 <h1 id="angle-calculation-process">Angle Calculation Process</h1>
 <p>When two single layers of a 2D material are stacked with a small misalignment, they produce a moiré pattern with a length scale much larger than the periodicity of either individual layer. At specific twist angles, this results in a <strong><em>commensurate moiré pattern</em></strong>—a structure where atoms from one layer align exactly with those of the other.</p>
 <p>In this section, we describe how <strong>MoirePy</strong> calculates the <strong><em>commensurate rotation angles</em></strong> between two lattices confined to a bounded region. The goal is to identify angles where the lattices align periodically, producing well-ordered moiré patterns that are physically observable.</p>
-<h2 id="problem-statement">Problem Statement</h2>
+<h2 id="1-problem-statement">1. Problem Statement</h2>
 <p>Let lattices <span class="arithmatex">\(A\)</span> and <span class="arithmatex">\(B\)</span> be two periodic point sets in two dimensions, each defined by their respective lattice vectors.</p>
 <p>We address the following geometric question:</p>
-<p><strong>Given</strong> a rotation angle <span class="arithmatex">\(\theta\)</span>, <strong>does there exist</strong> a point <span class="arithmatex">\(\mathbf{p} \in A\)</span> and a point <span class="arithmatex">\(\mathbf{q} \in B\)</span> such that</p>
+<p><strong>Given</strong> a rotation angle <span class="arithmatex">\(\theta\)</span>, <strong>does thre exist</strong> a point <span class="arithmatex">\(\mathbf{p} \in A\)</span> and a point <span class="arithmatex">\(\mathbf{q} \in B\)</span> such that</p>
 <div class="arithmatex">\[
 \mathbf{p} = R(\theta)\mathbf{q}
+\tag{1.1}
 \]</div>
-<p>where <span class="arithmatex">\(R(\theta)\)</span> denotes the standard two-dimensional rotation matrix:</p>
+<p>where <span class="arithmatex">\(R(\theta)\)</span> denotes the standard rotation matrix. In 2D, this matrix is defined as:</p>
 <div class="arithmatex">\[
 R(\theta) =
 \begin{bmatrix}
 \cos\theta &amp; -\sin\theta \\
 \sin\theta &amp; \cos\theta
 \end{bmatrix}
+\tag{1.2}
 \]</div>
 <p>To bound the computation, we restrict our analysis to a finite region by considering only lattice points within a circular region of radius <span class="arithmatex">\(r\)</span>. Let the truncated sets be <span class="arithmatex">\(A_r = A \cap \text{circle}(r)\)</span> and <span class="arithmatex">\(B_r = B \cap \text{circle}(r)\)</span>.</p>
-<p>Our goal is to determine the set of angles <span class="arithmatex">\(\theta\)</span> for which there exists a pair of points <span class="arithmatex">\(\mathbf{p} \in A_r\)</span> and <span class="arithmatex">\(\mathbf{q} \in B_r\)</span> satisfying:</p>
-<div class="arithmatex">\[
-\mathbf{p} = R(\theta)\mathbf{q}
-\]</div>
+<p>Our goal is to determine the set of angles <span class="arithmatex">\(\theta\)</span> (including the corresponding points) for which there exists a pair of points <span class="arithmatex">\(\mathbf{p} \in A_r\)</span> and <span class="arithmatex">\(\mathbf{q} \in B_r\)</span> satisfying Equation 1.1.</p>
 <p>These angles correspond to commensurate alignments between the two lattices, yielding physically observable moiré patterns.</p>
-<h2 id="traditional-diophantine-equation-approach">Traditional Diophantine Equation Approach</h2>
-<p>In commensurate moiré superlattices, specific periodic points exist where atoms from the top and bottom layers align exactly. To analyze these alignments, let <span class="arithmatex">\(\vec{a}_1\)</span>, <span class="arithmatex">\(\vec{b}_1\)</span> and <span class="arithmatex">\(\vec{m}_1\)</span>, <span class="arithmatex">\(\vec{n}_1\)</span> denote the primitive lattice vectors of the lower and upper layers, respectively. The atomic positions in each layer are given by:</p>
+<h2 id="2-traditional-diophantine-equation-approach">2. Traditional Diophantine Equation Approach</h2>
+<p>In commensurate moiré superlattices, specific periodic points exist where atoms from the top and bottom layers align exactly. To analyze these alignments, let <span class="arithmatex">\((\vec{a}, \vec{b})\)</span> and <span class="arithmatex">\((\vec{m}, \vec{n})\)</span> denote the primitive lattice vectors of the lower and upper layers, respectively. The atomic positions in each layer are given by:</p>
 <div class="arithmatex">\[
-\vec{R}^1_{p,q} = a\vec{a}_1 + b\vec{b}_1 \quad \text{and} \quad
-\vec{R}^2_{m,n} = R(\theta)(m\vec{m}_1 + n\vec{n}_1), \quad a, b, m, n \in \mathbb{Z}
+\vec{R}^1_{p,q} = a\vec{a} + b\vec{b} \quad \text{and} \quad
+\vec{R}^2_{m,n} = R(\theta)(m\vec{m} + n\vec{n}), \quad a, b, m, n \in \mathbb{Z}
 \]</div>
-<p><img alt="Alt text" src="../images/moire.jpeg" /></p>
+<p><img src="/images/angle_calculation_process/moire.svg" alt="Moiré Diagram" style="max-width: 100%; width: 600px; margin: auto; display: block;"></p>
+<p><em><center><strong>Fig 1:</strong> Illustration of vector matching for commensurate moiré patterns. Here vectors m and n are already rotated by angle theta. </center></em></p>
 <p>For a commensurate moiré superlattice to form, there must exist integers <span class="arithmatex">\(a, b, m, n\)</span> such that:</p>
-<div class="arithmatex">\[
-|a\vec{a}_1 + b\vec{b}_1| = |m\vec{m}_1 + n\vec{n}_1|
-\]</div>
+<div class="arithmatex">\[\vec{R}^1_{p,q} = \vec{R}^2_{m,n}\]</div>
 <p>This leads to a condition based on vector magnitudes and orientations:</p>
 <div class="arithmatex">\[
-\vec{a}_1 \cdot \vec{b}_1 = \vec{m}_1 \cdot \vec{n}_1 = \cos{\beta} = \frac{m^2 + n^2 - a^2 - b^2}{2(ab - mn)}
-\tag{1}
+\vec{a} \cdot \vec{b} = \vec{m} \cdot \vec{n} = \cos{\beta} = \frac{m^2 + n^2 - a^2 - b^2}{2(ab - mn)}
+\tag{2.1}
 \]</div>
-<p>Given a pair <span class="arithmatex">\((a, b) \in \mathbb{Z}\)</span>, we seek integer values <span class="arithmatex">\((m, n)\)</span> satisfying Eqn. (1). The corresponding twist angle <span class="arithmatex">\(\theta\)</span> can then be computed.</p>
+<p>We need to find all integer quadruples (a, b, m, n) satisfying Equation 2.1. Then, the corresponding twist angle <span class="arithmatex">\(\theta\)</span> can then be computed.</p>
 <p>The computation proceeds as follows. The length of the moiré lattice vector <span class="arithmatex">\(\vec{r}\)</span> connecting equivalent lattice points is:</p>
 <div class="arithmatex">\[
 r = |\vec{r}| = \sqrt{a^2 + b^2 + 2ab\cos\beta}
@@ -168,12 +166,12 @@ r = |\vec{r}| = \sqrt{a^2 + b^2 + 2ab\cos\beta}
 <div class="arithmatex">\[
 \frac{b}{\sin\alpha} = \frac{r}{\sin(180^\circ - \beta)} \quad \Rightarrow \quad
 \alpha = \sin^{-1}\left(\frac{b \sin\beta}{r}\right)
-\tag{2}
+\tag{2.2}
 \]</div>
 <div class="arithmatex">\[
 \frac{n}{\sin\gamma} = \frac{r}{\sin(180^\circ - \beta)} \quad \Rightarrow \quad
 \gamma = \sin^{-1}\left(\frac{n \sin\beta}{r}\right)
-\tag{3}
+\tag{2.3}
 \]</div>
 <p>The twist angle <span class="arithmatex">\(\theta\)</span> between the two layers is then:</p>
 <div class="arithmatex">\[
@@ -181,47 +179,53 @@ r = |\vec{r}| = \sqrt{a^2 + b^2 + 2ab\cos\beta}
 \]</div>
 <p>This classical Diophantine approach provides a rigorous framework for determining commensurate twist angles where the lattice vectors form periodic overlaps.</p>
 <h3 id="time-complexity">Time Complexity</h3>
-<p>Let the radius cutoff be <span class="arithmatex">\(r\)</span>. Each lattice will have <span class="arithmatex">\(n = O(r^2)\)</span> points.</p>
-<p>The Diophantine approach needs to check <span class="arithmatex">\(O(n^2)\)</span> combinations, since both lattices have n points.</p>
-<p>This gets very slow as radius increases. We wanted a simpler and faster method — not because this is slow, but because we just didn’t like it.</p>
+<p>The general approach involves iterating over all possible values of the first three variables (<span class="arithmatex">\(a\)</span>, <span class="arithmatex">\(b\)</span>, <span class="arithmatex">\(m\)</span>) and computing the fourth variable (<span class="arithmatex">\(n\)</span>) based on the condition in Equation 2.1. A valid solution exists when <span class="arithmatex">\(n\)</span> is an integer.</p>
+<p>This brute-force search results in a time complexity of <span class="arithmatex">\(O(n^3)\)</span>, where <span class="arithmatex">\(n\)</span> represents the maximum value of the variables (starting from 0). For large <span class="arithmatex">\(n\)</span> (i.e., when considering dense lattice points), this cubic complexity becomes computationally prohibitive. We wanted to find a better solution.</p>
 <h2 id="observations-about-lattice-structure">Observations About Lattice Structure</h2>
-<p>We noticed some very helpful properties in regularly spaced lattices (like triangular or square lattices).</p>
-<p>{Insert image showing how points are grouped into concentric distance shells.}</p>
-<p>If we arrange all the points in the lattice in ascending order of their distances from the origin, we can clearly see discrete levels forming, sort of like a step function. Each level — meaning, each radius from the origin where lattice points lie — contains <strong>symmetrically placed points</strong>. For example, in a triangular lattice, each such level contains a multiple of 6 points due to 6-fold symmetry.</p>
-<p>{Insert plot of number of points per radius level showing multiples of 6.}</p>
-<p>This means that if two lattices share the same level (same distance from origin), then <strong>we only need to align one pair of points on that level</strong>, and the rest 6 will align automatically due to symmetry.</p>
+<p>When examining regularly spaced lattices (like triangular or square lattices), we observed several useful structural properties. As shown in Fig. 2, lattice points naturally organize into concentric circles around the origin. If we sort all points by their distance from the origin, we see distinct discrete levels forming - similar to a step function. Each level (corresponding to a specific radius) contains symmetrically arranged points. For instance, in triangular lattices, each level contains a multiple of 6 points due to the lattice's 6-fold rotational symmetry (Fig. 3). (Similarly we see in Square lattice, a multiple of 4 points per level.)</p>
+<div style="display: flex; justify-content: center; gap: 20px; align-items: flex-start; flex-wrap: wrap;">
+
+  <figure style="margin: 0; text-align: center;">
+    <img src="/images/angle_calculation_process/concentric_shells.svg" alt="Concentric Lattice Points" style="max-width: 100%; width: 300px;">
+    <figcaption style="margin-top: 8px; font-style: italic;"><strong>Fig 2:</strong> Lattice points reside in concentric circles</figcaption>
+  </figure>
+
+  <figure style="margin: 0; text-align: center;">
+    <img src="/images/angle_calculation_process/points_per_radius.svg" alt="Number of Points per Radius Level" style="max-width: 100%; width: 300px;">
+    <figcaption style="margin-top: 8px; font-style: italic;"><strong>Fig 3:</strong> Number of points in each shell is<br>a multiple of 6 (Triangle lattice)</figcaption>
+  </figure>
+
+</div>
+
+<p>This symmetric distribution has an important consequence: when two lattices share the same radial level, we only need to align one pair of points at that level. The remaining 5 symmetric points will automatically align due to the lattice symmetry, significantly reducing the computational effort needed to find commensurate angles.</p>
 <h2 id="our-method">Our Method</h2>
-<p>We approach the angle-finding task using the geometry and symmetry of lattices, avoiding algebraic equations altogether.</p>
+<p>Our approach leverages lattice geometry and symmetry rather than algebraic equations to identify commensurate rotation angles. The method operates directly on the spatial distribution of lattice points, and hence is applicable for any regular lattice structure even stacking two different ones.</p>
 <h3 id="algorithm-overview">Algorithm Overview</h3>
 <p>Let <span class="arithmatex">\(A_r\)</span> and <span class="arithmatex">\(B_r\)</span> be the sets of lattice points (from lattice A and B respectively) within radius <span class="arithmatex">\(r\)</span> from the origin.</p>
 <ol>
 <li>
 <p><strong>Group points by radius</strong>:
-   For each point in <span class="arithmatex">\(A_r\)</span> and <span class="arithmatex">\(B_r\)</span>, compute its distance <span class="arithmatex">\(d = \|\mathbf{p}\|\)</span> from the origin.
-   Group points that lie at the same radius (up to numerical tolerance) into <em>levels</em>.</p>
+    For each point (<span class="arithmatex">\(\mathbf{p}\)</span>) in <span class="arithmatex">\(A_r\)</span> and <span class="arithmatex">\(B_r\)</span>, compute its distance <span class="arithmatex">\(d = \|\mathbf{p}\|\)</span> from the origin.
+    In each lattice group points that lie at the same radius into <em>levels</em>.</p>
 </li>
 <li>
 <p><strong>Identify shared levels</strong>:
-   Let <span class="arithmatex">\(D = \{d \mid d \text{ occurs in both } A_r \text{ and } B_r \} \setminus \{0\}\)</span>.
-   These are the radii at which both lattices have points.</p>
+    Let <span class="arithmatex">\(D = \{d \mid d \text{ occurs in both } A_r \text{ and } B_r \} \setminus \{0\}\)</span>.
+    These are the radii at which both lattices have points.</p>
 </li>
 <li>
 <p><strong>Filter by angular sector</strong>:
-   For each <span class="arithmatex">\(d \in D\)</span>, consider only those points <span class="arithmatex">\(\mathbf{p} \in A_r\)</span> and <span class="arithmatex">\(\mathbf{q} \in B_r\)</span> on level <span class="arithmatex">\(d\)</span> such that
-   $$
-   0 &lt; \angle(\mathbf{p}) &lt; \theta_\text{max}, \quad
-   0 &lt; \angle(\mathbf{q}) &lt; \theta_\text{max}
-   $$
-   where <span class="arithmatex">\(\theta_\text{max}\)</span> is the lattice's symmetry sector (e.g., <span class="arithmatex">\(60^\circ\)</span> for triangular lattices).</p>
+    For each <span class="arithmatex">\(d \in D\)</span>, consider only those points <span class="arithmatex">\(\{\mathbf{p}\} \in A_r\)</span> and <span class="arithmatex">\(\{\mathbf{q}\} \in B_r\)</span> on level <span class="arithmatex">\(d\)</span> such that</p>
+<div class="arithmatex">\[
+0 &lt; \angle\mathbf{p} \le \theta_\text{max}, \quad
+0 &lt; \angle\mathbf{q} \le \theta_\text{max}
+\]</div>
+<p>where <span class="arithmatex">\(\theta_\text{max}\)</span> is the lattice's symmetry sector (e.g., <span class="arithmatex">\(60^\circ\)</span> for triangular lattices, <span class="arithmatex">\(90^\circ\)</span> for square lattices). If the two lattices have diffferent symmetry then we take the LCM of the two sectors. For example, if one lattice has a <span class="arithmatex">\(30^\circ\)</span> sector and the other has a <span class="arithmatex">\(20^\circ\)</span> sector, we would use <span class="arithmatex">\(\theta_\text{max} = 60^\circ\)</span>.</p>
+<p>Because of symmetry, we will consider the other corresponding points in the other sectors as clones of points of this sector.</p>
 </li>
 <li>
 <p><strong>Compute angle differences</strong>:
-   For all pairs <span class="arithmatex">\((\mathbf{p}, \mathbf{q})\)</span> from the filtered sets on each shared level <span class="arithmatex">\(d\)</span>:</p>
-</li>
-<li>Let <span class="arithmatex">\(\theta_1 = \angle(\mathbf{p})\)</span>, <span class="arithmatex">\(\theta_2 = \angle(\mathbf{q})\)</span></li>
-<li>If <span class="arithmatex">\(\theta_2 &gt; \theta_1\)</span> and <span class="arithmatex">\(\theta = \theta_2 - \theta_1 &gt; \text{tolerance}\)</span>, then:<ul>
-<li>Store angle <span class="arithmatex">\(\theta\)</span> along with the point pair <span class="arithmatex">\((\mathbf{p}, \mathbf{q})\)</span>, <strong>only if</strong> no existing pair has a smaller <span class="arithmatex">\(\theta_1\)</span></li>
-</ul>
+   Now we will pair points from <span class="arithmatex">\(\{\mathbf{p}\}\)</span> with <span class="arithmatex">\(\{\mathbf{q}\}\)</span> at each level <span class="arithmatex">\(d\)</span>. For each point from <span class="arithmatex">\(\{\mathbf{p}\}\)</span>, we will pair it with every point from <span class="arithmatex">\(\{\mathbf{q}\}\)</span> or it's clones from the neighbouring sector whoever is nearer. For each pair, compute the angle differences.</p>
 </li>
 </ol>
 <p>{Insert illustration showing concentric circles with marked angular slices and example point pairs.}</p>
@@ -255,7 +259,7 @@ O(n \log n)
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
         <a href="../find_theta/" class="btn btn-neutral float-left" title="Angle Value Calculator"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../tight_binding_ham/" class="btn btn-neutral float-right" title="Tight Binding Hamiltonian Construction">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../examples/Tight_binding_Ham/" class="btn btn-neutral float-right" title="Tight Binding Moiré Hamiltonian Construction">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -281,7 +285,7 @@ O(n \log n)
       <span><a href="../find_theta/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../tight_binding_ham/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../examples/Tight_binding_Ham/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
