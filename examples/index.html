@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>Installation - MoirePy</title>
+    <title>Learning MoirePy through examples - MoirePy</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
@@ -14,8 +14,8 @@
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Installation";
-        var mkdocs_page_input_path = "installation.md";
+        var mkdocs_page_name = "Learning MoirePy through examples";
+        var mkdocs_page_input_path = "examples.md";
         var mkdocs_page_url = null;
       </script>
     
@@ -45,14 +45,8 @@
                 <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
                 </li>
               </ul>
-              <ul class="current">
-                <li class="toctree-l1 current"><a class="reference internal current" href="#">Installation</a>
-    <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#prerequisites">Prerequisites</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#installation-instructions">Installation Instructions</a>
-    </li>
-    </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../installation/">Installation</a>
                 </li>
               </ul>
               <ul>
@@ -73,16 +67,18 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Examples</span></p>
-              <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../examples/">Learning MoirePy through examples</a>
+              <ul class="current">
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Learning MoirePy through examples</a>
+    <ul class="current">
+    </ul>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../examples/angle_calculation/">Angle Calculation and Moire Lattice Construction</a>
+                  <li class="toctree-l1"><a class="reference internal" href="angle_calculation/">Angle Calculation and Moire Lattice Construction</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../examples/tight_binding_ham/">Tight Binding Moiré Hamiltonian Construction</a>
+                  <li class="toctree-l1"><a class="reference internal" href="tight_binding_ham/">Tight Binding Moiré Hamiltonian Construction</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../examples/k_space_ham/">K-Space Hamiltonian</a>
+                  <li class="toctree-l1"><a class="reference internal" href="k_space_ham/">K-Space Hamiltonian</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../examples/dos_calculation/">Density of States Calculation</a>
+                  <li class="toctree-l1"><a class="reference internal" href="dos_calculation/">Density of States Calculation</a>
                   </li>
               </ul>
       </div>
@@ -99,7 +95,8 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
-      <li class="breadcrumb-item active">Installation</li>
+          <li class="breadcrumb-item">Examples</li>
+      <li class="breadcrumb-item active">Learning MoirePy through examples</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -108,35 +105,19 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="installation">Installation</h1>
-<p>You can install the <code>moirepy</code> library using pip from the <a href="https://pypi.org/project/moirepy/">official PyPI library</a>, the standard package installer for Python. This guide provides detailed installation instructions for various operating systems and environments.</p>
-<h2 id="prerequisites">Prerequisites</h2>
-<p>Before installing <code>moirepy</code>, ensure that you have the following:</p>
+                <h1 id="learning-moirepy-through-examples">Learning MoirePy through examples</h1>
 <ul>
-<li><strong>Python:</strong> It is highly recommended to use Python 3.12. While <code>moirepy</code> is generally compatible with Python versions greater than 3.7, comprehensive testing has been performed primarily with Python 3.12. Using this version will provide the most stable and reliable experience.</li>
-<li><strong>pip:</strong> Pip usually comes bundled with Python installations. You can check if you have pip installed by opening your terminal or command prompt and running:</li>
+<li><a href="angle_calculation/">angle_calculation.ipynb</a></li>
+<li><a href="tight_binding_ham/">tight_binding_ham.ipynb</a></li>
+<li><a href="k_space_ham/">k_space_ham.ipynb</a></li>
+<li><a href="dos_calculation/">dos_calculation.ipynb</a></li>
 </ul>
-<pre><code>pip --version
-</code></pre>
-<p>If pip is not installed, you can find installation instructions in the official Python documentation.</p>
-<h2 id="installation-instructions">Installation Instructions</h2>
-<p>The most common way to install <code>moirepy</code> is using pip. Follow the instructions below for your operating system.</p>
-<p><strong>Linux / macOS / Windows</strong></p>
-<pre><code>pip install moirepy
-</code></pre>
-<p>or</p>
-<pre><code>pip3 install moirepy
-</code></pre>
-<p>or</p>
-<pre><code>python3 -m pip install moirepy
-</code></pre>
-<p>If you experience any problems during installation, please refer to the <a href="https://github.com/jabed-umar/MoirePy/issues">project's issue tracker</a> on GitHub.</p>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href=".." class="btn btn-neutral float-left" title="Home"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../find_theta/" class="btn btn-neutral float-right" title="Angle Value Calculator">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../api/utils/" class="btn btn-neutral float-left" title="Utils"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="angle_calculation/" class="btn btn-neutral float-right" title="Angle Calculation and Moire Lattice Construction">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -159,10 +140,10 @@
   <span class="rst-current-version" data-toggle="rst-current-version">
     
     
-      <span><a href=".." style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../api/utils/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../find_theta/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="angle_calculation/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

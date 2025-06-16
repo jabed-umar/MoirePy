@@ -72,19 +72,11 @@
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#time-complexity_1">Time Complexity</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#breakdown">Breakdown</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#final-time">Final Time</a>
-    </li>
         </ul>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#summary">Summary</a>
     </li>
     </ul>
-                </li>
-              </ul>
-              <ul>
-                <li class="toctree-l1"><a class="reference internal" href="../examples/Tight_binding_Ham/">Tight Binding Moiré Hamiltonian Construction</a>
                 </li>
               </ul>
               <p class="caption"><span class="caption-text">API Reference</span></p>
@@ -94,6 +86,19 @@
                   <li class="toctree-l1"><a class="reference internal" href="../api/moire/">Moire</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../api/utils/">Utils</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Examples</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../examples/">Learning MoirePy through examples</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../examples/angle_calculation/">Angle Calculation and Moire Lattice Construction</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../examples/tight_binding_ham/">Tight Binding Moiré Hamiltonian Construction</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../examples/k_space_ham/">K-Space Hamiltonian</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../examples/dos_calculation/">Density of States Calculation</a>
                   </li>
               </ul>
       </div>
@@ -206,7 +211,7 @@ r = |\vec{r}| = \sqrt{a^2 + b^2 + 2ab\cos\beta}
 <li>
 <p><strong>Group points by radius</strong>:
     For each point (<span class="arithmatex">\(\mathbf{p}\)</span>) in <span class="arithmatex">\(A_r\)</span> and <span class="arithmatex">\(B_r\)</span>, compute its distance <span class="arithmatex">\(d = \|\mathbf{p}\|\)</span> from the origin.
-    In each lattice group points that lie at the same radius into <em>levels</em>.</p>
+    In each lattice, group points that lie at the same radius into <em>levels</em>.</p>
 </li>
 <li>
 <p><strong>Identify shared levels</strong>:
@@ -220,32 +225,32 @@ r = |\vec{r}| = \sqrt{a^2 + b^2 + 2ab\cos\beta}
 0 &lt; \angle\mathbf{p} \le \theta_\text{max}, \quad
 0 &lt; \angle\mathbf{q} \le \theta_\text{max}
 \]</div>
-<p>where <span class="arithmatex">\(\theta_\text{max}\)</span> is the lattice's symmetry sector (e.g., <span class="arithmatex">\(60^\circ\)</span> for triangular lattices, <span class="arithmatex">\(90^\circ\)</span> for square lattices). If the two lattices have diffferent symmetry then we take the LCM of the two sectors. For example, if one lattice has a <span class="arithmatex">\(30^\circ\)</span> sector and the other has a <span class="arithmatex">\(20^\circ\)</span> sector, we would use <span class="arithmatex">\(\theta_\text{max} = 60^\circ\)</span>.</p>
-<p>Because of symmetry, we will consider the other corresponding points in the other sectors as clones of points of this sector.</p>
+<p>where <span class="arithmatex">\(\theta_\text{max}\)</span> is the lattice's symmetry sector (e.g., <span class="arithmatex">\(60^\circ\)</span> for triangular lattices, <span class="arithmatex">\(90^\circ\)</span> for square lattices). Although till now we have discussed as if the upper lattice and lower lattice can be different, in practice we have never tested this code on different lattices. Neither do we know if those cases will yield any commensurate angles. For now, we will assume that both lattices are the same. So here when we say lattice's symmetry sector, we mean the symmetry sectors of both are same.</p>
 </li>
 <li>
 <p><strong>Compute angle differences</strong>:
-   Now we will pair points from <span class="arithmatex">\(\{\mathbf{p}\}\)</span> with <span class="arithmatex">\(\{\mathbf{q}\}\)</span> at each level <span class="arithmatex">\(d\)</span>. For each point from <span class="arithmatex">\(\{\mathbf{p}\}\)</span>, we will pair it with every point from <span class="arithmatex">\(\{\mathbf{q}\}\)</span> or it's clones from the neighbouring sector whoever is nearer. For each pair, compute the angle differences.</p>
+   Now we will pair points from <span class="arithmatex">\(\{\mathbf{p}\}\)</span> with <span class="arithmatex">\(\{\mathbf{q}\}\)</span> at each level <span class="arithmatex">\(d\)</span>. For each point from <span class="arithmatex">\(\{\mathbf{p}\}\)</span>, we will pair it with every point from <span class="arithmatex">\(\{\mathbf{q}\}\)</span>. For each pair, compute the angle differences.</p>
 </li>
 </ol>
 <p>{Insert illustration showing concentric circles with marked angular slices and example point pairs.}</p>
 <p>This procedure ensures we collect unique, minimal-angle configurations that could align under rotation, constrained to the symmetry of the lattice.</p>
+<details>
+  <summary>Some Practical Optimizations</summary>
+
+    <ul>
+        <li>
+          In <strong>Step 4</strong> after calculating the angle difference (say \(\theta\)), we keep the angle only if it is in the range \(0 < \theta < \theta_\text{max}\). Note that we exclude \(0\) because it corresponds to the trivial case where no rotation is applied, and we exclude \(\theta_\text{max}\) because it corresponds to the case where the two lattices are again perfectly aligned, as if no rotation is applied. Also we do not take angles more than \(\theta_\text{max}\) because they are equivalent to angles less than \(\theta_\text{max}\) due to periodicity.
+        </li>
+        <li>
+          In <strong>Step 1</strong>, when using same lattice as both upper and lower layer, after grouping points that lie at the same distance from the origin, we discard those \(d\)s who just have 6 points (4 points for square lattice). This is because it will lead us to no rotation anyway. We keep only those \(d\)s which have more than 6 points (12, 18, etc. for triangular lattice; 8, 12, etc. for square lattice) where we can form pairs of points that yield non-trivial angles.
+        </li>
+    </ul>
+
+</details>
+
+<p><br></p>
 <h3 id="time-complexity_1">Time Complexity</h3>
-<p>Let’s denote:</p>
-<ul>
-<li><span class="arithmatex">\(n = O(r^2)\)</span>: number of points in the circular cutoff</li>
-</ul>
-<h3 id="breakdown">Breakdown</h3>
-<ul>
-<li><strong>Sorting distances</strong>: <span class="arithmatex">\(O(n \log n)\)</span></li>
-<li><strong>Finding common radii</strong>: <span class="arithmatex">\(O(n)\)</span></li>
-<li><strong>Pairwise angle checks</strong>: Very few (multiples of 6) per level → negligible</li>
-</ul>
-<h3 id="final-time">Final Time</h3>
-<div class="arithmatex">\[
-O(n \log n)
-\]</div>
-<p>Compared to the <span class="arithmatex">\(O(n^2)\)</span> of Diophantine, this is clearly more efficient — and arguably more intuitive.</p>
+<p>If the number points is of the order <span class="arithmatex">\(O(n^2)\)</span> and they are sorted by distance, the time complexity of this part becomes <span class="arithmatex">\(O(n^2 \log n^2)\)</span>. Apart from this all other steps are multiple order smaller than this cost, hence can be ignored. That makes this algorithm much less than the <span class="arithmatex">\(O(n^3)\)</span> of the Diophantine approach and arguably more intuitive.</p>
 <h2 id="summary">Summary</h2>
 <p>We avoided solving Diophantine equations by leaning on geometry and symmetry:</p>
 <ul>
@@ -259,7 +264,7 @@ O(n \log n)
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
         <a href="../find_theta/" class="btn btn-neutral float-left" title="Angle Value Calculator"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../examples/Tight_binding_Ham/" class="btn btn-neutral float-right" title="Tight Binding Moiré Hamiltonian Construction">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../api/layers/" class="btn btn-neutral float-right" title="Layers">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -285,7 +290,7 @@ O(n \log n)
       <span><a href="../find_theta/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../examples/Tight_binding_Ham/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../api/layers/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
