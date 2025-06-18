@@ -5,27 +5,7 @@
          <lastmod>2025-06-18</lastmod>
     </url>
     <url>
-         <loc>https://jabed-umar.github.io/MoirePy/angle_calculation_process/</loc>
-         <lastmod>2025-06-18</lastmod>
-    </url>
-    <url>
          <loc>https://jabed-umar.github.io/MoirePy/examples/</loc>
-         <lastmod>2025-06-18</lastmod>
-    </url>
-    <url>
-         <loc>https://jabed-umar.github.io/MoirePy/find_theta/</loc>
-         <lastmod>2025-06-18</lastmod>
-    </url>
-    <url>
-         <loc>https://jabed-umar.github.io/MoirePy/getting_started/</loc>
-         <lastmod>2025-06-18</lastmod>
-    </url>
-    <url>
-         <loc>https://jabed-umar.github.io/MoirePy/installation/</loc>
-         <lastmod>2025-06-18</lastmod>
-    </url>
-    <url>
-         <loc>https://jabed-umar.github.io/MoirePy/tight_binding_ham/</loc>
          <lastmod>2025-06-18</lastmod>
     </url>
     <url>
@@ -41,19 +21,39 @@
          <lastmod>2025-06-18</lastmod>
     </url>
     <url>
-         <loc>https://jabed-umar.github.io/MoirePy/examples/angle_calculation/</loc>
+         <loc>https://jabed-umar.github.io/MoirePy/getting_started/gs_intro/</loc>
          <lastmod>2025-06-18</lastmod>
     </url>
     <url>
-         <loc>https://jabed-umar.github.io/MoirePy/examples/dos_calculation/</loc>
+         <loc>https://jabed-umar.github.io/MoirePy/getting_started/installation/</loc>
          <lastmod>2025-06-18</lastmod>
     </url>
     <url>
-         <loc>https://jabed-umar.github.io/MoirePy/examples/k_space_ham/</loc>
+         <loc>https://jabed-umar.github.io/MoirePy/getting_started/negf/</loc>
          <lastmod>2025-06-18</lastmod>
     </url>
     <url>
-         <loc>https://jabed-umar.github.io/MoirePy/examples/tight_binding_ham/</loc>
+         <loc>https://jabed-umar.github.io/MoirePy/getting_started/prepare_layers/</loc>
+         <lastmod>2025-06-18</lastmod>
+    </url>
+    <url>
+         <loc>https://jabed-umar.github.io/MoirePy/getting_started/tight_binding_ham/</loc>
+         <lastmod>2025-06-18</lastmod>
+    </url>
+    <url>
+         <loc>https://jabed-umar.github.io/MoirePy/theory/angle_calculation_process/</loc>
+         <lastmod>2025-06-18</lastmod>
+    </url>
+    <url>
+         <loc>https://jabed-umar.github.io/MoirePy/theory/avc/</loc>
+         <lastmod>2025-06-18</lastmod>
+    </url>
+    <url>
+         <loc>https://jabed-umar.github.io/MoirePy/theory/search_algorithm_kdtree/</loc>
+         <lastmod>2025-06-18</lastmod>
+    </url>
+    <url>
+         <loc>https://jabed-umar.github.io/MoirePy/theory/theory_intro/</loc>
          <lastmod>2025-06-18</lastmod>
     </url>
 </urlset>

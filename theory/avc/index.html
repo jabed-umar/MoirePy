@@ -3,24 +3,24 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://jabed-umar.github.io/MoirePy/find_theta/" />
-      <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>Find theta - MoirePy – Python Library for Moiré Lattice Simulation</title>
-    <link rel="stylesheet" href="../css/theme.css" />
-    <link rel="stylesheet" href="../css/theme_extra.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://jabed-umar.github.io/MoirePy/theory/avc/" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Angle Value Calculator - MoirePy – Python Library for Moiré Lattice Simulation</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
-        <link href="../assets/_mkdocstrings.css" rel="stylesheet" />
-        <link href="../assets/style.css" rel="stylesheet" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
+        <link href="../../assets/style.css" rel="stylesheet" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Find theta";
-        var mkdocs_page_input_path = "find_theta.md";
-        var mkdocs_page_url = "/MoirePy/find_theta/";
+        var mkdocs_page_name = "Angle Value Calculator";
+        var mkdocs_page_input_path = "theory/avc.md";
+        var mkdocs_page_url = "/MoirePy/theory/avc/";
       </script>
     
     <!--[if lt IE 9]>
-      <script src="../js/html5shiv.min.js"></script>
+      <script src="../../js/html5shiv.min.js"></script>
     <![endif]-->
       <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
       <script>hljs.highlightAll();</script> 
@@ -32,9 +32,9 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
     <div class="wy-side-scroll">
       <div class="wy-side-nav-search">
-          <a href=".." class="icon icon-home"> MoirePy – Python Library for Moiré Lattice Simulation
+          <a href="../.." class="icon icon-home"> MoirePy – Python Library for Moiré Lattice Simulation
         </a><div role="search">
-  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
       <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
   </form>
 </div>
@@ -42,42 +42,48 @@
 
       <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
-                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                <li class="toctree-l1"><a class="reference internal" href="../..">Home</a>
                 </li>
               </ul>
+              <p class="caption"><span class="caption-text">Getting Started</span></p>
               <ul>
-                <li class="toctree-l1"><a class="reference internal" href="../installation/">Installation</a>
-                </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/gs_intro/">Getting Started</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/installation/">Installation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/prepare_layers/">Prepare Layers</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/tight_binding_ham/">Tight Binding Moiré Hamiltonian</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/negf/">NEGF (Non Equilibrium Green's Function)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../examples/">EXAMPLE NOTEBOOKS</a>
+                  </li>
               </ul>
-              <ul>
-                <li class="toctree-l1"><a class="reference internal" href="../getting_started/">Getting Started</a>
-                </li>
-              </ul>
-              <ul>
-                <li class="toctree-l1"><a class="reference internal" href="../angle_calculation_process/">Angle calculation process</a>
-                </li>
-              </ul>
+              <p class="caption"><span class="caption-text">Theoretical Background</span></p>
               <ul class="current">
-                <li class="toctree-l1 current"><a class="reference internal current" href="#">Find theta</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../theory_intro/">Theoretical Background</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../search_algorithm_kdtree/">Searching Algorithm & KDTree</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../angle_calculation_process/">Angle Calculation Process</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Angle Value Calculator</a>
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#guidelines">Guidelines</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#calculator">Calculator</a>
     </li>
     </ul>
-                </li>
-              </ul>
-              <ul>
-                <li class="toctree-l1"><a class="reference internal" href="../examples/">Learning Moire Physics Through Examples</a>
-                </li>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">API Reference</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../api/layers/">Layers</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/layers/">Layers</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../api/moire/">Moire</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/moire/">Moire</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../api/utils/">Utils</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/utils/">Utils</a>
                   </li>
               </ul>
       </div>
@@ -87,16 +93,17 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
       <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="..">MoirePy – Python Library for Moiré Lattice Simulation</a>
+          <a href="../..">MoirePy – Python Library for Moiré Lattice Simulation</a>
         
       </nav>
       <div class="wy-nav-content">
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
-    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
-      <li class="breadcrumb-item active">Find theta</li>
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Theoretical Background</li>
+      <li class="breadcrumb-item active">Angle Value Calculator</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/jabed-umar/MoirePy/edit/master/docs/find_theta.md">Edit on jabed-umar/MoirePy</a>
+          <a href="https://github.com/jabed-umar/MoirePy/edit/master/docs/theory/avc.md">Edit on jabed-umar/MoirePy</a>
     </li>
   </ul>
   <hr/>
@@ -188,7 +195,7 @@
                         <li>Unresponsiveness or infinite loops.</li>
                         <li>Unexpected program behavior.</li>
                     </ul>
-                    However, if you believe that your specific configuration (as detailed in <a href="angle_calculation_process.md">Angle Calculation Process</a>) <em>should</em> yield meaningful results, then following these patterns <em>might</em> be considered:
+                    However, if you believe that your specific configuration (as detailed in <a href="../angle_calculation_process">Angle Calculation Process</a>) <em>should</em> yield meaningful results, then following these patterns <em>might</em> be considered:
                     <ol>
                         <li>Both lattice angles are exact divisors of 360°.</li>
                         <li>One of them should exactly divide the other.</li>
@@ -504,8 +511,8 @@
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../angle_calculation_process/" class="btn btn-neutral float-left" title="Angle calculation process"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../examples/" class="btn btn-neutral float-right" title="Learning Moire Physics Through Examples">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../angle_calculation_process/" class="btn btn-neutral float-left" title="Angle Calculation Process"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../../api/layers/" class="btn btn-neutral float-right" title="Layers">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -535,16 +542,16 @@
       <span><a href="../angle_calculation_process/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../examples/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../../api/layers/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
-    <script src="../js/jquery-3.6.0.min.js"></script>
-    <script>var base_url = "..";</script>
-    <script src="../js/theme_extra.js"></script>
-    <script src="../js/theme.js"></script>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
       <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
-      <script src="../search/main.js"></script>
+      <script src="../../search/main.js"></script>
     <script>
         jQuery(function () {
             SphinxRtdTheme.Navigation.enable(true);
