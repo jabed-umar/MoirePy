@@ -1,4 +1,4 @@
-# Learning MoirePy through examples
+# Learning Moire Physics Through Examples
 
 - [angle_calculation.ipynb](examples/angle_calculation.ipynb)
 - [tight_binding_ham.ipynb](examples/tight_binding_ham.ipynb)

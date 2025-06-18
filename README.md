@@ -1,10 +1,6 @@
 # MoirePy: Twist It, Solve It, Own It!
 
-MoirePy is a Python package for the analysis of moiré lattice. It is designed to be a user-friendly tool for studying bilayer moiré lattices.
-
-
-<!-- @jabed write here, the license should go at the bottom (I will write within this week)-->
-
+**MoirePy** is a Python package for the simulation and analysis of **bilayer moiré lattices** using **tight-binding models**. Built for computational physicists and material scientists, it enables fast and flexible moiré band structure calculations, visualization, and manipulation.
 
 
 **Documentation:** [https://jabed-umar.github.io/MoirePy/](https://jabed-umar.github.io/MoirePy/)

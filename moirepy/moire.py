@@ -10,7 +10,7 @@ class BilayerMoireLattice:  # both layers same, only one point in one unit cell
         latticetype: Layer,
         ll1:int, ll2:int,  # lower lattice
         ul1:int, ul2:int,  # upper lattice
-        nx:int=1, ny:int=1,
+        n1:int=1, n2:int=1,
         translate_upper=(0, 0),
         pbc:bool=True,
         k:int=1,  # number of orbitals
@@ -42,15 +42,17 @@ class BilayerMoireLattice:  # both layers same, only one point in one unit cell
             are_coeffs_integers(lower_lattice.lv1, lower_lattice.lv2, mlv1) and
             are_coeffs_integers(upper_lattice.lv1, upper_lattice.lv2, mlv1)
         ), "FATAL ERROR: calculated mlv2 is incorrect"
-        lower_lattice.generate_points(mlv1, mlv2, nx, ny)
-        upper_lattice.generate_points(mlv1, mlv2, nx, ny)
+        lower_lattice.generate_points(mlv1, mlv2, n1, n2)
+        upper_lattice.generate_points(mlv1, mlv2, n1, n2)
+        # print(f"{mlv1 = }")
+        # print(f"{mlv2 = }")
 
         self.ll1 = ll1
         self.ll2 = ll2
         self.ul1 = ul1
         self.ul2 = ul2
-        self.nx = nx
-        self.ny = ny
+        self.n1 = n1
+        self.n2 = n2
         self.translate_upper = translate_upper
         self.lower_lattice = lower_lattice
         self.upper_lattice = upper_lattice
@@ -69,8 +71,8 @@ class BilayerMoireLattice:  # both layers same, only one point in one unit cell
     def plot_lattice(self):
         mlv1 = self.mlv1
         mlv2 = self.mlv2
-        nx = self.nx
-        ny = self.ny
+        n1 = self.n1
+        n2 = self.n2
 
         # plt.plot(*zip(*self.lower_lattice.points), 'r.', markersize=2)
         # plt.plot(*zip(*self.upper_lattice.points), 'b.', markersize=2)
@@ -78,10 +80,10 @@ class BilayerMoireLattice:  # both layers same, only one point in one unit cell
         self.upper_lattice.plot_lattice(colours=["r"], plot_connections=True)
 
         # parallellogram around the whole lattice
-        plt.plot([0, nx*mlv1[0]], [0, nx*mlv1[1]], 'k', linewidth=1)
-        plt.plot([0, ny*mlv2[0]], [0, ny*mlv2[1]], 'k', linewidth=1)
-        plt.plot([nx*mlv1[0], nx*mlv1[0] + ny*mlv2[0]], [nx*mlv1[1], nx*mlv1[1] + ny*mlv2[1]], 'k', linewidth=1)
-        plt.plot([ny*mlv2[0], nx*mlv1[0] + ny*mlv2[0]], [ny*mlv2[1], nx*mlv1[1] + ny*mlv2[1]], 'k', linewidth=1)
+        plt.plot([0, n1*mlv1[0]], [0, n1*mlv1[1]], 'k', linewidth=1)
+        plt.plot([0, n2*mlv2[0]], [0, n2*mlv2[1]], 'k', linewidth=1)
+        plt.plot([n1*mlv1[0], n1*mlv1[0] + n2*mlv2[0]], [n1*mlv1[1], n1*mlv1[1] + n2*mlv2[1]], 'k', linewidth=1)
+        plt.plot([n2*mlv2[0], n1*mlv1[0] + n2*mlv2[0]], [n2*mlv2[1], n1*mlv1[1] + n2*mlv2[1]], 'k', linewidth=1)
 
         # just plot mlv1 and mlv2 parallellogram
         plt.plot([0, mlv1[0]], [0, mlv1[1]], 'k', linewidth=1)
@@ -219,8 +221,8 @@ class BilayerMoireLattice:  # both layers same, only one point in one unit cell
         tlself: Union[float, int, Callable[[Sequence[float], str], float]] = None,
         suppress_nxny_warning: bool = False,
     ):
-        if suppress_nxny_warning is False and (self.nx != 1 or self.ny != 1):
-            print("WARNING: atleast one of nx and ny are not 1, are you sure you want to use generate_k_space_hamiltonian with this lattice?")
+        if suppress_nxny_warning is False and (self.n1 != 1 or self.n2 != 1):
+            print("WARNING: atleast one of n1 and n2 are not 1, are you sure you want to use generate_k_space_hamiltonian with this lattice?")
 
         if tll is None or isinstance(tll, int) or isinstance(tll, float): tll = self._validate_input1(tll, "tll")
         if tuu is None or isinstance(tuu, int) or isinstance(tuu, float): tuu = self._validate_input1(tuu, "tuu")
@@ -255,7 +257,7 @@ class BilayerMPMoireLattice(BilayerMoireLattice):
         latticetype: Layer,
         ll1:int, ll2:int,  # lower lattice
         ul1:int, ul2:int,  # upper lattice
-        nx:int=1, ny:int=1,
+        n1:int=1, n2:int=1,
         translate_upper=(0, 0),
         pbc:bool=True,
         k:int=1,  # number of orbitals

@@ -1,12 +1,19 @@
-site_name: MoirePy
+site_name: MoirePy – Python Library for Moiré Lattice Simulation
+site_description: "MoirePy is a Python library for bilayer moiré lattice simulations using tight-binding models. Open-source, installable via PyPI."
+site_url: https://jabed-umar.github.io/MoirePy/
+repo_url: https://github.com/jabed-umar/MoirePy
+repo_name: jabed-umar/MoirePy
+
 theme:
-  # name: m kdocs
-  name  : readthedocs
+  name: readthedocs
+  # name: windmill
+  # name: ivory
+
+  # name: mkdocs
   # name: material  
   # name: kpn
   # name: terminal
-  # name: torillic
-  # name: topdf
+
 
 plugins:
   - search
@@ -21,6 +28,8 @@ plugins:
           inventories: []
           options:
             show_source: true
+  - bibtex:
+      bib_file: docs/refs.bib
 
 extra_css:
   - assets/style.css
@@ -30,21 +39,22 @@ extra_css:
 
 nav:
   - Home: index.md
-  - Installation: installation.md
-  - Angle Value Calculator: find_theta.md
-  - Angle calculation Process: angle_calculation_process.md
+  - installation.md
+  - getting_started.md
+  - angle_calculation_process.md
+  - find_theta.md
+  - examples.md
   - API Reference:
       - Layers: api/layers.md
       - Moire: api/moire.md
       - Utils: api/utils.md
-  - Examples:
-      - examples.md
-      - examples/angle_calculation.ipynb
-      - examples/tight_binding_ham.ipynb
-      - examples/k_space_ham.ipynb
-      - examples/dos_calculation.ipynb
+      # - examples/angle_calculation.ipynb
+      # - examples/tight_binding_ham.ipynb
+      # - examples/k_space_ham.ipynb
+      # - examples/dos_calculation.ipynb
 
 markdown_extensions:
+  - footnotes
   - pymdownx.arithmatex:
       generic: true
 

@@ -1,6 +1,6 @@
 # Tight Binding Moiré Hamiltonian Construction
 
-The **tight-binding Hamiltonian** [1] is a widely used model in solid-state physics and quantum chemistry to describe the electronic structure of solids — especially in crystals and layered materials. In this model, electrons are considered *localized* around atomic sites but can *hop* to neighbouring atoms. To describe such a Hamiltonian for a **Moiré system**, we use the second quantized [2] form:
+The **tight-binding Hamiltonian** [@ashcroft1976] is a widely used model in solid-state physics and quantum chemistry to describe the electronic structure of solids — especially in crystals and layered materials. In this model, electrons are considered *localized* around atomic sites but can *hop* to neighbouring atoms. To describe such a Hamiltonian for a **Moiré system**, we use the second quantized [@bruus2004] form:  
 
 $$
 H = \sum_{\alpha, \beta;\, r,r' \in L} t^1_{rr', \alpha\beta}c^{\dagger}_{r,\beta}c_{r',\alpha} 
@@ -32,9 +32,9 @@ h_{UL} & h_{UU}
 $$
 
 Here, \( h_{LL} \) and \( h_{UU} \) are the *first-quantized* \( n \times n \) Hamiltonians of the lower and upper layers, respectively. The blocks \( h_{LU} \) and \( h_{UL} \) represent interlayer couplings.
-
+<!-- 
 ## References
 
 1. Neil Ashcroft, and David Mermin, Solid State Physics, Saunders College Publishing, 1976.
 
-2. H. Bruus and K. Flensberg, Many-Body Quantum Theory in Condensed Matter Physics: An Introduction, OUP Oxford, 2004.
+2. H. Bruus and K. Flensberg, Many-Body Quantum Theory in Condensed Matter Physics: An Introduction, OUP Oxford, 2004. -->

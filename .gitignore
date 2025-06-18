@@ -9,3 +9,5 @@ dist
 moirepy.egg-info/
 
 site/
+
+*copy*

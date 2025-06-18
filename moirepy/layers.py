@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import math
 from .utils import get_rotation_matrix
 from scipy.spatial import KDTree
+import json
 
 
 class Layer:  # parent class
@@ -13,24 +14,23 @@ class Layer:  # parent class
 
         Args:
             pbc (bool): Flag to indicate if periodic boundary conditions
-                (PBC) are applied. Defaults to False.
+                (PBC) are applied.
             study_proximity (int): Scaling factor for proximity calculations,
-                **enabiling** the number of nearest neighbors. This is the upper
+                **enabling** the number of nearest neighbors. This is the upper
                 bound for the number of nearest neighbours you will be calculating
                 throughout the code. If you try to calculate higher order neighbours,
-                it might lead to errors, or worse give wrong answers without complaining.
-                Defaults to 1.
+                it might lead to errors, or worse give wrong answers silently.
 
         Raises:
             ValueError: If `lv1` is not along the x-axis
                 or if `lv2` has a negative y-component.
-
-        Example:
-        ```python
-        layer = Layer(pbc=True, study_proximity=2)
-        Create a Layer object with PBC and study of second nearest neighbours
-        ```
         """
+
+        required_attrs = ["lv1", "lv2", "lattice_points", "neighbours"]
+        for attr in required_attrs:
+            if not hasattr(self, attr):
+                raise NotImplementedError(f"Subclass {self.__class__.__name__} must define '{attr}'")
+
         self.toll_scale = max(
             np.linalg.norm(self.lv1),
             np.linalg.norm(self.lv2)
@@ -40,8 +40,8 @@ class Layer:  # parent class
             raise ValueError(
                 """lv1 was expected to be along the x-axis,
                 and lv2 should have a +ve y component
-                Please refer to the documentation for more information: https://example.com
-                """  # @jabed add link to documentation we will write this
+                Please refer to the documentation for more information: https://jabed-umar.github.io/MoirePy/find_theta/
+                """
             )
 
         self.rot_m = np.eye(2)  # will be replaced if called perform_rotation
@@ -63,7 +63,7 @@ class Layer:  # parent class
 
         Returns:
             None: The function modifies the rotation matrix
-            and updates the lattice points and neighbors in place.
+                and updates the lattice points and neighbors in place.
 
         Example:
         ```python
@@ -90,7 +90,7 @@ class Layer:  # parent class
             atom_type: [rot_m @ np.array(neighbour) for neighbour in neighbour_list]
             for atom_type, neighbour_list in self.neighbours.items()
         }
-        
+
 
     def generate_points(
             self,
@@ -98,6 +98,7 @@ class Layer:  # parent class
             mlv2: np.ndarray,
             mln1: int = 1,
             mln2: int = 1,
+            test: bool = False,
     ) -> None:
         """
         Generates points for a Moiré lattice based on the given lattice
@@ -110,27 +111,36 @@ class Layer:  # parent class
                 along the first lattice vector. Defaults to 1.
             mln2 (int, optional): The number of Moiré unit
                 cells along the second lattice vector. Defaults to 1.
+            test (bool, optional): If we are generating points just for testing purpose.
+                kdtree will not be prepared and mln1 and mln2 both need to be 1
 
         Returns:
             None: The function modifies the object state and
             stores the generated points and their types.
 
         Raises:
-            ValueError: If the number of unit cells is non-positive.
+            AssersionError: If mln1 and mln2 are not positive integers.
+            AssersionError: if test is True and mln1 or mln2 is not 1
 
         Example:
         ```python
-        lattice = MoireLattice()
-        lattice.generate_points(np.array([1, 0]), np.array([0.5, np.sqrt(3)/2]), mln1=3, mln2=2)
-        print(lattice.points)
+        >>> lattice = MyLattice()  # a class inheriting the Layer class
+        >>> lattice.generate_points(np.array([1, 0]), np.array([0.5, np.sqrt(3)/2]), mln1=1, mln2=1)
+        >>> print(lattice.points)
         ```
         """
+        
+        # raise the promised errors:
+        assert isinstance(mln1, int) and mln1 > 0, "mln1 must be a positive integer."
+        assert isinstance(mln2, int) and mln2 > 0, "mln2 must be a positive integer."
+        if test: assert mln1 == 1 and mln2 == 1, "If test is True, both mln1 and mln2 must be 1."
+        
         self.mlv1 = mlv1  # Moire lattice vector 1
         self.mlv2 = mlv2  # Moire lattice vector 2
         self.mln1 = mln1  # Number of moire unit cells along mlv1
         self.mln2 = mln2  # Number of moire unit cells along mlv2
 
-        # Step 1: Find the maximum distance to determine the grid resolution
+        # Step 1: Find the maximum distance to determine the number of points along each direction
         points = [np.array([0, 0]), mlv1, mlv2, mlv1 + mlv2]
         max_distance = max(
             np.linalg.norm(points[0] - points[1]),
@@ -159,11 +169,11 @@ class Layer:  # parent class
         step1_names = np.array(step1_names)
 
         # Apply the boundary check method (inside_boundaries) to filter the points
-        mask = self._inside_boundaries(step1_points, 1, 1)
+        mask = self._inside_boundaries(step1_points, 1, 1)  # generating points only inside the first cell now
         step1_points = step1_points[mask]
         step1_names = step1_names[mask]
 
-        # Step 3: Copy and translate the unit cell to create the full moire pattern
+        # Step 3: Copy and translate the unit cell to create the full lattice
         points = []  # List to hold all the moire points
         names = []
         for i in range(self.mln1):  # Translate along mlv1 direction
@@ -176,7 +186,7 @@ class Layer:  # parent class
         self.points = np.vstack(points)
         self.point_types = np.hstack(names)
         # print(f"{self.point_types.shape=}, {self.points.shape=}")
-        self.generate_kdtree()
+        if not test: self.generate_kdtree()
 
     def _point_positions(self, points: np.ndarray, A: np.ndarray, B: np.ndarray) -> np.ndarray:
         """
@@ -193,15 +203,6 @@ class Layer:  # parent class
                 - (-1, 1) or (1, -1) for points outside on specific sides.
                 left side and right side will give -1 and 1 respectively
                 top side and bottom side will give -1 and 1 respectively
-
-        Example:
-        ```python
-        points = np.array([[0, 0], [1, 1], [-1, -1]])
-        A = np.array([1, 0])
-        B = np.array([0, 1])
-        positions = _point_positions(points, A, B)
-        print(positions)
-        ```
         """
         # Compute determinants for positions relative to OA and BC
         det_OA = (points[:, 0] * A[1] - points[:, 1] * A[0]) <= self.toll_scale * 1e-2
@@ -301,14 +302,6 @@ class Layer:  # parent class
 
         Raises:
             ValueError: If the points in the lattice are not defined.
-
-        Example:
-        ```python
-        lattice = MoireLattice()
-        lattice.generate_kdtree()
-        kdtree = lattice.kdtree
-        print(kdtree)
-        ```
         """
         if not self.pbc:  # OBC is easy
             self.kdtree = KDTree(self.points)
@@ -343,6 +336,7 @@ class Layer:  # parent class
         self.bigger_points = points
         self.bigger_point_types = point_names
         self.kdtree = KDTree(points)
+        self._generate_mapping()
         # # plot the points but with colours based on the point_positions
         # # - point_positions = [0, 0] -> black
         # # - point_positions = [1, 0] -> red
@@ -369,7 +363,6 @@ class Layer:  # parent class
         # plt.grid()
         # plt.show()
 
-        self._generate_mapping()
 
     def _generate_mapping(self) -> None:
         """
@@ -405,21 +398,21 @@ class Layer:  # parent class
 
         """
         self.mappings = {}
-        tree = KDTree(self.points)
+        tree = KDTree(self.points)  # smaller set
         translations = self._point_positions(
             self.bigger_points,
             self.mln1 * self.mlv1,
             self.mln2 * self.mlv2
         )
         for i, (dx, dy) in enumerate(translations):
-            point = self.bigger_points[i] - (dx * self.mlv1 * self.mln1 + dy * self.mlv2 * self.mln2)
-            distance, index = tree.query(point)
+            mapped_point = self.bigger_points[i] - (dx * self.mlv1 * self.mln1 + dy * self.mlv2 * self.mln2)
+            distance, index = tree.query(mapped_point)
             if distance >= self.toll_scale * 1e-3:
-                print(f"Distance {distance} exceeds tolerance for point {i} at location {point} with translation ({dx}, {dy}).")
+                print(f"Distance {distance} exceeds tolerance for {i}th point {self.bigger_points[i]} mapped at location {mapped_point} with translation ({dx}, {dy}).")
                 plt.plot(*self.bigger_points.T, "ko", alpha=0.3)
                 plt.plot(*self.points.T, "k.")
                 # plt.plot(*self.bigger_points[i], "b.")
-                # plt.plot(*point, "r.")
+                # plt.plot(*mapped_point, "r.")
                 # plt.plot(*self.points[index], "g.")
                 # parallellogram around the whole lattice
                 plt.plot([0, self.mln1 * self.mlv1[0]], [0, self.mln1 * self.mlv1[1]], 'k', linewidth=1)
@@ -432,14 +425,14 @@ class Layer:  # parent class
                 plt.plot([0, self.mlv2[0]], [0, self.mlv2[1]], 'k', linewidth=1)
                 plt.plot([self.mlv1[0], self.mlv1[0] + self.mlv2[0]], [self.mlv1[1], self.mlv1[1] + self.mlv2[1]], 'k', linewidth=1)
                 plt.plot([self.mlv2[0], self.mlv1[0] + self.mlv2[0]], [self.            mlv2[1], self.mlv1[1] + self.mlv2[1]], 'k', linewidth=1)
-                # for index, point in enumerate(self.bigger_points):
-                #     plt.text(*point, f"{index}", fontsize=6)
-                plt.gca().add_patch(plt.Circle(point, distance / 2, color='r', fill=False))
+                # for index, mapped_point in enumerate(self.bigger_points):
+                #     plt.text(*mapped_point, f"{index}", fontsize=6)
+                plt.gca().add_patch(plt.Circle(mapped_point, distance / 2, color='r', fill=False))
 
                 plt.grid()
                 plt.show()
 
-                raise ValueError(f"FATAL ERROR: Distance {distance} exceeds tolerance for point {i} at location {point}.")
+                raise ValueError(f"FATAL ERROR: Distance {distance} exceeds tolerance for {i}th point {self.bigger_points[i]} mapped at location {mapped_point} with translation ({dx}, {dy}).")
             self.mappings[i] = index
 
         # point positions... for each point in self.point, point position is a array of length 2 (x, y)
@@ -473,10 +466,9 @@ class Layer:  # parent class
             types (np.ndarray): An (N,) array of types corresponding to each point in `points`.
 
         Returns:
-            tuple: A tuple containing:
-                - distances_list (list): A list of lists, where each inner list contains the distances
+            distances (list): A list of lists, where each inner list contains the distances
                 to the nearest neighbors for the corresponding point.
-                - indices_list (list): A list of lists, where each inner list contains the indices
+            indices (list): A list of lists, where each inner list contains the indices
                 of the nearest neighbors in `self.points`.
 
         Raises:
@@ -484,16 +476,16 @@ class Layer:  # parent class
             AssertionError: If the number of points does not match the number of types.
             ValueError: If a point type is not defined in `self.neighbours`.
             ValueError: If PBC is enabled and a distance exceeds
-            the specified tolerance.
+                the specified tolerance.
 
         Example:
         ```python
-        >>> layer = Layer()
-        >>> layer.generate_kdtree()
-        >>> points = np.array([[0.5, 0.5], [1.0, 1.0]])
-        >>> types = np.array([0, 1])
-        >>> distances, indices = layer.first_nearest_neighbours(points, types)
-    ```
+        layer = Layer()
+        layer.generate_kdtree()
+        points = np.array([[0.5, 0.5], [1.0, 1.0]])
+        types = np.array([0, 1])
+        distances, indices = layer.first_nearest_neighbours(points, types)
+        ```
         """
         assert self.kdtree is not None, "Generate the KDTree first by calling `Layer.generate_kdtree()`."
         assert points.shape[0] == types.shape[0], "Mismatch between number of points and types."
@@ -552,10 +544,10 @@ class Layer:  # parent class
 
         Example:
         ```python
-        >>> layer = Layer()
-        >>> layer.generate_kdtree()
-        >>> points = np.array([[0.5, 0.5], [1.0, 1.0]])
-        >>> distances, indices = layer.query(points, k=2)
+        layer = Layer()
+        layer.generate_kdtree()
+        points = np.array([[0.5, 0.5], [1.0, 1.0]])
+        distances, indices = layer.query(points, k=2)
         ```
         """
         # Step 1:
@@ -630,10 +622,10 @@ class Layer:  # parent class
 
         Example:
         ```python
-        >>> layer = Layer()
-        >>> layer.generate_kdtree()
-        >>> points = np.array([[0.5, 0.5], [1.0, 1.0]])
-        >>> distances, indices = layer.query_non_self(points, k=2)
+        layer = Layer()
+        layer.generate_kdtree()
+        points = np.array([[0.5, 0.5], [1.0, 1.0]])
+        distances, indices = layer.query_non_self(points, k=2)
         ```
         """
         distances, indices = self.query(points, k=k + 1)
@@ -649,32 +641,29 @@ class Layer:  # parent class
         # return distances[:, 1:], indices[:, 1:]
         return distances, indices
 
-    def plot_lattice(self, plot_connections: bool = True, plot_unit_cell: bool = False, colours=["r", "g", "b", "c", "m", "y", "k"]) -> None:
+    def plot_lattice(self, plot_connections: bool = True, colours:list=["r", "g", "b", "c", "m", "y", "k"]) -> None:
         """
         Plots the lattice points and optionally the connections between them and the unit cell structure.
 
         Args:
             plot_connections (bool, optional): If True, plots the connections between nearest neighbors.
                 Defaults to True.
-            plot_unit_cell (bool, optional): If True, overlays the unit cell grid on the lattice.
-                Defaults to False.
+            colours (list, optional): List of matplotlib colours to use for different point types. 
 
         Behavior:
-            - Plots all lattice points grouped by atom type.
+            - Plots all lattice points grouped by type.
             - If `plot_connections` is True, it draws dashed red lines between nearest neighbors.
-            - If `plot_unit_cell` is True, it overlays the unit cell using the lattice vectors `lv1` and `lv2`.
 
         Example:
         ```python
-        >>> lattice = Lattice()
-        >>> lattice.generate_points()
-        >>> lattice.plot_lattice(plot_connections=True, plot_unit_cell=True)
+        lattice = MyLattice()
+        lattice.generate_points()
+        lattice.plot_lattice(plot_connections=True)
         ```
 
         Visualization Details:
             - Lattice points are plotted as small dots.
             - Nearest neighbor connections (if enabled) are shown as dashed red lines.
-            - The unit cell grid (if enabled) is displayed as dotted black lines with reduced opacity.
         """
 
         if len(colours) == 1: cols = {t[-1]:colours[0] for i, t, in enumerate(self.lattice_points)}
@@ -697,61 +686,20 @@ class Layer:  # parent class
             # print(a)
             plt.plot(*a, alpha=0.1)
 
-        # for x_coord, y_coord, atom_type in self.lattice_points:
-        #     plt.scatter([x_coord], [y_coord], s=5)
-
-        #     if plot_connections:
-        #         point = np.array([x_coord, y_coord])
-        #         for neighbor in self.neighbours[atom_type]:
-        #             connection = point + np.array(neighbor)
-        #             plt.plot(
-        #                 [point[0], connection[0]],
-        #                 [point[1], connection[1]],
-        #                 "r--",
-        #                 alpha=0.5,
-        #             )
-
-        if plot_unit_cell:
-            for i in range(self.ny + 1):
-                # line from (lv1*0 + lv2*i) to (lv1*nx + lv2*i)
-                plt.plot(
-                    [self.lv1[0] * 0 + self.lv2[0] * i, self.lv1[0] * self.nx + self.lv2[0] * i],
-                    [self.lv1[1] * 0 + self.lv2[1] * i, self.lv1[1] * self.nx + self.lv2[1] * i],
-                    "k:",
-                    alpha=0.3,
-                )
-
-            for i in range(self.nx + 1):
-                # line from (lv1*i + lv2*0) to (lv1*i + lv2*ny)
-                plt.plot(
-                    [self.lv1[0] * i + self.lv2[0] * 0, self.lv1[0] * i + self.lv2[0] * self.ny],
-                    [self.lv1[1] * i + self.lv2[1] * 0, self.lv1[1] * i + self.lv2[1] * self.ny],
-                    "k:",
-                    alpha=0.3,
-                )
-
         plt.title("Lattice Points")
         plt.xlabel("X Coordinate")
         plt.ylabel("Y Coordinate")
         plt.axis("equal")
 
-    # def __init_subclass__(cls, **kwargs):
-    #     super().__init_subclass__(**kwargs)
-    #     required_attrs = ["lv1", "lv2", "lattice_points", "neighbours", "study_proximity"]
-    #     for attr in required_attrs:
-    #         if not hasattr(cls, attr):
-    #             raise TypeError(f"Subclass {cls.__name__} must define '{attr}'")
-
     def __repr__(self):
         return (
-            f"Layer(\n"
-            f"    lv1 = {self.lv1},\n"
-            f"    lv2 = {self.lv2},\n"
-            f"    lattice_points = {self.lattice_points},\n"
-            # f"    neighbours = {self.neighbours},\n"
-            # f"    study_proximity = {self.study_proximity},\n"
-            f"    pbc = {self.pbc},\n"
-            f")"
+            f"""Layer(
+    lv1 = {self.lv1},
+    lv2 = {self.lv2},
+    lattice_points = {self.lattice_points},
+    study_proximity = {self.study_proximity},
+    pbc = {self.pbc},
+)"""
         )
 
 # ===============================================
@@ -759,11 +707,12 @@ class Layer:  # parent class
 # ===============================================
 
 class SquareLayer(Layer):
-    def __init__(self, pbc=False) -> None:
+    def __init__(self, pbc=False, study_proximity: int=1) -> None:
         self.lv1 = np.array([1, 0])  # Lattice vector in the x-direction
         self.lv2 = np.array([0, 1])  # Lattice vector in the y-direction
         self.lattice_points = (
-            [0, 0, "A"],
+            # location of the point inside the unit cell
+            [0, 0, "A"],  # coo_x, coo_y, atom_type (unique string)
         )
         self.neighbours = {
             "A": [
@@ -773,13 +722,11 @@ class SquareLayer(Layer):
                 [0, -1],  # Down
             ],
         }
-        self.study_proximity = 1
-        # study_proximity = 1 means only studying nearest neighbours will be eabled, 2 means study of next nearest neighbours will be enabled too and so on
-        super().__init__(pbc=pbc)  # this has to go at the end
+        super().__init__(pbc=pbc, study_proximity=study_proximity)  # this has to go at the end
 
 
 class TriangularLayer(Layer):
-    def __init__(self, pbc=False) -> None:
+    def __init__(self, pbc=False, study_proximity: int=1) -> None:
         self.lv1 = np.array([1, 0])  # Lattice vector in the x-direction
         self.lv2 = np.array([0.5, np.sqrt(3) / 2])  # Lattice vector at 60 degrees
         self.lattice_points = (
@@ -795,13 +742,11 @@ class TriangularLayer(Layer):
                 [0.5, -np.sqrt(3) / 2],  # Right-down
             ],
         }
-        self.study_proximity = 1
-        # study_proximity = 1 means only studying nearest neighbours will be eabled, 2 means study of next nearest neighbours will be enabled too and so on
-        super().__init__(pbc=pbc)  # this has to go at the end
+        super().__init__(pbc=pbc, study_proximity=study_proximity)  # this has to go at the end
 
 
 class Rhombus60Layer(Layer):
-    def __init__(self, pbc=False) -> None:
+    def __init__(self, pbc=False, study_proximity: int=1) -> None:
         angle = 60  # hardcoded angle... make a copy of the whole class for different angles
         self.lv1 = np.array([1, 0])  # Lattice vector in the x-direction
         cos_angle = np.cos(np.radians(angle))
@@ -818,13 +763,11 @@ class Rhombus60Layer(Layer):
                 [-cos_angle, -sin_angle],  # Down
             ],
         }
-        self.study_proximity = 1
-        # study_proximity = 1 means only studying nearest neighbours will be eabled, 2 means study of next nearest neighbours will be enabled too and so on
-        super().__init__(pbc=pbc)  # this has to go at the end
+        super().__init__(pbc=pbc, study_proximity=study_proximity)  # this has to go at the end
 
 
 class KagomeLayer(Layer):
-    def __init__(self, pbc=False) -> None:
+    def __init__(self, pbc=False, study_proximity: int=1) -> None:
         self.lv1 = np.array([1, 0])  # Lattice vector in the x-direction
         self.lv2 = np.array([0.5, np.sqrt(3)/2])  # Lattice vector at 60 degrees
 
@@ -854,11 +797,11 @@ class KagomeLayer(Layer):
                 [ 0.25, -np.sqrt(3)/4],  # Right-down
             ],
         }
-        super().__init__(pbc=pbc)
+        super().__init__(pbc=pbc, study_proximity=study_proximity)
 
 
 class HexagonalLayer(Layer):
-    def __init__(self, pbc=False) -> None:
+    def __init__(self, pbc=False, study_proximity: int=1) -> None:
         self.lv1 = np.array([1, 0]) # Lattice vector in the x-direction
         self.lv2 = np.array([0.5, np.sqrt(3) / 2])
 
@@ -879,5 +822,5 @@ class HexagonalLayer(Layer):
                 [0, -1/np.sqrt(3)],
             ],
         }
-        super().__init__(pbc=pbc)
+        super().__init__(pbc=pbc, study_proximity=study_proximity)
 

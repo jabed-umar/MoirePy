@@ -47,18 +47,17 @@
         margin: 5px;
     }
 
-    #end,
-    #start {
+    #end, #start {
         border: 1px solid #000;
         border-radius: 5px;
         padding: 8px;
         width: 100px;
         font-size: 16px;
     }
+    .section{
+        text-align: justify;
+    }
 </style>
-
-
-
 
 
 
@@ -116,12 +115,12 @@ The **Moiré Angle Calculator** finds all possible commensurate angles between t
     <div style="display: flex; gap: 10px; align-items: center;">
         <label for="radius">Radius:</label>
         <input type="number" id="radius" value="20" style="width: 30vw;" step="any" min="0">
-    </div>    
+    </div>
 
     <label for="latticeType">Lattice Type:</label>
     <select id="latticeType" onchange="updateLatticeVectors()">
-        <option value="TriangularLayer">Triangle - Triangle</option>
-        <option value="SquareLayer">Square - Square</option>
+        <option value="TriangularLayer">both layers 60 degree (Triangular, Hexagonal and Kagome lattice)</option>
+        <option value="SquareLayer">both layers 90 degree (Square lattice)</option>
         <option value="Custom">Custom (experimental)</option>
     </select>
 

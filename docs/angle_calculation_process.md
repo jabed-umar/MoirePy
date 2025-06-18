@@ -1,3 +1,9 @@
+<style>
+  .section{
+    text-align: justify;
+  }
+</style>
+
 # Angle Calculation Process
 
 When two single layers of a 2D material are stacked with a small misalignment, they produce a moiré pattern with a length scale much larger than the periodicity of either individual layer. At specific twist angles, this results in a ***commensurate moiré pattern***—a structure where atoms from one layer align exactly with those of the other.
@@ -10,7 +16,7 @@ Let lattices $A$ and $B$ be two periodic point sets in two dimensions, each defi
 
 We address the following geometric question:
 
-**Given** a rotation angle $\theta$, **does thre exist** a point $\mathbf{p} \in A$ and a point $\mathbf{q} \in B$ such that
+**Given** a rotation angle $\theta$, **does there exist** a point $\mathbf{p} \in A$ and a point $\mathbf{q} \in B$ such that
 
 $$
 \mathbf{p} = R(\theta)\mathbf{q}
@@ -143,9 +149,7 @@ Let $A_r$ and $B_r$ be the sets of lattice points (from lattice A and B respecti
     where $\theta_\text{max}$ is the lattice's symmetry sector (e.g., $60^\circ$ for triangular lattices, $90^\circ$ for square lattices). Although till now we have discussed as if the upper lattice and lower lattice can be different, in practice we have never tested this code on different lattices. Neither do we know if those cases will yield any commensurate angles. For now, we will assume that both lattices are the same. So here when we say lattice's symmetry sector, we mean the symmetry sectors of both are same.
 
 4. **Compute angle differences**:
-   Now we will pair points from $\{\mathbf{p}\}$ with $\{\mathbf{q}\}$ at each level $d$. For each point from $\{\mathbf{p}\}$, we will pair it with every point from $\{\mathbf{q}\}$. For each pair, compute the angle differences.
-
-{Insert illustration showing concentric circles with marked angular slices and example point pairs.}
+   Now we will pair points from $\{\mathbf{p}\}$ with $\{\mathbf{q}\}$ at each common level $D$. For each point from $\{\mathbf{p}\}$, we will pair it with every point from $\{\mathbf{q}\}$. For each pair, compute the angle differences. 
 
 This procedure ensures we collect unique, minimal-angle configurations that could align under rotation, constrained to the symmetry of the lattice.
 
@@ -164,12 +168,13 @@ This procedure ensures we collect unique, minimal-angle configurations that coul
     
 </details>
 
-
 <br>
 
 ### Time Complexity
 
 If the number points is of the order $O(n^2)$ and they are sorted by distance, the time complexity of this part becomes $O(n^2 \log n^2)$. Apart from this all other steps are multiple order smaller than this cost, hence can be ignored. That makes this algorithm much less than the $O(n^3)$ of the Diophantine approach and arguably more intuitive.
+
+### Calculating the lattice vectors given the overlapping points
 
 ## Summary
 
