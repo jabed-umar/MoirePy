@@ -3,9 +3,9 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://jabed-umar.github.io/MoirePy/find_theta/" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>Angle Value Calculator - MoirePy</title>
+    <title>Find theta - MoirePy – Python Library for Moiré Lattice Simulation</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
@@ -14,9 +14,9 @@
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Angle Value Calculator";
+        var mkdocs_page_name = "Find theta";
         var mkdocs_page_input_path = "find_theta.md";
-        var mkdocs_page_url = null;
+        var mkdocs_page_url = "/MoirePy/find_theta/";
       </script>
     
     <!--[if lt IE 9]>
@@ -32,7 +32,7 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
     <div class="wy-side-scroll">
       <div class="wy-side-nav-search">
-          <a href=".." class="icon icon-home"> MoirePy
+          <a href=".." class="icon icon-home"> MoirePy – Python Library for Moiré Lattice Simulation
         </a><div role="search">
   <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
       <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
@@ -49,8 +49,16 @@
                 <li class="toctree-l1"><a class="reference internal" href="../installation/">Installation</a>
                 </li>
               </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../getting_started/">Getting Started</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../angle_calculation_process/">Angle calculation process</a>
+                </li>
+              </ul>
               <ul class="current">
-                <li class="toctree-l1 current"><a class="reference internal current" href="#">Angle Value Calculator</a>
+                <li class="toctree-l1 current"><a class="reference internal current" href="#">Find theta</a>
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#guidelines">Guidelines</a>
     </li>
@@ -60,7 +68,7 @@
                 </li>
               </ul>
               <ul>
-                <li class="toctree-l1"><a class="reference internal" href="../angle_calculation_process/">Angle calculation Process</a>
+                <li class="toctree-l1"><a class="reference internal" href="../examples/">Learning Moire Physics Through Examples</a>
                 </li>
               </ul>
               <p class="caption"><span class="caption-text">API Reference</span></p>
@@ -72,19 +80,6 @@
                   <li class="toctree-l1"><a class="reference internal" href="../api/utils/">Utils</a>
                   </li>
               </ul>
-              <p class="caption"><span class="caption-text">Examples</span></p>
-              <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../examples/">Learning MoirePy through examples</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../examples/angle_calculation/">Angle Calculation and Moire Lattice Construction</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../examples/tight_binding_ham/">Tight Binding Moiré Hamiltonian Construction</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../examples/k_space_ham/">K-Space Hamiltonian</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../examples/dos_calculation/">Density of States Calculation</a>
-                  </li>
-              </ul>
       </div>
     </div>
     </nav>
@@ -92,15 +87,16 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
       <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="..">MoirePy</a>
+          <a href="..">MoirePy – Python Library for Moiré Lattice Simulation</a>
         
       </nav>
       <div class="wy-nav-content">
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
-      <li class="breadcrumb-item active">Angle Value Calculator</li>
+      <li class="breadcrumb-item active">Find theta</li>
     <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/jabed-umar/MoirePy/edit/master/docs/find_theta.md">Edit on jabed-umar/MoirePy</a>
     </li>
   </ul>
   <hr/>
@@ -157,13 +153,15 @@
         margin: 5px;
     }
 
-    #end,
-    #start {
+    #end, #start {
         border: 1px solid #000;
         border-radius: 5px;
         padding: 8px;
         width: 100px;
         font-size: 16px;
+    }
+    .section{
+        text-align: justify;
     }
 </style>
 
@@ -211,12 +209,12 @@
     <div style="display: flex; gap: 10px; align-items: center;">
         <label for="radius">Radius:</label>
         <input type="number" id="radius" value="20" style="width: 30vw;" step="any" min="0">
-    </div>    
+    </div>
 
     <label for="latticeType">Lattice Type:</label>
     <select id="latticeType" onchange="updateLatticeVectors()">
-        <option value="TriangularLayer">Triangle - Triangle</option>
-        <option value="SquareLayer">Square - Square</option>
+        <option value="TriangularLayer">both layers 60 degree (Triangular, Hexagonal and Kagome lattice)</option>
+        <option value="SquareLayer">both layers 90 degree (Square lattice)</option>
         <option value="Custom">Custom (experimental)</option>
     </select>
 
@@ -506,8 +504,8 @@
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../installation/" class="btn btn-neutral float-left" title="Installation"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../angle_calculation_process/" class="btn btn-neutral float-right" title="Angle calculation Process">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../angle_calculation_process/" class="btn btn-neutral float-left" title="Angle calculation process"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../examples/" class="btn btn-neutral float-right" title="Learning Moire Physics Through Examples">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -529,11 +527,15 @@
   <div class="rst-versions" role="note" aria-label="Versions">
   <span class="rst-current-version" data-toggle="rst-current-version">
     
+        <span>
+          <a href="https://github.com/jabed-umar/MoirePy" class="fa fa-code-fork" style="color: #fcfcfc"> jabed-umar/MoirePy</a>
+        </span>
     
-      <span><a href="../installation/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+      <span><a href="../angle_calculation_process/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../angle_calculation_process/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../examples/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

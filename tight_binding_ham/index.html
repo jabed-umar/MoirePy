@@ -3,9 +3,9 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://jabed-umar.github.io/MoirePy/tight_binding_ham/" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>Tight Binding Moiré Hamiltonian Construction - MoirePy</title>
+    <title>Tight Binding Moiré Hamiltonian Construction - MoirePy – Python Library for Moiré Lattice Simulation</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
@@ -16,7 +16,7 @@
         // Current page data
         var mkdocs_page_name = "Tight Binding Moir\u00e9 Hamiltonian Construction";
         var mkdocs_page_input_path = "tight_binding_ham.md";
-        var mkdocs_page_url = null;
+        var mkdocs_page_url = "/MoirePy/tight_binding_ham/";
       </script>
     
     <!--[if lt IE 9]>
@@ -32,7 +32,7 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
     <div class="wy-side-scroll">
       <div class="wy-side-nav-search">
-          <a href=".." class="icon icon-home"> MoirePy
+          <a href=".." class="icon icon-home"> MoirePy – Python Library for Moiré Lattice Simulation
         </a><div role="search">
   <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
       <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
@@ -50,11 +50,19 @@
                 </li>
               </ul>
               <ul>
-                <li class="toctree-l1"><a class="reference internal" href="../find_theta/">Angle Value Calculator</a>
+                <li class="toctree-l1"><a class="reference internal" href="../getting_started/">Getting Started</a>
                 </li>
               </ul>
               <ul>
-                <li class="toctree-l1"><a class="reference internal" href="../angle_calculation_process/">Angle calculation Process</a>
+                <li class="toctree-l1"><a class="reference internal" href="../angle_calculation_process/">Angle calculation process</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../find_theta/">Find theta</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../examples/">Learning Moire Physics Through Examples</a>
                 </li>
               </ul>
               <p class="caption"><span class="caption-text">API Reference</span></p>
@@ -66,19 +74,6 @@
                   <li class="toctree-l1"><a class="reference internal" href="../api/utils/">Utils</a>
                   </li>
               </ul>
-              <p class="caption"><span class="caption-text">Examples</span></p>
-              <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../examples/">Learning MoirePy through examples</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../examples/angle_calculation/">Angle Calculation and Moire Lattice Construction</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../examples/tight_binding_ham/">Tight Binding Moiré Hamiltonian Construction</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../examples/k_space_ham/">K-Space Hamiltonian</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../examples/dos_calculation/">Density of States Calculation</a>
-                  </li>
-              </ul>
       </div>
     </div>
     </nav>
@@ -86,7 +81,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
       <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="..">MoirePy</a>
+          <a href="..">MoirePy – Python Library for Moiré Lattice Simulation</a>
         
       </nav>
       <div class="wy-nav-content">
@@ -95,6 +90,7 @@
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
       <li class="breadcrumb-item active">Tight Binding Moiré Hamiltonian Construction</li>
     <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/jabed-umar/MoirePy/edit/master/docs/tight_binding_ham.md">Edit on jabed-umar/MoirePy</a>
     </li>
   </ul>
   <hr/>
@@ -103,7 +99,7 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="tight-binding-moire-hamiltonian-construction">Tight Binding Moiré Hamiltonian Construction</h1>
-<p>The <strong>tight-binding Hamiltonian</strong> [1] is a widely used model in solid-state physics and quantum chemistry to describe the electronic structure of solids — especially in crystals and layered materials. In this model, electrons are considered <em>localized</em> around atomic sites but can <em>hop</em> to neighbouring atoms. To describe such a Hamiltonian for a <strong>Moiré system</strong>, we use the second quantized [2] form:</p>
+<p>The <strong>tight-binding Hamiltonian</strong> <sup id="fnref:ashcroft1976"><a class="footnote-ref" href="#fn:ashcroft1976">1</a></sup> is a widely used model in solid-state physics and quantum chemistry to describe the electronic structure of solids — especially in crystals and layered materials. In this model, electrons are considered <em>localized</em> around atomic sites but can <em>hop</em> to neighbouring atoms. To describe such a Hamiltonian for a <strong>Moiré system</strong>, we use the second quantized <sup id="fnref:bruus2004"><a class="footnote-ref" href="#fn:bruus2004">2</a></sup> form:  </p>
 <div class="arithmatex">\[
 H = \sum_{\alpha, \beta;\, r,r' \in L} t^1_{rr', \alpha\beta}c^{\dagger}_{r,\beta}c_{r',\alpha} 
 + \sum_{\alpha, \beta;\, r,r' \in U} t^2_{rr', \alpha\beta}d^{\dagger}_{r,\beta}d_{r',\alpha} 
@@ -126,15 +122,23 @@ h_{UL} &amp; h_{UU}
 \Psi
 \]</div>
 <p>Here, <span class="arithmatex">\( h_{LL} \)</span> and <span class="arithmatex">\( h_{UU} \)</span> are the <em>first-quantized</em> <span class="arithmatex">\( n \times n \)</span> Hamiltonians of the lower and upper layers, respectively. The blocks <span class="arithmatex">\( h_{LU} \)</span> and <span class="arithmatex">\( h_{UL} \)</span> represent interlayer couplings.</p>
-<h2 id="references">References</h2>
+<!-- 
+## References
+
+1. Neil Ashcroft, and David Mermin, Solid State Physics, Saunders College Publishing, 1976.
+
+2. H. Bruus and K. Flensberg, Many-Body Quantum Theory in Condensed Matter Physics: An Introduction, OUP Oxford, 2004. -->
+<div class="footnote">
+<hr />
 <ol>
-<li>
-<p>Neil Ashcroft, and David Mermin, Solid State Physics, Saunders College Publishing, 1976.</p>
+<li id="fn:ashcroft1976">
+<p>Neil W. Ashcroft and N. David Mermin. <em>Solid State Physics</em>. Saunders College Publishing, 1976.&#160;<a class="footnote-backref" href="#fnref:ashcroft1976" title="Jump back to footnote 1 in the text">&#8617;</a></p>
 </li>
-<li>
-<p>H. Bruus and K. Flensberg, Many-Body Quantum Theory in Condensed Matter Physics: An Introduction, OUP Oxford, 2004.</p>
+<li id="fn:bruus2004">
+<p>Henrik Bruus and Karsten Flensberg. <em>Many-Body Quantum Theory in Condensed Matter Physics: An Introduction</em>. Oxford University Press, Oxford, 2004.&#160;<a class="footnote-backref" href="#fnref:bruus2004" title="Jump back to footnote 2 in the text">&#8617;</a></p>
 </li>
 </ol>
+</div>
               
             </div>
           </div><footer>
@@ -157,6 +161,10 @@ h_{UL} &amp; h_{UU}
 
   <div class="rst-versions" role="note" aria-label="Versions">
   <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/jabed-umar/MoirePy" class="fa fa-code-fork" style="color: #fcfcfc"> jabed-umar/MoirePy</a>
+        </span>
     
     
     

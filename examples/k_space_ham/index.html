@@ -3,9 +3,9 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://jabed-umar.github.io/MoirePy/examples/k_space_ham/" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>K-Space Hamiltonian - MoirePy</title>
+    <title>K-Space Hamiltonian - MoirePy – Python Library for Moiré Lattice Simulation</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
@@ -16,7 +16,7 @@
         // Current page data
         var mkdocs_page_name = "K-Space Hamiltonian";
         var mkdocs_page_input_path = "examples/k_space_ham.ipynb";
-        var mkdocs_page_url = null;
+        var mkdocs_page_url = "/MoirePy/examples/k_space_ham/";
       </script>
     
     <!--[if lt IE 9]>
@@ -32,7 +32,7 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
     <div class="wy-side-scroll">
       <div class="wy-side-nav-search">
-          <a href="../.." class="icon icon-home"> MoirePy
+          <a href="../.." class="icon icon-home"> MoirePy – Python Library for Moiré Lattice Simulation
         </a><div role="search">
   <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
       <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
@@ -50,11 +50,19 @@
                 </li>
               </ul>
               <ul>
-                <li class="toctree-l1"><a class="reference internal" href="../../find_theta/">Angle Value Calculator</a>
+                <li class="toctree-l1"><a class="reference internal" href="../../getting_started/">Getting Started</a>
                 </li>
               </ul>
               <ul>
-                <li class="toctree-l1"><a class="reference internal" href="../../angle_calculation_process/">Angle calculation Process</a>
+                <li class="toctree-l1"><a class="reference internal" href="../../angle_calculation_process/">Angle calculation process</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../find_theta/">Find theta</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../">Learning Moire Physics Through Examples</a>
                 </li>
               </ul>
               <p class="caption"><span class="caption-text">API Reference</span></p>
@@ -66,23 +74,6 @@
                   <li class="toctree-l1"><a class="reference internal" href="../../api/utils/">Utils</a>
                   </li>
               </ul>
-              <p class="caption"><span class="caption-text">Examples</span></p>
-              <ul class="current">
-                  <li class="toctree-l1"><a class="reference internal" href="../">Learning MoirePy through examples</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../angle_calculation/">Angle Calculation and Moire Lattice Construction</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../tight_binding_ham/">Tight Binding Moiré Hamiltonian Construction</a>
-                  </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="#">K-Space Hamiltonian</a>
-    <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#references">References</a>
-    </li>
-    </ul>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../dos_calculation/">Density of States Calculation</a>
-                  </li>
-              </ul>
       </div>
     </div>
     </nav>
@@ -90,16 +81,16 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
       <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../..">MoirePy</a>
+          <a href="../..">MoirePy – Python Library for Moiré Lattice Simulation</a>
         
       </nav>
       <div class="wy-nav-content">
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
-          <li class="breadcrumb-item">Examples</li>
       <li class="breadcrumb-item active">K-Space Hamiltonian</li>
     <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/jabed-umar/MoirePy/edit/master/docs/examples/k_space_ham.ipynb">Edit on jabed-umar/MoirePy</a>
     </li>
   </ul>
   <hr/>
@@ -590,13 +581,13 @@ $$</p>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="c1">##import the necesaary libraries</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
-<span class="c1">##import the lattice types (triagle, square, hexagonal..etc)</span>
+<span class="c1">##import the lattice types (triangular, square, hexagonal, etc)</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">moirepy</span><span class="w"> </span><span class="kn">import</span> <span class="n">BilayerMoireLattice</span><span class="p">,</span> <span class="n">TriangularLayer</span><span class="p">,</span> <span class="n">SquareLayer</span><span class="p">,</span> <span class="n">KagomeLayer</span><span class="p">,</span> <span class="n">HexagonalLayer</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-1">##import the necesaary libraries
 import numpy as np
 import matplotlib.pyplot as plt
-##import the lattice types (triagle, square, hexagonal..etc)
+##import the lattice types (triangular, square, hexagonal, etc)
 from moirepy import BilayerMoireLattice, TriangularLayer, SquareLayer, KagomeLayer, HexagonalLayer</div>
 </div>
 </div>
@@ -994,10 +985,6 @@ for i in range(N1):
               
             </div>
           </div><footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../tight_binding_ham/" class="btn btn-neutral float-left" title="Tight Binding Moiré Hamiltonian Construction"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../dos_calculation/" class="btn btn-neutral float-right" title="Density of States Calculation">Next <span class="icon icon-circle-arrow-right"></span></a>
-    </div>
 
   <hr/>
 
@@ -1018,11 +1005,11 @@ for i in range(N1):
   <div class="rst-versions" role="note" aria-label="Versions">
   <span class="rst-current-version" data-toggle="rst-current-version">
     
+        <span>
+          <a href="https://github.com/jabed-umar/MoirePy" class="fa fa-code-fork" style="color: #fcfcfc"> jabed-umar/MoirePy</a>
+        </span>
     
-      <span><a href="../tight_binding_ham/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
-    
-      <span><a href="../dos_calculation/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

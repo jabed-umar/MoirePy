@@ -3,9 +3,9 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://jabed-umar.github.io/MoirePy/examples/tight_binding_ham/" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>Tight Binding Moiré Hamiltonian Construction - MoirePy</title>
+    <title>Tight Binding Moiré Hamiltonian Construction - MoirePy – Python Library for Moiré Lattice Simulation</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
@@ -16,7 +16,7 @@
         // Current page data
         var mkdocs_page_name = "Tight Binding Moir\u00e9 Hamiltonian Construction";
         var mkdocs_page_input_path = "examples/tight_binding_ham.ipynb";
-        var mkdocs_page_url = null;
+        var mkdocs_page_url = "/MoirePy/examples/tight_binding_ham/";
       </script>
     
     <!--[if lt IE 9]>
@@ -32,7 +32,7 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
     <div class="wy-side-scroll">
       <div class="wy-side-nav-search">
-          <a href="../.." class="icon icon-home"> MoirePy
+          <a href="../.." class="icon icon-home"> MoirePy – Python Library for Moiré Lattice Simulation
         </a><div role="search">
   <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
       <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
@@ -50,11 +50,19 @@
                 </li>
               </ul>
               <ul>
-                <li class="toctree-l1"><a class="reference internal" href="../../find_theta/">Angle Value Calculator</a>
+                <li class="toctree-l1"><a class="reference internal" href="../../getting_started/">Getting Started</a>
                 </li>
               </ul>
               <ul>
-                <li class="toctree-l1"><a class="reference internal" href="../../angle_calculation_process/">Angle calculation Process</a>
+                <li class="toctree-l1"><a class="reference internal" href="../../angle_calculation_process/">Angle calculation process</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../find_theta/">Find theta</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../">Learning Moire Physics Through Examples</a>
                 </li>
               </ul>
               <p class="caption"><span class="caption-text">API Reference</span></p>
@@ -66,37 +74,6 @@
                   <li class="toctree-l1"><a class="reference internal" href="../../api/utils/">Utils</a>
                   </li>
               </ul>
-              <p class="caption"><span class="caption-text">Examples</span></p>
-              <ul class="current">
-                  <li class="toctree-l1"><a class="reference internal" href="../">Learning MoirePy through examples</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../angle_calculation/">Angle Calculation and Moire Lattice Construction</a>
-                  </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Tight Binding Moiré Hamiltonian Construction</a>
-    <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#let-us-now-look-at-a-few-examples-to-see-how-easily-we-can-construct-the-gaint-looking-tight-binding-hamiltonian-very-easily-using-moirepy">Let us now look at a few examples to see how easily we can construct the gaint looking tight-binding Hamiltonian very easily using MoirePy.</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#lets-make-the-hamiltonian">Let's make the Hamiltonian</a>
-        <ul>
-    <li class="toctree-l4"><a class="reference internal" href="#study-of-eigenvalues-and-eigenvectors">Study of eigenvalues and eigenvectors</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#suppose-we-want-to-design-the-hopping-amplitudes-as-per-our-choice-not-constant-as-discussed-earlier-then-using-moirepy-we-can-define-that-very-easily">Suppose we want to design the hopping amplitudes as per our choice (not constant, as discussed earlier) then using MoirePy, we can define that very easily.</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#lets-now-analyze-the-case-of-multiple-orbitals-per-site-case-for-simplicity-choose-k-2-using-moirepy">Let's now analyze the case of multiple orbitals per site case (for simplicity choose, k = 2) using MoirePy.</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#references">References</a>
-    </li>
-    </ul>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../k_space_ham/">K-Space Hamiltonian</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../dos_calculation/">Density of States Calculation</a>
-                  </li>
-              </ul>
       </div>
     </div>
     </nav>
@@ -104,16 +81,16 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
       <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../..">MoirePy</a>
+          <a href="../..">MoirePy – Python Library for Moiré Lattice Simulation</a>
         
       </nav>
       <div class="wy-nav-content">
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
-          <li class="breadcrumb-item">Examples</li>
       <li class="breadcrumb-item active">Tight Binding Moiré Hamiltonian Construction</li>
     <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/jabed-umar/MoirePy/edit/master/docs/examples/tight_binding_ham.ipynb">Edit on jabed-umar/MoirePy</a>
     </li>
   </ul>
   <hr/>
@@ -563,7 +540,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h1 id="tight-binding-moire-hamiltonian-construction">Tight Binding Moiré Hamiltonian Construction<a class="anchor-link" href="#tight-binding-moire-hamiltonian-construction">¶</a></h1><p>The <strong>tight-binding Hamiltonian</strong> [1] is a widely used model in solid-state physics and quantum chemistry to describe the electronic structure of solids — especially in crystals and layered materials. In this model, electrons are considered <em>localized</em> around atomic sites but can <em>hop</em> to neighbouring atoms. To describe such a Hamiltonian for a <strong>Moiré system</strong>, we use the second quantized [2] form:</p>
+<h1 id="tight-binding-moire-hamiltonian-construction">Tight Binding Moiré Hamiltonian Construction<a class="anchor-link" href="#tight-binding-moire-hamiltonian-construction">¶</a></h1><p>The <strong>tight-binding Hamiltonian</strong>  [@ashcroft1976] is a widely used model in solid-state physics and quantum chemistry to describe the electronic structure of solids — especially in crystals and layered materials. In this model, electrons are considered <em>localized</em> around atomic sites but can <em>hop</em> to neighbouring atoms. To describe such a Hamiltonian for a <strong>Moiré system</strong>, we use the second quantized [@bruus2004] form:</p>
 <p>$$
 H = \sum_{\alpha, \beta;\, r,r' \in L} t^1_{rr', \alpha\beta}c^{\dagger}_{r,\beta}c_{r',\alpha} 
 + \sum_{\alpha, \beta;\, r,r' \in U} t^2_{rr', \alpha\beta}d^{\dagger}_{r,\beta}d_{r',\alpha} 
@@ -622,13 +599,13 @@ $$</p>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="c1">##import the necesaary libraries</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
-<span class="c1">##import the lattice types (triagle, square, hexagonal..etc)</span>
+<span class="c1">##import the lattice types (triangular, square, hexagonal, etc)</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">moirepy</span><span class="w"> </span><span class="kn">import</span> <span class="n">BilayerMoireLattice</span><span class="p">,</span> <span class="n">TriangularLayer</span><span class="p">,</span> <span class="n">SquareLayer</span> 
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-1">##import the necesaary libraries
 import numpy as np
 import matplotlib.pyplot as plt
-##import the lattice types (triagle, square, hexagonal..etc)
+##import the lattice types (triangular, square, hexagonal, etc)
 from moirepy import BilayerMoireLattice, TriangularLayer, SquareLayer </div>
 </div>
 </div>
@@ -658,13 +635,13 @@ from moirepy import BilayerMoireLattice, TriangularLayer, SquareLayer </div>
 <span class="c1">## don't put fractional values for x_no and y_no, which are number of moire unit cells</span>
 <span class="n">lattice</span> <span class="o">=</span> <span class="n">BilayerMoireLattice</span><span class="p">(</span><span class="n">TriangularLayer</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> 
 <span class="c1">##upper layer is not translated and pbc condition true by default.----</span>
-<span class="c1">##----&gt;&gt;&gt; For more on this angle calculation section, please refer to Angle value calcualtor and angle calcualtion process and angle_calculation.ipynb file.</span>
+<span class="c1">##----&gt;&gt;&gt; For more on this angle calculation section, please refer to Angle value calculator and angle calculation process and angle_calculation.ipynb file.</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-2">## Make the lattice (Lattice type, a(ll1), b(ll2), m(ul1), n(ul2), x_no, y_no)---  
 ## don't put fractional values for x_no and y_no, which are number of moire unit cells
 lattice = BilayerMoireLattice(TriangularLayer, 3, 4, 4, 3, 1, 1) 
 ##upper layer is not translated and pbc condition true by default.----
-##----&gt;&gt;&gt; For more on this angle calculation section, please refer to Angle value calcualtor and angle calcualtion process and angle_calculation.ipynb file.</div>
+##----&gt;&gt;&gt; For more on this angle calculation section, please refer to Angle value calculator and angle calculation process and angle_calculation.ipynb file.</div>
 </div>
 </div>
 </div>
@@ -793,7 +770,7 @@ ham = lattice.generate_hamiltonian(1, 1.2, 0.1, 0.1, 0, 0.01)
 <span class="n">N</span> <span class="o">=</span> <span class="n">ham</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 <span class="n">lower_layer_ham</span> <span class="o">=</span> <span class="n">ham</span><span class="p">[:</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="p">,</span> <span class="p">:</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="p">]</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">lower_layer_ham</span><span class="p">)</span> 
-<span class="c1">## Let's plot the structure r conections of the lower layer----</span>
+<span class="c1">## Let's plot the structure r connections of the lower layer----</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">lower_layer_ham</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">"Lower Layer Hamiltonian Structure"</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">()</span>
@@ -803,7 +780,7 @@ ham = lattice.generate_hamiltonian(1, 1.2, 0.1, 0.1, 0, 0.01)
 N = ham.shape[0]
 lower_layer_ham = ham[:N//2, :N//2]
 print(lower_layer_ham) 
-## Let's plot the structure r conections of the lower layer----
+## Let's plot the structure r connections of the lower layer----
 plt.imshow(lower_layer_ham)
 plt.title("Lower Layer Hamiltonian Structure")
 plt.colorbar()
@@ -1475,7 +1452,7 @@ plt.show()
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>Since, we are at pbc = True condition, so becuase of the translation symmtery in the system, we can analyze it in k-space (momentum space), and this can be found in k_space_ham.ipynb file.</p>
+<p>Since, we are at pbc = True condition, so because of the translation symmtery in the system, we can analyze it in k-space (momentum space), and this can be found in k_space_ham.ipynb file.</p>
 </div>
 </div>
 </div>
@@ -1506,10 +1483,6 @@ plt.show()
               
             </div>
           </div><footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../angle_calculation/" class="btn btn-neutral float-left" title="Angle Calculation and Moire Lattice Construction"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../k_space_ham/" class="btn btn-neutral float-right" title="K-Space Hamiltonian">Next <span class="icon icon-circle-arrow-right"></span></a>
-    </div>
 
   <hr/>
 
@@ -1530,11 +1503,11 @@ plt.show()
   <div class="rst-versions" role="note" aria-label="Versions">
   <span class="rst-current-version" data-toggle="rst-current-version">
     
+        <span>
+          <a href="https://github.com/jabed-umar/MoirePy" class="fa fa-code-fork" style="color: #fcfcfc"> jabed-umar/MoirePy</a>
+        </span>
     
-      <span><a href="../angle_calculation/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
-    
-      <span><a href="../k_space_ham/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
