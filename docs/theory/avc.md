@@ -90,7 +90,7 @@ The **Moiré Angle Calculator** finds all possible commensurate angles between t
                         <li>Unresponsiveness or infinite loops.</li>
                         <li>Unexpected program behavior.</li>
                     </ul>
-                    However, if you believe that your specific configuration (as detailed in <a href="angle_calculation_process.md">Angle Calculation Process</a>) <em>should</em> yield meaningful results, then following these patterns <em>might</em> be considered:
+                    However, if you believe that your specific configuration (as detailed in <a href="../angle_calculation_process">Angle Calculation Process</a>) <em>should</em> yield meaningful results, then following these patterns <em>might</em> be considered:
                     <ol>
                         <li>Both lattice angles are exact divisors of 360°.</li>
                         <li>One of them should exactly divide the other.</li>

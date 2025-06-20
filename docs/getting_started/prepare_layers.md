@@ -1,13 +1,13 @@
-# Getting Started
+# Prepare Layers
 
-Welcome to **MoirePy**! This guide will help you begin using MoirePy for research and simulations involving moiré materials.
+<!-- Welcome to **MoirePy**! This guide will help you begin using MoirePy for research and simulations involving moiré materials. -->
 
 After successfully [installing MoirePy](installation.md), this tutorial will walk you through the process of constructing moiré lattices from individual lattice layers.
 
 As you may know, moiré patterns emerge when two lattice layers are stacked with a slight rotational misalignment between them. In this guide, we'll start by defining individual layers using MoirePy, and then demonstrate how to combine them to generate a moiré lattice.
 
 
-- [Getting Started](#getting-started)
+- [Prepare Layers](#prepare-layers)
     - [Defining a layer](#defining-a-layer)
         - [Defining Some Example Lattices](#defining-some-example-lattices)
             - [Square Lattice](#square-lattice)
@@ -21,6 +21,7 @@ We will start by importing the parent class `Layer` from MoirePy, which helps us
 
 ```python
 >>> import numpy as np
+>>> import matplotlib.pyplot as plt
 >>> from moirepy import Layer
 ```
 
@@ -103,11 +104,11 @@ Now, we can either use the attributes `square_layer.points` and `square_layer.po
 >>> square_layer.plot_lattice()
 ```
 
-![Square Lattice](images/getting_started/square_layer.svg)
+![Square Lattice](../images/getting_started/prepare_layers/square_layer.svg)
 
 #### Kagome Lattice
 
-![Kagome structure](images/getting_started/kagomegen.svg)
+![Kagome structure](../images/getting_started/prepare_layers/kagomegen.svg)
 
 Now let us look at a more complex lattice — the kagome lattice. This structure has three lattice points (A, B, and C, marked with red, blue, and green in the above image) in each unit cell. Each of them has four neighbours — two within the same cell and two in diagonally opposite positions to the first two.
 
@@ -159,7 +160,7 @@ Now let us plot this lattice as well.
 >>> kagome_layer.plot_lattice()
 ```
 
-![Kagome Lattice](images/getting_started/kagome_layer.svg)
+![Kagome Lattice](../images/getting_started/prepare_layers/kagome_layer.svg)
 
 
 ## Inbuilt Layers
@@ -177,22 +178,22 @@ Here are the blueprints of these lattices:
 <div style="display: flex; justify-content: center; gap: 20px; align-items: flex-start; flex-wrap: wrap;">
 
   <figure style="margin: 0; text-align: center;">
-    <img src="../images/getting_started/squaregen.svg" alt="Concentric Lattice Points" style="max-width: 100%; width: 300px;">
+    <img src="../../images/getting_started/prepare_layers/squaregen.svg" alt="Concentric Lattice Points" style="max-width: 100%; width: 300px;">
     <figcaption style="margin-top: 8px; font-style: italic;">Square Lattice</figcaption>
   </figure>
 
   <figure style="margin: 0; text-align: center;">
-    <img src="../images/getting_started/trianglegen.svg" alt="Number of Points per Radius Level" style="max-width: 100%; width: 300px;">
+    <img src="../../images/getting_started/prepare_layers/trianglegen.svg" alt="Number of Points per Radius Level" style="max-width: 100%; width: 300px;">
     <figcaption style="margin-top: 8px; font-style: italic;">Triangle Lattice</figcaption>
   </figure>
 
   <figure style="margin: 0; text-align: center;">
-    <img src="../images/getting_started/hexagongen.svg" alt="Number of Points per Radius Level" style="max-width: 100%; width: 300px;">
+    <img src="../../images/getting_started/prepare_layers/hexagongen.svg" alt="Number of Points per Radius Level" style="max-width: 100%; width: 300px;">
     <figcaption style="margin-top: 8px; font-style: italic;">Hexagon Lattice</figcaption>
   </figure>
 
   <figure style="margin: 0; text-align: center;">
-    <img src="../images/getting_started/kagomegen.svg" alt="Number of Points per Radius Level" style="max-width: 100%; width: 300px;">
+    <img src="../../images/getting_started/prepare_layers/kagomegen.svg" alt="Number of Points per Radius Level" style="max-width: 100%; width: 300px;">
     <figcaption style="margin-top: 8px; font-style: italic;">Kagome Lattice</figcaption>
   </figure>
 
