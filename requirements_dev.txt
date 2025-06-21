@@ -2,12 +2,11 @@ numpy
 scipy
 matplotlib
 tqdm
-kwant
 
-notebook
+# notebook
 mkdocstrings
 mkdocstrings-python
-mkdocs-jupyter
+# mkdocs-jupyter
 
 # mkdocs-material
 # mkdocs-kpn
