@@ -34,7 +34,7 @@ jobs:
 
       - name: Deploy with MkDocs
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "${{ github.actor }}"
+          git config user.email "${{ github.actor }}@users.noreply.github.com"
           JUPYTER_PLATFORM_DIRS=1 mkdocs gh-deploy -b docs
 
