@@ -28,8 +28,17 @@ jobs:
 
       - name: Deploy with MkDocs
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GIT_AUTHOR_NAME: github-actions[bot]
+          GIT_AUTHOR_EMAIL: github-actions[bot]@users.noreply.github.com
+          GIT_COMMITTER_NAME: github-actions[bot]
+          GIT_COMMITTER_EMAIL: github-actions[bot]@users.noreply.github.com
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          mkdocs gh-deploy -b docs
+          git config --global user.name "$GIT_AUTHOR_NAME"
+          git config --global user.email "$GIT_AUTHOR_EMAIL"
+          
+          # Use GITHUB_TOKEN for push authentication
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+
+          # Deploy to 'docs' branch
+          mkdocs gh-deploy --force --remote-branch docs --remote-name origin
+
