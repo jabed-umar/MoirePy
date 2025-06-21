@@ -63,15 +63,15 @@ nav:
     - Getting Started: getting_started/gs_intro.md
     - Installation: getting_started/installation.md
     - Prepare Layers: getting_started/prepare_layers.md
+    - Moiré Lattice and Hamiltonian: getting_started/moire_lattice_and_hamiltonian.md
     - Tight Binding Moiré Hamiltonian: getting_started/tight_binding_ham.md
-    - NEGF (Non Equilibrium Green's Function): getting_started/negf.md
     - EXAMPLE NOTEBOOKS: examples.md
   - Theoretical Background:
     - Theoretical Background: theory/theory_intro.md
     - Searching Algorithm & KDTree: theory/search_algorithm_kdtree.md
     - Angle Calculation Process: theory/angle_calculation_process.md
     - Angle Value Calculator: theory/avc.md
-  - API Reference:
+  - API Reference:  
       - Layers: api/layers.md
       - Moire: api/moire.md
       - Utils: api/utils.md

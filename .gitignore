@@ -11,3 +11,6 @@ moirepy.egg-info/
 site/
 
 *copy*
+
+docs/index.md
+docs/examples.md

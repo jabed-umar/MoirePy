@@ -158,7 +158,7 @@ The **Moiré Angle Calculator** finds all possible commensurate angles between t
 
 
 
-**Note:** The last column (number of points per unit cell in the moire lattice) has been calculated assuming only one point per unit cell. If you are using lattices which have multiple points per unit cell like hexagonal (2) or kagome (3), multiply this value by the number of points per unit cell in your lattice to get the actual number of points in the moire lattice.
+**Note:** The last column (number of points per unit cell in the Moiré lattice) has been calculated assuming only one point per unit cell. If you are using lattices which have multiple points per unit cell like hexagonal (2) or kagome (3), multiply this value by the number of points per unit cell in your lattice to get the actual number of points in the Moiré lattice.
 
 <table id="results-table">
     <thead>

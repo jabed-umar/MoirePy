@@ -62,7 +62,7 @@ Here are a couple of examples to help you get started with Moire physics:
         {
             "loc": "k_space_ham.ipynb",
             "title": "K-Space Hamiltonian",
-            "desc": "An example of a Hamiltonian in k-space. Definitely not too big! An example of a Hamiltonian in k-space. An example of a Hamiltonian in k-space. An example of a Hamiltonian in k-space."
+            "desc": "An example of a Hamiltonian in k-space."
         },
         {
             "loc": "tight_binding_ham.ipynb",
@@ -94,7 +94,7 @@ Here are a couple of examples to help you get started with Moire physics:
         EXAMPLES += f"""
         <tr>
             <td class="examples-table-topic"><strong>{title}:</strong> {desc}</td>
-            <td class="examples-table-links" style="text-align: center !important;"><a href="{github_link}">Github</a> | <a href="{colab_link}">Colab</a></td>
+            <td class="examples-table-links" style="text-align: center !important;"><a target="_blank" href="{github_link}">Github</a> | <a target="_blank" href="{colab_link}">Colab</a></td>
         </tr>
 
 """
