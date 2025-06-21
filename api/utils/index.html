@@ -53,9 +53,9 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../getting_started/prepare_layers/">Prepare Layers</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/tight_binding_ham/">Tight Binding Moiré Hamiltonian</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/moire_lattice_and_hamiltonian/">Moiré Lattice and Hamiltonian</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/negf/">NEGF (Non Equilibrium Green's Function)</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/tight_binding_ham/">Tight Binding Moiré Hamiltonian</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../examples/">EXAMPLE NOTEBOOKS</a>
                   </li>
@@ -136,7 +136,7 @@
 
 
 <h2 id="moirepy.utils.are_coeffs_integers" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">are_coeffs_integers</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">,</span> <span class="n">v3</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-08</span><span class="p">)</span></code>
+            <code class="highlight language-python">are_coeffs_integers(v1, v2, v3, tol=1e-08)</code>
 
 </h2>
 
@@ -150,46 +150,26 @@ and checks if both are integers (within a tolerance).</p>
 
             <details class="quote">
               <summary>Source code in <code>moirepy/utils.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">28</span>
-<span class="normal">29</span>
-<span class="normal">30</span>
-<span class="normal">31</span>
-<span class="normal">32</span>
-<span class="normal">33</span>
-<span class="normal">34</span>
-<span class="normal">35</span>
-<span class="normal">36</span>
-<span class="normal">37</span>
-<span class="normal">38</span>
-<span class="normal">39</span>
-<span class="normal">40</span>
-<span class="normal">41</span>
-<span class="normal">42</span>
-<span class="normal">43</span>
-<span class="normal">44</span>
-<span class="normal">45</span>
-<span class="normal">46</span>
-<span class="normal">47</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">are_coeffs_integers</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">,</span> <span class="n">v3</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Solves a v1 + b v2 = v3 for scalars a and b using Cramer&#39;s Rule,</span>
-<span class="sd">    and checks if both are integers (within a tolerance).</span>
+              <pre class="highlight"><code class="language-python">def are_coeffs_integers(v1, v2, v3, tol=1e-8):
+    """
+    Solves a v1 + b v2 = v3 for scalars a and b using Cramer's Rule,
+    and checks if both are integers (within a tolerance).
 
-<span class="sd">    v1, v2, v3 are lists or tuples or np arrays of length 2</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span> <span class="o">=</span> <span class="n">v1</span>
-    <span class="n">b1</span><span class="p">,</span> <span class="n">b2</span> <span class="o">=</span> <span class="n">v2</span>
-    <span class="n">c1</span><span class="p">,</span> <span class="n">c2</span> <span class="o">=</span> <span class="n">v3</span>
+    v1, v2, v3 are lists or tuples or np arrays of length 2
+    """
+    a1, a2 = v1
+    b1, b2 = v2
+    c1, c2 = v3
 
-    <span class="n">det</span> <span class="o">=</span> <span class="n">a1</span> <span class="o">*</span> <span class="n">b2</span> <span class="o">-</span> <span class="n">a2</span> <span class="o">*</span> <span class="n">b1</span>
-    <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">det</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">tol</span><span class="p">:</span>
-        <span class="k">return</span> <span class="kc">False</span>  <span class="c1"># no unique solution</span>
+    det = a1 * b2 - a2 * b1
+    if abs(det) &lt; tol:
+        return False  # no unique solution
 
-    <span class="n">a</span> <span class="o">=</span> <span class="p">(</span><span class="n">c1</span> <span class="o">*</span> <span class="n">b2</span> <span class="o">-</span> <span class="n">c2</span> <span class="o">*</span> <span class="n">b1</span><span class="p">)</span> <span class="o">/</span> <span class="n">det</span>
-    <span class="n">b</span> <span class="o">=</span> <span class="p">(</span><span class="n">a1</span> <span class="o">*</span> <span class="n">c2</span> <span class="o">-</span> <span class="n">a2</span> <span class="o">*</span> <span class="n">c1</span><span class="p">)</span> <span class="o">/</span> <span class="n">det</span>
+    a = (c1 * b2 - c2 * b1) / det
+    b = (a1 * c2 - a2 * c1) / det
 
-    <span class="n">ret</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">a</span> <span class="o">-</span> <span class="nb">round</span><span class="p">(</span><span class="n">a</span><span class="p">))</span> <span class="o">&lt;</span> <span class="n">tol</span> <span class="ow">and</span> <span class="nb">abs</span><span class="p">(</span><span class="n">b</span> <span class="o">-</span> <span class="nb">round</span><span class="p">(</span><span class="n">b</span><span class="p">))</span> <span class="o">&lt;</span> <span class="n">tol</span>
-    <span class="k">return</span> <span class="n">ret</span>
-</code></pre></div></td></tr></table></div>
+    ret = abs(a - round(a)) &lt; tol and abs(b - round(b)) &lt; tol
+    return ret</code></pre>
             </details>
     </div>
 
@@ -199,7 +179,7 @@ and checks if both are integers (within a tolerance).</p>
 
 
 <h2 id="moirepy.utils.get_rotation_matrix" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">get_rotation_matrix</span><span class="p">(</span><span class="n">theta_rad</span><span class="p">)</span></code>
+            <code class="highlight language-python">get_rotation_matrix(theta_rad)</code>
 
 </h2>
 
@@ -263,52 +243,29 @@ array([[ 6.123234e-17, -1.000000e+00],
 
             <details class="quote">
               <summary>Source code in <code>moirepy/utils.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span>
-<span class="normal">17</span>
-<span class="normal">18</span>
-<span class="normal">19</span>
-<span class="normal">20</span>
-<span class="normal">21</span>
-<span class="normal">22</span>
-<span class="normal">23</span>
-<span class="normal">24</span>
-<span class="normal">25</span>
-<span class="normal">26</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_rotation_matrix</span><span class="p">(</span><span class="n">theta_rad</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Computes a 2D rotation matrix for a given angle.</span>
+              <pre class="highlight"><code class="language-python">def get_rotation_matrix(theta_rad: float) -&gt; np.ndarray:
+    """
+    Computes a 2D rotation matrix for a given angle.
 
-<span class="sd">    Args:</span>
-<span class="sd">        theta_rad (float): The rotation angle in radians.</span>
+    Args:
+        theta_rad (float): The rotation angle in radians.
 
-<span class="sd">    Returns:</span>
-<span class="sd">        np.ndarray: A 2x2 rotation matrix that rotates a point</span>
-<span class="sd">            counterclockwise by `theta_rad`.</span>
+    Returns:
+        np.ndarray: A 2x2 rotation matrix that rotates a point
+            counterclockwise by `theta_rad`.
 
-<span class="sd">    ```python</span>
-<span class="sd">    &gt;&gt;&gt; get_rotation_matrix(np.pi/2)</span>
-<span class="sd">    array([[ 6.123234e-17, -1.000000e+00],</span>
-<span class="sd">           [ 1.000000e+00,  6.123234e-17]])</span>
-<span class="sd">    ```</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-        <span class="p">[</span>
-            <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta_rad</span><span class="p">),</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta_rad</span><span class="p">)],</span>
-            <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta_rad</span><span class="p">),</span>  <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta_rad</span><span class="p">)]</span>
-        <span class="p">]</span>
-    <span class="p">)</span>
-</code></pre></div></td></tr></table></div>
+    ```python
+    &gt;&gt;&gt; get_rotation_matrix(np.pi/2)
+    array([[ 6.123234e-17, -1.000000e+00],
+           [ 1.000000e+00,  6.123234e-17]])
+    ```
+    """
+    return np.array(
+        [
+            [np.cos(theta_rad), -np.sin(theta_rad)],
+            [np.sin(theta_rad),  np.cos(theta_rad)]
+        ]
+    )</code></pre>
             </details>
     </div>
 

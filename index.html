@@ -44,9 +44,11 @@
               <ul class="current">
                 <li class="toctree-l1 current"><a class="reference internal current" href="#">Home</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#license">License</a>
+    <li class="toctree-l2"><a class="reference internal" href="#features">Features</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#cite-this-work">Cite This Work</a>
+    <li class="toctree-l2"><a class="reference internal" href="#upcoming-features">Upcoming Features</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a>
     </li>
     </ul>
                 </li>
@@ -59,9 +61,9 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="getting_started/prepare_layers/">Prepare Layers</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="getting_started/tight_binding_ham/">Tight Binding Moiré Hamiltonian</a>
+                  <li class="toctree-l1"><a class="reference internal" href="getting_started/moire_lattice_and_hamiltonian/">Moiré Lattice and Hamiltonian</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="getting_started/negf/">NEGF (Non Equilibrium Green's Function)</a>
+                  <li class="toctree-l1"><a class="reference internal" href="getting_started/tight_binding_ham/">Tight Binding Moiré Hamiltonian</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="examples/">EXAMPLE NOTEBOOKS</a>
                   </li>
@@ -111,18 +113,67 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="moirepy-twist-it-solve-it-own-it">MoirePy: Twist It, Solve It, Own It!</h1>
-<p><strong>MoirePy</strong> is a Python package for the simulation and analysis of <strong>bilayer moiré lattices</strong> using <strong>tight-binding models</strong>. Built for computational physicists and material scientists, it enables fast and flexible moiré band structure calculations, visualization, and manipulation.</p>
+<p><strong>MoirePy</strong> is a Python package for the simulation and analysis of <strong>bilayer moiré lattices</strong> using <strong>tight-binding models</strong>. Built for computational physicists and material scientists, it enables fast and flexible moiré band structure calculations, visualization, and manipulation. Our primary focus is on <strong>commensurate</strong> moiré lattices only.</p>
 <p><strong>Documentation:</strong> <a href="https://jabed-umar.github.io/MoirePy/">https://jabed-umar.github.io/MoirePy/</a>
 <br>
 <strong>Github Repository:</strong> <a href="https://github.com/jabed-umar/MoirePy">https://github.com/jabed-umar/MoirePy</a>
 <br>
 <strong>PyPI page:</strong> <a href="https://pypi.org/project/moirepy/">https://pypi.org/project/moirepy/</a></p>
-<h2 id="license">License</h2>
-<p>This project is licensed under the <a href="https://opensource.org/licenses/MIT">MIT License</a>.</p>
-<p><a href="https://opensource.org/licenses/MIT"><img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg" /></a></p>
-<h2 id="cite-this-work">Cite This Work</h2>
-<p>If you use this software or a modified version in academic or scientific research, please cite:</p>
-<pre><code class="language-BibTeX">@misc{MoirePy2025,
+<h2 id="features">Features</h2>
+<ul>
+<li>Fast and efficient simulation of 2D bilayer moiré lattices.</li>
+<li>Efficient <span class="arithmatex">\(O(\log n)\)</span> time nearest neighbour searches.</li>
+<li>supports <strong>custom lattice definitions</strong> with some basic predefined ones:<ul>
+<li>Triangular</li>
+<li>Square</li>
+<li>Hexagonal</li>
+<li>Kagome</li>
+</ul>
+</li>
+<li>both <strong>real</strong> and <strong>k space Hamiltonian</strong> generation for tight-binding models:<ul>
+<li>On-site coupling</li>
+<li>Nearest-neighbour coupling</li>
+<li>nth nearest-neighbour coupling</li>
+<li>Asymmetric interlayer coupling</li>
+<li>arbitrary number of orbitals per site</li>
+<li>all couplings can be functions of position of the point(s) and the point type(s) (for example, different coupling for A-A, A-B, B-B sites for hexagonal lattices)</li>
+</ul>
+</li>
+<li><a href="theory/avc/">Web based tool</a> makes it convenient to calculate lattice angles before simulation.</li>
+<li>Extensive Documentation and examples for easy onboarding.</li>
+<li>Compatible with other related libraries like Kwant (so that you can generate Hamiltonian and use it with Kwant for further analysis).</li>
+<li><strong>Freedom to researcher:</strong> We allow you to define your layers and apply whatever couplings you want. If you want the lattice points to have 53 orbitals each—sure, go ahead. As long as you know what you're doing, we won’t stop you. We don't verify whether it's physically possible.</li>
+</ul>
+<h2 id="upcoming-features">Upcoming Features</h2>
+<ul>
+<li><strong>Support for higher-dimensional layers</strong>: Extend current 2D-only support to include higher dimensional constituent layers.</li>
+<li><strong>Multi-layer stacking</strong>: Go beyond bilayers; enable simulation of trilayers and complex heterostructures.</li>
+<li><strong>Recursive Green's function support</strong> <em>(research in progress)</em>: Develop tools for computing Green’s functions efficiently.</li>
+</ul>
+<h2 id="installation">Installation</h2>
+<p>You can install MoirePy via pip:</p>
+<pre><code class="language-bash">pip install moirepy
+</code></pre>
+<p>&lt;!-- ## Basic Usage</p>
+<p>For detailed usage, please refer to our <a href="https://jabed-umar.github.io/MoirePy/">documentation</a>.</p>
+<pre><code class="language-python">from moirepy import MoireLattice
+``` --&gt;
+
+
+## License
+
+This project is licensed under the [MIT License](https://opensource.org/licenses/MIT).
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+
+
+## Cite This Work
+
+If you use this software or a modified version in academic or scientific research, please cite:
+
+```BibTeX
+@misc{MoirePy2025,
     author = {Aritra Mukhopadhyay, Jabed Umar},
     title = {MoirePy: Python package for efficient tight binding simulation of bilayer moiré lattices},
     year = {2025},
@@ -182,5 +233,5 @@
 
 <!--
 MkDocs version : 1.6.1
-Build Date UTC : 2025-06-20 20:05:02.895784+00:00
+Build Date UTC : 2025-06-21 09:15:37.725368+00:00
 -->
