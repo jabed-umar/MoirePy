@@ -15,6 +15,19 @@ class BilayerMoireLattice:  # both layers same, only one point in one unit cell
         pbc:bool=True,
         k:int=1,  # number of orbitals
     ):
+        """
+        Initializes a Moiré lattice composed of two twisted layers of the same type.
+
+        Args:
+            latticetype (Layer): A subclass of the `Layer` class representing the lattice type used for both layers.
+            ll1, ll2, ul1, ul2 (int): Values select from the [AVC tool](https://jabed-umar.github.io/MoirePy/theory/avc/).
+            n1 (int, optional): Number of moiré cells along the first lattice vector.
+            n2 (int, optional): Number of moiré cells along the second lattice vector.
+            translate_upper (tuple, optional): Translation vector (dx, dy) applied to the upper layer before rotation.
+            pbc (bool, optional): Whether to apply periodic boundary conditions. If False, open boundary conditions are used.
+            k (int, optional): Number of orbitals on each lattice point.
+        """
+
         # study_proximity = 1 means only studying nearest neighbours will be enabled,
         # 2 means study of next nearest neighbours will be enabled too and so on,
         # always better to keep this value 1 or two more than what you will actually need.
@@ -59,6 +72,7 @@ class BilayerMoireLattice:  # both layers same, only one point in one unit cell
         self.theta = theta
         self.mlv1 = mlv1
         self.mlv2 = mlv2
+        self.pbc = pbc
         self.orbitals = k
         self.ham = None
 
@@ -140,57 +154,61 @@ class BilayerMoireLattice:  # both layers same, only one point in one unit cell
 
         # 1. interaction inside the lower lattice
         ham_ll = np.zeros((len(self.lower_lattice.points)*k, len(self.lower_lattice.points)*k), dtype=data_type)
-        _, indices = self.lower_lattice.first_nearest_neighbours(self.lower_lattice.points, self.lower_lattice.point_types)
         for i in range(len(self.lower_lattice.points)):  # self interactions
             ham_ll[i*k:(i+1)*k, i*k:(i+1)*k] += tlself(
                 self.lower_lattice.points[i],
                 self.lower_lattice.point_types[i]
             )
+        bigger_indices, indices, _ = self.lower_lattice.first_nearest_neighbours(self.lower_lattice.points, self.lower_lattice.point_types)
         for this_i in range(len(self.lower_lattice.points)):  # neighbour interactions
             this_coo = self.lower_lattice.points[this_i]
             this_type = self.lower_lattice.point_types[this_i]
-            for neigh_i in indices[this_i]:
-                neigh_coo = self.lower_lattice.points[neigh_i]
+            for phantom_neigh_i, neigh_i in zip(bigger_indices[this_i], indices[this_i]):
+                if self.pbc: neigh_coo = self.lower_lattice.bigger_points[phantom_neigh_i]
+                else:        neigh_coo = self.lower_lattice.points[neigh_i]
                 neigh_type = self.lower_lattice.point_types[neigh_i]
-                # ham_ll[this_i, neigh_i] += tuu(this_coo, neigh_coo, this_type, neigh_type)
-                ham_ll[this_i*k:(this_i+1)*k, neigh_i*k:(neigh_i+1)*k] += tuu(this_coo, neigh_coo, this_type, neigh_type)
+                ham_ll[this_i*k:(this_i+1)*k, neigh_i*k:(neigh_i+1)*k] += tll(this_coo, neigh_coo, this_type, neigh_type)
 
         # 2. interaction inside the upper lattice
         ham_uu = np.zeros((len(self.upper_lattice.points)*k, len(self.upper_lattice.points)*k), dtype=data_type)
-        _, indices = self.upper_lattice.first_nearest_neighbours(self.upper_lattice.points, self.upper_lattice.point_types)
         for i in range(len(self.upper_lattice.points)):  # self interactions
             ham_uu[i*k:(i+1)*k, i*k:(i+1)*k] += tuself(
                 self.upper_lattice.points[i],
                 self.upper_lattice.point_types[i]
             )
+        bigger_indices, indices, _ = self.upper_lattice.first_nearest_neighbours(self.upper_lattice.points, self.upper_lattice.point_types)
         for this_i in range(len(self.upper_lattice.points)):  # neighbour interactions
             this_coo = self.upper_lattice.points[this_i]
             this_type = self.upper_lattice.point_types[this_i]
-            for neigh_i in indices[this_i]:
-                neigh_coo = self.upper_lattice.points[neigh_i]
+            # for neigh_i in indices[this_i]:
+            for phantom_neigh_i, neigh_i in zip(bigger_indices[this_i], indices[this_i]):
+                if self.pbc: neigh_coo = self.lower_lattice.bigger_points[phantom_neigh_i]
+                else:        neigh_coo = self.lower_lattice.points[neigh_i]
                 neigh_type = self.upper_lattice.point_types[neigh_i]
-                ham_uu[this_i*k:(this_i+1)*k, neigh_i*k:(neigh_i+1)*k] += tll(this_coo, neigh_coo, this_type, neigh_type)
+                ham_uu[this_i*k:(this_i+1)*k, neigh_i*k:(neigh_i+1)*k] += tuu(this_coo, neigh_coo, this_type, neigh_type)
 
         # 3. interaction from the lower to the upper lattice
         ham_lu = np.zeros((len(self.lower_lattice.points)*k, len(self.upper_lattice.points)*k), dtype=data_type)
-        _, indices = self.upper_lattice.query(self.lower_lattice.points, k=1)
+        bigger_indices, indices, _ = self.upper_lattice.query_one(self.lower_lattice.points)
         for this_i in range(len(self.lower_lattice.points)):
             neigh_i = indices[this_i, 0]
+            phantom_neigh_i = bigger_indices[this_i, 0]
             ham_lu[this_i*k:(this_i+1)*k, neigh_i*k:(neigh_i+1)*k] += tlu(
                 self.lower_lattice.points[this_i],
-                self.upper_lattice.points[neigh_i],
+                self.upper_lattice.bigger_points[phantom_neigh_i] if self.pbc else self.upper_lattice.points[neigh_i],
                 self.lower_lattice.point_types[this_i],
                 self.upper_lattice.point_types[neigh_i],
             )
 
         # 4. interaction from the upper to the lower lattice
         ham_ul = np.zeros((len(self.upper_lattice.points)*k, len(self.lower_lattice.points)*k), dtype=data_type)
-        _, indices = self.lower_lattice.query(self.upper_lattice.points, k=1)
+        bigger_indices, indices, _ = self.lower_lattice.query_one(self.upper_lattice.points)
         for this_i in range(len(self.upper_lattice.points)):
             neigh_i = indices[this_i, 0]
+            phantom_neigh_i = bigger_indices[this_i, 0]
             ham_ul[this_i*k:(this_i+1)*k, neigh_i*k:(neigh_i+1)*k] += tul(
                 self.upper_lattice.points[this_i],
-                self.lower_lattice.points[neigh_i],
+                self.lower_lattice.bigger_points[phantom_neigh_i] if self.pbc else self.lower_lattice.points[neigh_i],
                 self.upper_lattice.point_types[this_i],
                 self.lower_lattice.point_types[neigh_i],
             )
@@ -264,50 +282,3 @@ class BilayerMPMoireLattice(BilayerMoireLattice):
     ):
         pass
 
-
-
-
-
-if __name__ == "__main__":
-    from layers import SquareLayer, Rhombus60Layer, TriangularLayer, HexagonalLayer
-    import time
-
-    t = time.time()
-
-    # lattice = MoireLattice(TriangularLayer, 9, 10, 3+0, 2+0, pbc=False)
-    # lattice = MoireLattice(TriangularLayer, 3, 4, 20, 20, pbc=True, k=1)
-    # lattice = MoireLattice(TriangularLayer, 3, 4, 4, 4, pbc=True, k=1)
-
-    lattice = MoireLattice(HexagonalLayer, 9, 10, 2, 2, pbc=True, k=1)
-
-    # lattice = MoireLattice(SquareLayer, 19, 20, 1, 1, pbc=True)
-    # lattice = MoireLattice(TriangularLayer, 5, 6, 2, 2, pbc=True)
-    # lattice = MoireLattice(TriangularLayer, 12, 13, 1, 1, pbc=True)
-    # lattice = MoireLattice(TriangularLayer, 9, 10, 2, 4, pbc=False)
-
-
-    # ham = lattice.generate_hamiltonian(1, 1, 1)
-
-    # print(f"hamiltonian generation took: {time.time() - t:.2f} seconds")
-
-    # # check if ham is hermitian
-    # if np.allclose(ham, ham.T.conj()): print("Hamiltonian is hermitian.")
-    # else: print("Hamiltonian is not hermitian.")
-
-    # t = time.time()
-
-    # evals, evecs = np.linalg.eigh(ham)
-
-    # print(f"diagonalization took: {time.time() - t:.2f} seconds")
-
-
-    # plt.imshow(ham, cmap="gray")
-    # plt.colorbar()
-    # plt.show()
-
-    # lattice.plot_lattice()
-
-    ham = lattice.generate_hamiltonian(1, 1, 1, 1, 1, 1)
-
-    plt.imshow(ham, cmap="gray")
-    plt.show()

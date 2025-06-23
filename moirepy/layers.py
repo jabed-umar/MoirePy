@@ -5,6 +5,7 @@ import math
 from .utils import get_rotation_matrix
 from scipy.spatial import KDTree
 import json
+from bidict import bidict
 
 
 class Layer:  # parent class
@@ -81,14 +82,14 @@ class Layer:  # parent class
 
         # Rotate lattice_points
         self.lattice_points = [
-            [*(rot_m @ (np.array([x, y]) + np.array(translation))), atom_type]
-            for x, y, atom_type in self.lattice_points
+            [*(rot_m @ (np.array([x, y]) + np.array(translation))), point_type]
+            for x, y, point_type in self.lattice_points
         ]
 
         # Rotate neighbours
         self.neighbours = {
-            atom_type: [rot_m @ np.array(neighbour) for neighbour in neighbour_list]
-            for atom_type, neighbour_list in self.neighbours.items()
+            point_type: [rot_m @ np.array(neighbour) for neighbour in neighbour_list]
+            for point_type, neighbour_list in self.neighbours.items()
         }
 
 
@@ -294,7 +295,7 @@ class Layer:  # parent class
         """
         Generates a KDTree for spatial queries of points in the Moiré lattice.
         If PBC is enabled, additional points outside the primary unit cell are
-        considered for accurate queries (same numbers of neigbours for all atoms).
+        considered for accurate queries (same numbers of neigbours for all points).
 
         Returns:
             None: The function modifies the object state by generating
@@ -408,29 +409,29 @@ class Layer:  # parent class
             mapped_point = self.bigger_points[i] - (dx * self.mlv1 * self.mln1 + dy * self.mlv2 * self.mln2)
             distance, index = tree.query(mapped_point)
             if distance >= self.toll_scale * 1e-3:
-                print(f"Distance {distance} exceeds tolerance for {i}th point {self.bigger_points[i]} mapped at location {mapped_point} with translation ({dx}, {dy}).")
-                plt.plot(*self.bigger_points.T, "ko", alpha=0.3)
-                plt.plot(*self.points.T, "k.")
-                # plt.plot(*self.bigger_points[i], "b.")
-                # plt.plot(*mapped_point, "r.")
-                # plt.plot(*self.points[index], "g.")
-                # parallellogram around the whole lattice
-                plt.plot([0, self.mln1 * self.mlv1[0]], [0, self.mln1 * self.mlv1[1]], 'k', linewidth=1)
-                plt.plot([0, self.mln2 * self.mlv2[0]], [0, self.mln2 * self.mlv2[1]], 'k', linewidth=1)
-                plt.plot([self.mln1 * self.mlv1[0], self.mln1 * self.mlv1[0] + self.mln2 * self.mlv2[0]], [self.mln1 * self.mlv1[1], self.mln1 * self.mlv1[1] + self.mln2 * self.mlv2[1]], 'k', linewidth=1)
-                plt.plot([self.mln2 * self.mlv2[0], self.mln1 * self.mlv1[0] + self.mln2 * self.mlv2[0]], [self.mln2 * self.mlv2[1], self.mln1 * self.mlv1[1] + self.mln2 * self.mlv2[1]], 'k', linewidth=1)
+                # print(f"Distance {distance} exceeds tolerance for {i}th point {self.bigger_points[i]} mapped at location {mapped_point} with translation ({dx}, {dy}).")
+                # plt.plot(*self.bigger_points.T, "ko", alpha=0.3)
+                # plt.plot(*self.points.T, "k.")
+                # # plt.plot(*self.bigger_points[i], "b.")
+                # # plt.plot(*mapped_point, "r.")
+                # # plt.plot(*self.points[index], "g.")
+                # # parallellogram around the whole lattice
+                # plt.plot([0, self.mln1 * self.mlv1[0]], [0, self.mln1 * self.mlv1[1]], 'k', linewidth=1)
+                # plt.plot([0, self.mln2 * self.mlv2[0]], [0, self.mln2 * self.mlv2[1]], 'k', linewidth=1)
+                # plt.plot([self.mln1 * self.mlv1[0], self.mln1 * self.mlv1[0] + self.mln2 * self.mlv2[0]], [self.mln1 * self.mlv1[1], self.mln1 * self.mlv1[1] + self.mln2 * self.mlv2[1]], 'k', linewidth=1)
+                # plt.plot([self.mln2 * self.mlv2[0], self.mln1 * self.mlv1[0] + self.mln2 * self.mlv2[0]], [self.mln2 * self.mlv2[1], self.mln1 * self.mlv1[1] + self.mln2 * self.mlv2[1]], 'k', linewidth=1)
 
-                # just plot mlv1 and mlv2 parallellogram
-                plt.plot([0, self.mlv1[0]], [0, self.mlv1[1]], 'k', linewidth=1)
-                plt.plot([0, self.mlv2[0]], [0, self.mlv2[1]], 'k', linewidth=1)
-                plt.plot([self.mlv1[0], self.mlv1[0] + self.mlv2[0]], [self.mlv1[1], self.mlv1[1] + self.mlv2[1]], 'k', linewidth=1)
-                plt.plot([self.mlv2[0], self.mlv1[0] + self.mlv2[0]], [self.            mlv2[1], self.mlv1[1] + self.mlv2[1]], 'k', linewidth=1)
-                # for index, mapped_point in enumerate(self.bigger_points):
-                #     plt.text(*mapped_point, f"{index}", fontsize=6)
-                plt.gca().add_patch(plt.Circle(mapped_point, distance / 2, color='r', fill=False))
+                # # just plot mlv1 and mlv2 parallellogram
+                # plt.plot([0, self.mlv1[0]], [0, self.mlv1[1]], 'k', linewidth=1)
+                # plt.plot([0, self.mlv2[0]], [0, self.mlv2[1]], 'k', linewidth=1)
+                # plt.plot([self.mlv1[0], self.mlv1[0] + self.mlv2[0]], [self.mlv1[1], self.mlv1[1] + self.mlv2[1]], 'k', linewidth=1)
+                # plt.plot([self.mlv2[0], self.mlv1[0] + self.mlv2[0]], [self.            mlv2[1], self.mlv1[1] + self.mlv2[1]], 'k', linewidth=1)
+                # # for index, mapped_point in enumerate(self.bigger_points):
+                # #     plt.text(*mapped_point, f"{index}", fontsize=6)
+                # plt.gca().add_patch(plt.Circle(mapped_point, distance / 2, color='r', fill=False))
 
-                plt.grid()
-                plt.show()
+                # plt.grid()
+                # plt.show()
 
                 raise ValueError(f"FATAL ERROR: Distance {distance} exceeds tolerance for {i}th point {self.bigger_points[i]} mapped at location {mapped_point} with translation ({dx}, {dy}).")
             self.mappings[i] = index
@@ -490,7 +491,7 @@ class Layer:  # parent class
         assert self.kdtree is not None, "Generate the KDTree first by calling `Layer.generate_kdtree()`."
         assert points.shape[0] == types.shape[0], "Mismatch between number of points and types."
 
-        distances_list, indices_list = [], []
+        bigger_indices_all, smaller_indices_all, smaller_distances_all = [], [], []
 
         for point, t in zip(points, types):
             if t not in self.neighbours:
@@ -500,25 +501,28 @@ class Layer:  # parent class
             absolute_neighbours = point + relative_neighbours
             distances, indices = self.kdtree.query(absolute_neighbours, k=1)
 
-            filtered_distances, filtered_indices = [], []
+            bigger_indices, smaller_distances, smaller_indices = [], [], []
             for dist, idx in zip(distances, indices):
                 if self.pbc:
                     if dist > 1e-2 * self.toll_scale:
                         raise ValueError(f"Distance {dist} exceeds tolerance.")
-                    filtered_distances.append(dist)
-                    filtered_indices.append(self.mappings[idx])
+                    bigger_indices.append(idx)
+                    smaller_indices.append(self.mappings[idx])
+                    smaller_distances.append(dist)
                 else:
                     # if dist > 1e-2 * self.toll_scale:
                     #     raise ValueError(f"Distance {dist} exceeds tolerance.")
-                    filtered_distances.append(dist)
-                    filtered_indices.append(idx)
+                    bigger_indices.append(idx)
+                    smaller_indices.append(idx)
+                    smaller_distances.append(dist)
 
-            distances_list.append(filtered_distances)
-            indices_list.append(filtered_indices)
+            bigger_indices_all.append(bigger_indices)
+            smaller_indices_all.append(smaller_indices)
+            smaller_distances_all.append(smaller_distances)
 
-        return distances_list, indices_list
+        return bigger_indices_all, smaller_indices_all, smaller_distances_all
 
-    def query(self, points: np.ndarray, k: int = 1) -> Tuple[np.ndarray, np.ndarray]:
+    def query_one(self, points: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
         """
         Queries the KDTree for the nearest neighbors of given points and applies PBC if enabled.
 
@@ -561,85 +565,63 @@ class Layer:  # parent class
         # - replace the indices with the mapped indices
         # - return the mapped indices and distances (distance will be the same)
         assert self.kdtree is not None, "Generate the KDTree first by calling `Layer.generate_kdtree()`."
-        distances, indices = self.kdtree.query(points, k=k)
+        distances, indices = self.kdtree.query(points, k=[1])
 
         # for k=1, it returns squeezed arrays... so we need to unsqueeze them
-        if k == 1:
-            distances = distances[:, None]
-            indices = indices[:, None]
-
-        distances_list, indices_list = distances.tolist(), indices.tolist()
-        if k > 1:
-            # Set minimum distance threshold
-            min_distance = distances[:, 1].min()
-            threshold = (1 + 1e-2 * self.toll_scale) * min_distance
-            # print(f"{min_distance = }, {threshold = }")
-
-            # Filter distances and indices based on thresholds
-            for i in range(len(distances_list)):
-                while distances_list[i] and distances_list[i][-1] > threshold:
-                    distances_list[i].pop()
-                    indices_list[i].pop()
+        # distances = distances[:, None]
+        # indices = indices[:, None]
 
         if not self.pbc:
-            return distances_list, indices_list
+            return indices, indices, distances
 
-        # Convert lists back to numpy arrays for PBC
-        try:
-            distances = np.array(distances_list)
-            indices = np.array(indices_list)
-        except ValueError as e:
-            raise RuntimeError("FATAL ERROR: Uneven row lengths in PBC.") from e
-
-        # Apply mappings
         try:
             vectorized_fn = np.vectorize(self.mappings.get)
             remapped_indices = vectorized_fn(indices)
         except TypeError as e:
             raise RuntimeError("FATAL ERROR: Mapping failed during vectorization. Check if all indices are valid.") from e
-        return distances, remapped_indices
+        return indices, remapped_indices, distances
 
-    def query_non_self(self, points: np.ndarray, k: int = 1) -> Tuple[np.ndarray, np.ndarray]:
-        """
-        Queries the KDTree for the k nearest neighbors of given points, excluding the point itself.
+    # def query_non_self(self, points: np.ndarray, k: int = 1) -> Tuple[np.ndarray, np.ndarray]:
+    #     """
+    #     Queries the KDTree for the k nearest neighbors of given points, excluding the point itself.
 
-        Args:
-            points (np.ndarray): An (N, 2) array of points for which to find the nearest neighbors.
-            k (int, optional): The number of nearest neighbors to query (excluding the point itself).
-                Defaults to 1.
+    #     Args:
+    #         points (np.ndarray): An (N, 2) array of points for which to find the nearest neighbors.
+    #         k (int, optional): The number of nearest neighbors to query (excluding the point itself).
+    #             Defaults to 1.
 
-        Returns:
-            Tuple[np.ndarray, np.ndarray]:
-                - distances (np.ndarray): An (N, k) array containing the distances to the k nearest neighbors.
-                - indices (np.ndarray): An (N, k) array containing the indices of the k nearest neighbors
-                    in `self.points`. If PBC is enabled, the indices are remapped using `self.mappings`.
+    #     Returns:
+    #         Tuple[np.ndarray, np.ndarray]:
+    #             - distances (np.ndarray): An (N, k) array containing the distances to the k nearest neighbors.
+    #             - indices (np.ndarray): An (N, k) array containing the indices of the k nearest neighbors
+    #                 in `self.points`. If PBC is enabled, the indices are remapped using `self.mappings`.
 
-        Behavior:
-            - Calls `self.query(points, k=k+1)` to get `k+1` neighbors, including the point itself.
-            - Removes the first neighbor (which is the query point itself) from both distances and indices.
-            - If `self.pbc` is False, it processes the lists iteratively.
-            - If `self.pbc` is True, it slices the arrays to exclude the self-point.
+    #     Behavior:
+    #         - Calls `self.query(points, k=k+1)` to get `k+1` neighbors, including the point itself.
+    #         - Removes the first neighbor (which is the query point itself) from both distances and indices.
+    #         - If `self.pbc` is False, it processes the lists iteratively.
+    #         - If `self.pbc` is True, it slices the arrays to exclude the self-point.
 
-        Example:
-        ```python
-        layer = Layer()
-        layer.generate_kdtree()
-        points = np.array([[0.5, 0.5], [1.0, 1.0]])
-        distances, indices = layer.query_non_self(points, k=2)
-        ```
-        """
-        distances, indices = self.query(points, k=k + 1)
+    #     Example:
+    #     ```python
+    #     layer = Layer()
+    #     layer.generate_kdtree()
+    #     points = np.array([[0.5, 0.5], [1.0, 1.0]])
+    #     distances, indices = layer.query_non_self(points, k=2)
+    #     ```
+    #     """
+    #     distances, indices = self.query(points, k=k + 1)
 
-        if self.pbc is False:
-            for i in range(len(indices)):
-                indices[i] = indices[i][1:]
-                distances[i] = distances[i][1:]
-        else:
-            indices = indices[:, 1:]
-            distances = distances[:, 1:]
+    #     if self.pbc is False:
+    #         for i in range(len(indices)):
+    #             indices[i] = indices[i][1:]
+    #             distances[i] = distances[i][1:]
+    #     else:
+    #         indices = indices[:, 1:]
+    #         distances = distances[:, 1:]
 
-        # return distances[:, 1:], indices[:, 1:]
-        return distances, indices
+    #     # return distances[:, 1:], indices[:, 1:]
+    #     return distances, indices
 
     def plot_lattice(self, plot_connections: bool = True, colours:list=["r", "g", "b", "c", "m", "y", "k"]) -> None:
         """
@@ -712,7 +694,7 @@ class SquareLayer(Layer):
         self.lv2 = np.array([0, 1])  # Lattice vector in the y-direction
         self.lattice_points = (
             # location of the point inside the unit cell
-            [0, 0, "A"],  # coo_x, coo_y, atom_type (unique string)
+            [0, 0, "A"],  # coo_x, coo_y, point_type (unique string)
         )
         self.neighbours = {
             "A": [
@@ -806,7 +788,7 @@ class HexagonalLayer(Layer):
         self.lv2 = np.array([0.5, np.sqrt(3) / 2])
 
         self.lattice_points = (
-            # coo_x, coo_y, atom_type (unique)
+            # coo_x, coo_y, point_type (unique)
             [0, 0, "A"],
             [1, 1/np.sqrt(3), "B"],
         )
