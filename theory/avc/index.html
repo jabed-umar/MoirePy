@@ -55,8 +55,6 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../getting_started/moire_lattice_and_hamiltonian/">Moiré Lattice and Hamiltonian</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/tight_binding_ham/">Tight Binding Moiré Hamiltonian</a>
-                  </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../examples/">EXAMPLE NOTEBOOKS</a>
                   </li>
               </ul>
@@ -64,14 +62,14 @@
               <ul class="current">
                   <li class="toctree-l1"><a class="reference internal" href="../theory_intro/">Theoretical Background</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../tight_binding_ham/">Tight Binding Moiré Hamiltonian</a>
+                  </li>
                   <li class="toctree-l1"><a class="reference internal" href="../search_algorithm_kdtree/">Searching Algorithm & KDTree</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../angle_calculation_process/">Angle Calculation Process</a>
                   </li>
                   <li class="toctree-l1 current"><a class="reference internal current" href="#">Angle Value Calculator</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#guidelines">Guidelines</a>
-    </li>
     <li class="toctree-l2"><a class="reference internal" href="#calculator">Calculator</a>
     </li>
     </ul>
@@ -173,44 +171,27 @@
 </style>
 
 <h1 id="angle-value-calculator">Angle Value Calculator</h1>
-<p>The <strong>Moiré Angle Calculator</strong> finds all possible commensurate angles between two stacked lattices by trimming both layers within a given radius and checking for periodic overlaps. For each valid angle, it returns not just the angle itself, but also the corresponding lattice coordinates: <code>ll1, ll2</code> (from the lower lattice) and <code>ul1, ul2</code> (from the upper one). Since most angles are irrational and can't be precisely represented, the rotation is defined using these coordinate pairs instead — they mark the overlapping points between the two lattices. Once you've selected an angle from the list, just copy the <code>ll1, ll2, ul1, ul2</code> values into your code — the system will figure out the rotation angle from that. For the logic behind how angles are identified, see the <a href="../angle_calculation_process/">Angle Calculation Process</a>.</p>
-<h2 id="guidelines">Guidelines</h2>
-<details>
-    <summary>Click to Expand</summary>
-
-    <ul>
-        <li>
-            A <strong>radius</strong> must be specified to define the extent of the circular region centered at the origin. This radius will be used to truncate both the upper and lower lattices.
-        </li>
-
-        <li>
-            <strong>Currently Supported Systems</strong>:
-            <ul>
-                <li>Triangular on triangular lattices</li>
-                <li>Square on square lattices</li>
-                <li>
-                    A <strong>custom mode</strong> is available, allowing the input of arbitrary lattice vectors for each layer. Please note that this mode is experimental and its <strong>reliability is NOT guaranteed</strong>. Potential issues may include:
-                    <ul>
-                        <li>Erroneous or nonsensical output.</li>
-                        <li>Unresponsiveness or infinite loops.</li>
-                        <li>Unexpected program behavior.</li>
-                    </ul>
-                    However, if you believe that your specific configuration (as detailed in <a href="../angle_calculation_process">Angle Calculation Process</a>) <em>should</em> yield meaningful results, then following these patterns <em>might</em> be considered:
-                    <ol>
-                        <li>Both lattice angles are exact divisors of 360°.</li>
-                        <li>One of them should exactly divide the other.</li>
-                    </ol>
-                    Even under these conditions, there is <strong>no assurance</strong> that the calculated angles will be accurate or relevant. Use this feature at your own discretion.
-                </li>
-            </ul>
-        </li>
-
-        <li>A <strong>larger radius</strong> will encompass more lattice points, potentially leading to more precise calculations and the detection of smaller angles, but will increase computation time.</li>
-        <li>A <strong>smaller radius</strong> will yield faster results, but may only reveal larger angle values.</li>
-
-    </ul>
+<p>The <strong>Moiré Angle Calculator</strong> finds all possible commensurate angles between two stacked lattices by trimming both layers within a given radius and checking for periodic overlaps following the <a href="../angle_calculation_process/">Angle Calculation Process</a>. After calculation, it provides a list of angles with their corresponding <code>ll1</code>, <code>ll2</code>, <code>ul1</code>, <code>ul2</code> values that define the rotation between the two lattices along with the number of points in each cell of the Moiré lattice. Since most angles are irrational and can't be precisely represented, the rotation is defined using these coordinate pairs instead — they mark the overlapping points between the two lattices. Once you've selected an angle from the list, just copy the <code>ll1</code>, <code>ll2</code>, <code>ul1</code>, and <code>ul2</code> values into your code — the system will figure out the exact rotation angle from that. This also makes it easy to calculate the moire lattice vectors.</p>
+<details class="warning">
+<summary>Some Guidelines</summary>
+<p>A <strong>radius</strong> must be specified to define the extent of the circular region centred at the origin. This value is used to truncate <em>both</em> the upper and lower lattices. <strong>Larger radius</strong> Includes more lattice points, potentially giving more precise calculations and revealing smaller angles, <strong>but</strong> increases computation time. <strong>Smaller radius</strong> Produces faster results, yet may detect only larger angle values.</p>
+<p><strong>Currently supported systems:</strong></p>
+<ul>
+<li>Both layers <strong>60<span class="arithmatex">\(^\circ\)</span></strong> (Triangular, Hexagonal and Kagome lattices)</li>
+<li>Both layers <strong>90<span class="arithmatex">\(^\circ\)</span></strong> (Square lattice)</li>
+<li>
+<p><strong>Custom mode</strong> – <em>experimental</em>  </p>
+<p><em>Possible problems</em><br />
+- Erroneous or nonsensical output<br />
+- Unresponsiveness or infinite loops<br />
+- Unexpected program behaviour  </p>
+<p>Proceed only if you believe the results yielded by the <a href="../angle_calculation_process">Angle Calculation Process</a> are correct and meaningful for your custom lattice vectors.</p>
+</li>
+</ul>
+<p><strong>Larger Value of points per cell</strong> More points per cell in the lattice means larger hamiltonian matrix, which can lead to longer computation times and higher memory usage. Especially if planning to invert the hamiltonian matrix and find eigenvalues and eigenvectors later.</p>
+<p><strong>Number of Points</strong> has been calculated assuming only one point per unit cell. If you are using lattices which have multiple points per unit cell like hexagonal (2) or kagome (3), multiply this value by the number of points per unit cell in your lattice to get the actual number of points in the Moiré lattice.</p>
+<p><strong>Precision</strong> has <strong>NO effect on the calculation</strong>. It only affects the output format of the results. (In the calculation, we stick to integer values to avoid floating point errors).</p>
 </details>
-
 <h2 id="calculator">Calculator</h2>
 <div class="input-form">
     <div style="display: flex; gap: 10px; align-items: center;">
@@ -257,7 +238,10 @@
     <button onclick="calculate()">CALCULATE</button>
 </div>
 
-<p><strong>Note:</strong> The last column (number of points per unit cell in the Moiré lattice) has been calculated assuming only one point per unit cell. If you are using lattices which have multiple points per unit cell like hexagonal (2) or kagome (3), multiply this value by the number of points per unit cell in your lattice to get the actual number of points in the Moiré lattice.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The last column (number of points per unit cell in the Moiré lattice) has been calculated assuming only one point per unit cell. If you are using lattices which have multiple points per unit cell like hexagonal (2) or kagome (3), multiply this value by the number of points per unit cell in your lattice to get the actual number of points in the Moiré lattice.</p>
+</div>
 <table id="results-table">
     <thead>
         <tr>

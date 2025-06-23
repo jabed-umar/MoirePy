@@ -63,14 +63,14 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="getting_started/moire_lattice_and_hamiltonian/">Moiré Lattice and Hamiltonian</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="getting_started/tight_binding_ham/">Tight Binding Moiré Hamiltonian</a>
-                  </li>
                   <li class="toctree-l1"><a class="reference internal" href="examples/">EXAMPLE NOTEBOOKS</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Theoretical Background</span></p>
               <ul>
                   <li class="toctree-l1"><a class="reference internal" href="theory/theory_intro/">Theoretical Background</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="theory/tight_binding_ham/">Tight Binding Moiré Hamiltonian</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="theory/search_algorithm_kdtree/">Searching Algorithm & KDTree</a>
                   </li>
@@ -136,10 +136,11 @@
 <li>nth nearest-neighbour coupling</li>
 <li>Asymmetric interlayer coupling</li>
 <li>arbitrary number of orbitals per site</li>
+<li>all couplings can be real (default), or complex numbers.</li>
 <li>all couplings can be functions of position of the point(s) and the point type(s) (for example, different coupling for A-A, A-B, B-B sites for hexagonal lattices)</li>
 </ul>
 </li>
-<li><a href="theory/avc/">Web based tool</a> makes it convenient to calculate lattice angles before simulation.</li>
+<li><a href="https://jabed-umar.github.io/MoirePy/theory/avc/">Web based tool</a> makes it convenient to calculate lattice angles before simulation.</li>
 <li>Extensive Documentation and examples for easy onboarding.</li>
 <li>Compatible with other related libraries like Kwant (so that you can generate Hamiltonian and use it with Kwant for further analysis).</li>
 <li><strong>Freedom to researcher:</strong> We allow you to define your layers and apply whatever couplings you want. If you want the lattice points to have 53 orbitals each—sure, go ahead. As long as you know what you're doing, we won’t stop you. We don't verify whether it's physically possible.</li>
@@ -152,11 +153,10 @@
 </ul>
 <h2 id="installation">Installation</h2>
 <p>You can install MoirePy via pip:</p>
-<pre><code class="language-bash">pip install moirepy
-</code></pre>
+<pre class="highlight"><code class="language-bash">pip install moirepy</code></pre>
 <p>&lt;!-- ## Basic Usage</p>
 <p>For detailed usage, please refer to our <a href="https://jabed-umar.github.io/MoirePy/">documentation</a>.</p>
-<pre><code class="language-python">from moirepy import MoireLattice
+<pre class="highlight"><code class="language-python">from moirepy import MoireLattice
 ``` --&gt;
 
 
@@ -178,8 +178,7 @@ If you use this software or a modified version in academic or scientific researc
     title = {MoirePy: Python package for efficient tight binding simulation of bilayer moiré lattices},
     year = {2025},
     url = {https://jabed-umar.github.io/MoirePy/},
-}
-</code></pre>
+}</code></pre>
               
             </div>
           </div><footer>
@@ -233,5 +232,5 @@ If you use this software or a modified version in academic or scientific researc
 
 <!--
 MkDocs version : 1.6.1
-Build Date UTC : 2025-06-21 09:29:54.930323+00:00
+Build Date UTC : 2025-06-23 17:05:49.799432+00:00
 -->

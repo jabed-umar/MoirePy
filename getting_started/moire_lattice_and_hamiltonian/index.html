@@ -55,11 +55,17 @@
                   </li>
                   <li class="toctree-l1 current"><a class="reference internal current" href="#">Moiré Lattice and Hamiltonian</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#moire-lattice">Moiré Lattice</a>
+    <li class="toctree-l2"><a class="reference internal" href="#generate-moire-lattice">Generate Moiré Lattice</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#obtain-the-real-space-hamiltonian-of-this-moire-lattice">Obtain the real space Hamiltonian of this Moiré lattice</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#customising-the-hopping-parameters">Customising the Hopping Parameters</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#obtaining-the-k-space-hamiltonian-of-this-moire-lattice">Obtaining the k-space Hamiltonian of this Moiré lattice</a>
     </li>
     </ul>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../tight_binding_ham/">Tight Binding Moiré Hamiltonian</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../examples/">EXAMPLE NOTEBOOKS</a>
                   </li>
@@ -67,6 +73,8 @@
               <p class="caption"><span class="caption-text">Theoretical Background</span></p>
               <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../../theory/theory_intro/">Theoretical Background</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../theory/tight_binding_ham/">Tight Binding Moiré Hamiltonian</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../theory/search_algorithm_kdtree/">Searching Algorithm & KDTree</a>
                   </li>
@@ -111,15 +119,134 @@
               
                 <h1 id="preparing-moire-lattice-and-its-hamiltonian">Preparing Moiré Lattice and it's Hamiltonian</h1>
 <p>In the previous section, we learned how to prepare a lattice layer using the <code>Layer</code> class. Now, we will extend this knowledge to create a Moiré lattice and its Hamiltonian.</p>
-<h2 id="moire-lattice">Moiré Lattice</h2>
-<p>Assuming you have written your own <code>Layer</code> subclasses, for this tutorial we will use the inbuilt <code>TriangleLayer</code> for simplicity.</p>
-<p>We have not seen any commensurate Moiré lattices where </p>
+<h2 id="generate-moire-lattice">Generate Moiré Lattice</h2>
+<p>Assuming you have written your own <code>Layer</code> subclasses, for this tutorial we will use the inbuilt <code>TriangleLayer</code> for simplicity. We will create a bilayer Moiré lattice using the <code>BilayerMoireLattice</code> class where both the lower and upper layers are of the same type (<code>TriangleLayer</code> in this case).</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>For now we only support Moiré lattices where both layers are of the same type. We will shortly add support for lattices with different types of layers.</p>
+</div>
+<pre class="highlight"><code class="language-python">&gt;&gt;&gt; # Import the necessary classes
+&gt;&gt;&gt; from moirepy import BilayerMoireLattice, TriangularLayer
+&gt;&gt;&gt; # Define the Moiré lattice with two triangular layers
+&gt;&gt;&gt; moire_lattice = BilayerMoireLattice(
+&gt;&gt;&gt;     latticetype=TriangularLayer,
+&gt;&gt;&gt;     ll1=9, ll2=10,
+&gt;&gt;&gt;     ul1=10, ul2=9,
+&gt;&gt;&gt;     n1=1, n2=1,  # number of unit cells
+&gt;&gt;&gt; )
+twist angle = 0.0608 rad (3.4810 deg)
+271 points in lower lattice
+271 points in upper lattice
+&gt;&gt;&gt; # Plot the Moiré lattice
+&gt;&gt;&gt; moire_lattice.plot_lattice()</code></pre>
+<p><img alt="alt text" src="../../images/getting_started/moire_lattice_and_hamiltonian/out1.png" /></p>
+<p>The values <code>ll1</code>, <code>ll2</code>, <code>ul1</code>, and <code>ul2</code> are supposed to be obtained from the <a href="../../theory/avc/">Angle Value Calculator</a> tool. In this page you have to input the layer types and the radius till which you want to search for overlaps. The tool will then search for all the overlaps and return the values of <code>ll1</code>, <code>ll2</code>, <code>ul1</code>, and <code>ul2</code> along with the twist angle and the number of points in each layer. Choose the appropriate values of <code>ll1</code>, <code>ll2</code>, <code>ul1</code>, and <code>ul2</code> based on the desired twist angle.</p>
+<p><strong>For more information about the options that can be tweaked please check the related API reference.</strong></p>
+<h2 id="obtain-the-real-space-hamiltonian-of-this-moire-lattice">Obtain the real space Hamiltonian of this Moiré lattice</h2>
+<p>Obtaining the Hamiltonian in MoiréPy is as easy as calling the <code>BilayerMoireLattice.generate_hamiltonian</code> function with the intended hopping parameters. Let's see how:</p>
+<pre class="highlight"><code class="language-python">&gt;&gt;&gt; # with the already generated `moire_lattice`
+&gt;&gt;&gt; ham = moire_lattice.generate_hamiltonian(
+&gt;&gt;&gt;     tll=1, tuu=1, tlu=1, tul=1,
+&gt;&gt;&gt;     tuself=1, tlself=1,
+&gt;&gt;&gt; )
+&gt;&gt;&gt; ham
+array([[1., 1., 0., ..., 0., 0., 0.],
+       [1., 1., 1., ..., 0., 0., 0.],
+       [0., 1., 1., ..., 0., 0., 0.],
+       ...,
+       [0., 0., 0., ..., 1., 1., 0.],
+       [0., 0., 0., ..., 1., 1., 1.],
+       [0., 0., 0., ..., 0., 1., 1.]], shape=(542, 542))</code></pre>
+<p>The shape of the Hamiltonian is <span class="arithmatex">\((n, n)\)</span>, where:</p>
+<div class="arithmatex">\[
+\begin{aligned}
+n &amp;= \text{\#lattice points} \times \text{\#orbitals per site } (=k) \\
+  &amp;= (271_\text{upper} + 271_\text{lower}) \times (k=1) = 542
+\end{aligned}
+\]</div>
+<p>This matches the shape <span class="arithmatex">\((542, 542)\)</span> shown in the example.</p>
+<p>let us now try visualising the obtained hamiltonian:</p>
+<pre class="highlight"><code class="language-python">&gt;&gt;&gt; import matplotlib.pyplot as plt
+&gt;&gt;&gt; plt.matshow(ham, cmap="gray")</code></pre>
+<p><img alt="alt text" src="../../images/getting_started/moire_lattice_and_hamiltonian/out2.png" /></p>
+<h3 id="customising-the-hopping-parameters">Customising the Hopping Parameters</h3>
+<p>The hopping parameters <code>tll</code>, <code>tuu</code>, <code>tlu</code>, <code>tul</code>, <code>tuself</code>, and <code>tlself</code> can be customized when generating the Hamiltonian. All of them can sure take float or integer values (as demonstrated above). But instead of that, you can pass a function as input to these parameters as well. Before seeing how to write that function, we need to understand what these parameters mean:</p>
+<ul>
+<li><code>tll</code>: hopping between neighbours on lower lattice</li>
+<li><code>tuu</code>: hopping between neighbours on upper lattice</li>
+<li><code>tlu</code>: hopping from lower lattice to upper lattice</li>
+<li><code>tul</code>: hopping from upper lattice to lower lattice</li>
+<li><code>tlself</code>: on-site energy for lower lattice</li>
+<li><code>tuself</code>: on-site energy for upper lattice</li>
+</ul>
+<p>for <code>tll</code>, <code>tuu</code>, <code>tlu</code> and <code>tul</code> we have to write a function that takes in these values:</p>
+<ul>
+<li><code>this_coo</code> (float, float): 2D coordinate of the current site.</li>
+<li><code>neigh_coo</code> (float, float): 2D coordinate of the neighboring site.</li>
+<li><code>this_type</code> (string): Type of the current site (as defined in your <code>sublattice.lattice_points</code>).</li>
+<li><code>neigh_type</code> (string): Type of the neighboring site (as defined in <code>sublattice.lattice_points</code>).</li>
+</ul>
+<p>The function should return the desired hopping value for the given pair of sites. This allows you to implement position or type-dependent hopping amplitudes.</p>
+<p>However in case of lattices with higher number of orbitals per site, you have to return a <code>(k, k)</code> shaped numpy array. More about this in <a href="../../examples/">Examples</a> section.</p>
+<p>On the other hand <code>tlself</code> and <code>tuself</code> are single point operations. So they take in only two values:</p>
+<ul>
+<li><code>this_coo</code> (int): The coordinate of the current site.</li>
+<li><code>this_type</code> (string): The type of the current site (as defined in your <code>sublattice.lattice_points</code>).</li>
+</ul>
+<p>Now let us look into an example:</p>
+<pre class="highlight"><code class="language-python">&gt;&gt;&gt; def inter_layer_hopping(this_coo, neigh_coo, this_type, neigh_type):
+&gt;&gt;&gt;     distance_between_layers = 1
+&gt;&gt;&gt;     this_coo_3D = np.array([*this_coo, 0])
+&gt;&gt;&gt;     neigh_coo_3D = np.array([*neigh_coo, distance_between_layers])
+&gt;&gt;&gt;     distance = np.linalg.norm(this_coo_3D - neigh_coo_3D)
+&gt;&gt;&gt;     # hopping parameter as a function of distance
+&gt;&gt;&gt;     return 4 * (distance - 1)
+&gt;&gt;&gt; ham = moire_lattice.generate_hamiltonian(
+&gt;&gt;&gt;     tll=1, tuu=1,
+&gt;&gt;&gt;     tlu=inter_layer_hopping,
+&gt;&gt;&gt;     tul=inter_layer_hopping,
+&gt;&gt;&gt;     tuself=1, tlself=1
+&gt;&gt;&gt; )
+&gt;&gt;&gt; plt.matshow(ham, cmap="gray")</code></pre>
+<p><img alt="alt text" src="../../images/getting_started/moire_lattice_and_hamiltonian/out3.png" /></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul>
+<li>Although the <code>inter_layer_hopping</code> function takes in the values <code>this_type</code> and <code>neigh_type</code>, they are not used in this example. You can use them in your problem if you want, but not using them (as in this example) is perfectly fine too. However, you must take them as input parameters in the function definition.</li>
+<li>In case of PBC, the <code>neigh_coo</code> might not actually be a point in the lattice for boundary points. The actual neigbouring point might be on the other side of the boundary. This is a design choice in MoiréPy, and we think it is more intuitive to handle the periodic boundary conditions this way. However, if you want to get the actual neighbouring point in the lattice, we will add an example notebook for that (not yet done).</li>
+</ul>
+</div>
+<p>We will explore more examples of custom hopping parameters, and interesting ways to use them in the <a href="../../examples/">Examples</a> section.</p>
+<h2 id="obtaining-the-k-space-hamiltonian-of-this-moire-lattice">Obtaining the k-space Hamiltonian of this Moiré lattice</h2>
+<p>To obtain the k-space Hamiltonian, we can use the <code>generate_kspace_hamiltonian</code> method of the <code>BilayerMoireLattice</code> class. This method will compute the Hamiltonian in momentum space based on the real space Hamiltonian we generated earlier. The inputs are all the same as the ones we used for generating the real space Hamiltonian, but now we also need to specify a <code>k</code> point at which to evaluate the Hamiltonian.</p>
+<pre class="highlight"><code class="language-python">&gt;&gt;&gt; kspace_ham = moire_lattice.generate_k_space_hamiltonian(
+&gt;&gt;&gt;     k = (0, 0), # k-point at which to evaluate the Hamiltonian
+&gt;&gt;&gt;     tll=1, tuu=1,
+&gt;&gt;&gt;     tlu=inter_layer_hopping,
+&gt;&gt;&gt;     tul=inter_layer_hopping,
+&gt;&gt;&gt;     tuself=1, tlself=1
+&gt;&gt;&gt; )
+&gt;&gt;&gt; kspace_ham
+array([[1.+0.j, 1.+0.j, 0.+0.j, ..., 0.+0.j, 0.+0.j, 0.+0.j],
+       [1.+0.j, 1.+0.j, 1.+0.j, ..., 0.+0.j, 0.+0.j, 0.+0.j],
+       [0.+0.j, 1.+0.j, 1.+0.j, ..., 0.+0.j, 0.+0.j, 0.+0.j],
+       ...,
+       [0.+0.j, 0.+0.j, 0.+0.j, ..., 1.+0.j, 1.+0.j, 0.+0.j],
+       [0.+0.j, 0.+0.j, 0.+0.j, ..., 1.+0.j, 1.+0.j, 1.+0.j],
+       [0.+0.j, 0.+0.j, 0.+0.j, ..., 0.+0.j, 1.+0.j, 1.+0.j]],
+      shape=(542, 542))</code></pre>
+<p>The k-space Hamiltonian is by default a complex-valued matrix. The real hamiltonian is a real-valued matrix by default, but if you want to pass complex valued hopping parameters, you can do so after specifying <code>data_type = np.complex128</code> in the <code>generate_hamiltonian</code> method.</p>
+<hr />
+<p><br></p>
+<p>In this section, we have learned how to create a Moiré lattice using the <code>BilayerMoireLattice</code> class and generate its Hamiltonian in both real and k-space. We also touched upon how to customize the hopping parameters using functions. This sets the foundation for further exploration of Moiré lattices and their properties in MoiréPy.</p>
+<p>Currently, this is all we have in MoiréPy for Moiré lattices. We will be adding more features and functionalities in the future as we continue to develop the library. Please raise issues on the <a href="https://github.com/yourusername/MoirePy/issues">GitHub repository</a> if you have any suggestions, want to raise feature requests or encounter any problems.</p>
+<p>After calculating the Hamiltonians using MoirePy, we expect you to use other more specific libraries like <code>numpy</code>, <code>scipy</code>, <code>kwant</code> etc. to perform further analysis.</p>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
         <a href="../prepare_layers/" class="btn btn-neutral float-left" title="Prepare Layers"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../tight_binding_ham/" class="btn btn-neutral float-right" title="Tight Binding Moiré Hamiltonian">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../../examples/" class="btn btn-neutral float-right" title="EXAMPLE NOTEBOOKS">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -149,7 +276,7 @@
       <span><a href="../prepare_layers/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../tight_binding_ham/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../../examples/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

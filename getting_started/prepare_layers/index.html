@@ -71,14 +71,14 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../moire_lattice_and_hamiltonian/">Moiré Lattice and Hamiltonian</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../tight_binding_ham/">Tight Binding Moiré Hamiltonian</a>
-                  </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../examples/">EXAMPLE NOTEBOOKS</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Theoretical Background</span></p>
               <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../../theory/theory_intro/">Theoretical Background</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../theory/tight_binding_ham/">Tight Binding Moiré Hamiltonian</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../theory/search_algorithm_kdtree/">Searching Algorithm & KDTree</a>
                   </li>
@@ -142,10 +142,9 @@
 </ul>
 <h2 id="defining-a-layer">Defining a layer</h2>
 <p>We will start by importing the parent class <code>Layer</code> from MoirePy, which helps us define single layers.</p>
-<pre><code class="language-python">&gt;&gt;&gt; import numpy as np
+<pre class="highlight"><code class="language-python">&gt;&gt;&gt; import numpy as np
 &gt;&gt;&gt; import matplotlib.pyplot as plt
-&gt;&gt;&gt; from moirepy import Layer
-</code></pre>
+&gt;&gt;&gt; from moirepy import Layer</code></pre>
 <p>The <code>Layer</code> class handles tasks such as generating lattice points, identifying their neighbours, managing boundary conditions, efficiently searching for specific points in the lattice, and more. For <code>Layer</code> to work properly, we need to define the following properties of a lattice:</p>
 <ul>
 <li><strong>Lattice vectors</strong>: These define the periodicity of the lattice. In MoirePy, they are named <code>lv1</code> and <code>lv2</code>. For simplicity, <code>lv1</code> must lie along the <span class="arithmatex">\(x\)</span>-direction, and <code>lv2</code> must lie above the <span class="arithmatex">\(x\)</span>-axis. This is a reasonable constraint, as any lattice can be expressed in this form.</li>
@@ -157,16 +156,16 @@
 <p>First, we will start with a simple square lattice, which has only one lattice point in the unit cell and four orthogonal neighbours. Then we will look at a more complex example — the kagome lattice — which has three lattice points in the unit cell and four neighbours each.</p>
 <h4 id="square-lattice">Square Lattice</h4>
 <p>Now let us define a square lattice using this <code>Layer</code> class.</p>
-<pre><code class="language-python">class SquareLayer(Layer):  # Inherit the Layer class
+<pre class="highlight"><code class="language-python">class SquareLayer(Layer):  # Inherit the Layer class
     def __init__(self, pbc=False, study_proximity: int=1) -&gt; None:
         self.lv1 = np.array([1, 0])
         self.lv2 = np.array([0, 1])
         self.lattice_points = (
             # location of the point inside the unit cell
-            [0, 0, &quot;A&quot;],  # coo_x, coo_y, point_type (unique string)
+            [0, 0, "A"],  # coo_x, coo_y, point_type (unique string)
         )
         self.neighbours = {
-            &quot;A&quot;: [
+            "A": [
                 [-1, 0],  # Left
                 [1, 0],   # Right
                 [0, 1],   # Up
@@ -174,86 +173,77 @@
             ],
         }
         # do not forget to initialise the parent class at the end
-        super().__init__(pbc=pbc, study_proximity=study_proximity)
-</code></pre>
-<details open>
-    <summary><strong>Things to Note</strong></summary>
-
-    <ul>
-        <li>Make sure to define all required properties for the lattice.</li>
-        <li>Remember to include <code>super().__init__(pbc=pbc, study_proximity=study_proximity)</code> at the end of your <code>__init__</code> method to properly initialize the parent class.</li>
-        <li>The values in <code>self.neighbours</code> are defined <em>relative to the lattice points</em>. So if the lattice point moves, the neighbour positions will automatically update — no manual changes needed.</li>
-    </ul>
-
-</details>
-
+        super().__init__(pbc=pbc, study_proximity=study_proximity)</code></pre>
+<div class="admonition note">
+<p class="admonition-title">Things to Note</p>
+<ul>
+<li>Make sure to define all required properties for the lattice.</li>
+<li>Remember to include <code>super().__init__(pbc=pbc, study_proximity=study_proximity)</code> at the end of your <code>__init__</code> method to properly initialize the parent class.</li>
+<li>The values in <code>self.neighbours</code> are defined <em>relative to the lattice points</em>. So if the lattice point moves, the neighbour positions will automatically update — no manual changes needed.</li>
+</ul>
+</div>
 <p>Now we can create an instance of this <code>SquareLayer</code> class:</p>
-<pre><code class="language-python">&gt;&gt;&gt; square_layer = SquareLayer(pbc=True, study_proximity=1)
+<pre class="highlight"><code class="language-python">&gt;&gt;&gt; square_layer = SquareLayer(pbc=True, study_proximity=1)
 &gt;&gt;&gt; square_layer
 Layer(
     lv1 = [1 0],
     lv2 = [0 1],
     lattice_points = ([0, 0, 'A'],),
     pbc = True,
-)
-</code></pre>
+)</code></pre>
 <p>Next, let us try plotting this lattice. First, we need to generate the points and then plot them.</p>
-<pre><code class="language-python">&gt;&gt;&gt; square_layer.generate_points(
+<pre class="highlight"><code class="language-python">&gt;&gt;&gt; square_layer.generate_points(
 &gt;&gt;&gt;     np.array([7, 0]),
 &gt;&gt;&gt;     np.array([0, 5]),
 &gt;&gt;&gt;     1, 1, test=True
-&gt;&gt;&gt; )
-</code></pre>
+&gt;&gt;&gt; )</code></pre>
 <p>Making moiré lattices requires precise cutting of the layers. This can only be done using the Moiré lattice classes. Since we’re cutting them arbitrarily here, we set <code>test=True</code> and <code>mln1 = mln2 = 1</code> to prevent the system from freaking out.</p>
 <p>Now, we can either use the attributes <code>square_layer.points</code> and <code>square_layer.point_types</code> to manually plot the lattice, or — for quick testing — use the built-in <code>Layer.plot_lattice()</code> method. <strong>However, we encourage you to write your own customised plotting function to better suit your preferences.</strong></p>
-<pre><code class="language-python">&gt;&gt;&gt; square_layer.plot_lattice()
-</code></pre>
+<pre class="highlight"><code class="language-python">&gt;&gt;&gt; square_layer.plot_lattice()</code></pre>
 <p><img alt="Square Lattice" src="../../images/getting_started/prepare_layers/square_layer.svg" /></p>
 <h4 id="kagome-lattice">Kagome Lattice</h4>
 <p><img alt="Kagome structure" src="../../images/getting_started/prepare_layers/kagomegen.svg" /></p>
 <p>Now let us look at a more complex lattice — the kagome lattice. This structure has three lattice points (A, B, and C, marked with red, blue, and green in the above image) in each unit cell. Each of them has four neighbours — two within the same cell and two in diagonally opposite positions to the first two.</p>
-<pre><code class="language-python">class KagomeLayer(Layer):
+<pre class="highlight"><code class="language-python">class KagomeLayer(Layer):
     def __init__(self, pbc=False, study_proximity: int=1) -&gt; None:
         self.lv1 = np.array([1, 0])  # Lattice vector in the x-direction
         self.lv2 = np.array([0.5, np.sqrt(3)/2])  # Lattice vector at 60 degrees
 
         self.lattice_points = (
-            [0, 0, &quot;A&quot;],
-            [0.5, 0, &quot;B&quot;],
-            [0.25, np.sqrt(3)/4, &quot;C&quot;],
+            [0, 0, "A"],
+            [0.5, 0, "B"],
+            [0.25, np.sqrt(3)/4, "C"],
         )
 
         self.neighbours = {
-            &quot;A&quot;: [
+            "A": [
                 [ 0.5,              0],  # Right
                 [ 0.25,  np.sqrt(3)/4],  # Right-up
                 [-0.5,              0],  # Left
                 [-0.25, -np.sqrt(3)/4],  # Left-down
             ],
-            &quot;B&quot;: [
+            "B": [
                 [ 0.5,              0],  # Right
                 [-0.25,  np.sqrt(3)/4],  # Left-up
                 [-0.5,              0],  # Left
                 [ 0.25, -np.sqrt(3)/4],  # Right-down
             ],
-            &quot;C&quot;: [
+            "C": [
                 [ 0.25,  np.sqrt(3)/4],  # Right-up
                 [-0.25,  np.sqrt(3)/4],  # Left-up
                 [-0.25, -np.sqrt(3)/4],  # Left-down
                 [ 0.25, -np.sqrt(3)/4],  # Right-down
             ],
         }
-        super().__init__(pbc=pbc, study_proximity=study_proximity)
-</code></pre>
+        super().__init__(pbc=pbc, study_proximity=study_proximity)</code></pre>
 <p>Now let us plot this lattice as well.</p>
-<pre><code class="language-python">&gt;&gt;&gt; kagome_layer = KagomeLayer(pbc=True, study_proximity=1)
+<pre class="highlight"><code class="language-python">&gt;&gt;&gt; kagome_layer = KagomeLayer(pbc=True, study_proximity=1)
 &gt;&gt;&gt; kagome_layer.generate_points(
 &gt;&gt;&gt;     np.array([7, 0]),
 &gt;&gt;&gt;     np.array([0, 5]),
 &gt;&gt;&gt;     1, 1, test=True,
 &gt;&gt;&gt; )
-&gt;&gt;&gt; kagome_layer.plot_lattice()
-</code></pre>
+&gt;&gt;&gt; kagome_layer.plot_lattice()</code></pre>
 <p><img alt="Kagome Lattice" src="../../images/getting_started/prepare_layers/kagome_layer.svg" /></p>
 <h2 id="inbuilt-layers">Inbuilt Layers</h2>
 <p>Although we highly recommend defining your own layers for research purposes, MoirePy provides a few basic lattices for quick testing and prototyping. These are available in the <code>moirepy.layers</code> module. Here’s a list of the available layers:</p>
@@ -291,7 +281,8 @@ Layer(
 <p>Now that you've seen how to define custom layers — and also explored the inbuilt ones — you should have a good understanding of how individual lattices are represented in MoirePy.</p>
 <p>We encourage you to experiment with creating your own layer classes suited to your specific research needs. The inbuilt layers are helpful for quick prototyping, but the real power of MoirePy lies in its flexibility.</p>
 <hr />
-<p>In the next section, we’ll explore how to <strong>combine two layers into a moiré superlattice</strong>, and how to use these structures to <strong>build tight-binding Hamiltonians</strong> and compute physical observables.</p>
+<p>In this section we learned how to <strong>define custom layers</strong> using the <code>Layer</code> class. We also noted the inbuilt layers available in MoirePy for quick testing.</p>
+<p>In the next section, we’ll explore how to <strong>combine two layers into a moiré superlattice</strong>, and how to use these structures to <strong>build the tight-binding Hamiltonians</strong> and compute physical observables.</p>
               
             </div>
           </div><footer>
