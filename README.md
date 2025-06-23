@@ -24,8 +24,9 @@
     - nth nearest-neighbour coupling
     - Asymmetric interlayer coupling
     - arbitrary number of orbitals per site
+    - all couplings can be real (default), or complex numbers.
     - all couplings can be functions of position of the point(s) and the point type(s) (for example, different coupling for A-A, A-B, B-B sites for hexagonal lattices)
-- [Web based tool](theory/avc.md) makes it convenient to calculate lattice angles before simulation.
+- [Web based tool](https://jabed-umar.github.io/MoirePy/theory/avc/) makes it convenient to calculate lattice angles before simulation.
 - Extensive Documentation and examples for easy onboarding.
 - Compatible with other related libraries like Kwant (so that you can generate Hamiltonian and use it with Kwant for further analysis).
 - **Freedom to researcher:** We allow you to define your layers and apply whatever couplings you want. If you want the lattice points to have 53 orbitals each—sure, go ahead. As long as you know what you're doing, we won’t stop you. We don't verify whether it's physically possible.

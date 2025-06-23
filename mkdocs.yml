@@ -16,6 +16,21 @@ theme:
 
   # logo: icon.png
 
+  icon:
+    admonition:
+      note: fontawesome/solid/note-sticky
+      abstract: fontawesome/solid/book
+      info: fontawesome/solid/circle-info
+      tip: fontawesome/solid/bullhorn
+      success: fontawesome/solid/check
+      question: fontawesome/solid/circle-question
+      warning: fontawesome/solid/triangle-exclamation
+      failure: fontawesome/solid/bomb
+      danger: fontawesome/solid/skull
+      bug: fontawesome/solid/robot
+      example: fontawesome/solid/flask
+      quote: fontawesome/solid/quote-left
+
 
 plugins:
   - search
@@ -64,10 +79,10 @@ nav:
     - Installation: getting_started/installation.md
     - Prepare Layers: getting_started/prepare_layers.md
     - Moiré Lattice and Hamiltonian: getting_started/moire_lattice_and_hamiltonian.md
-    - Tight Binding Moiré Hamiltonian: getting_started/tight_binding_ham.md
     - EXAMPLE NOTEBOOKS: examples.md
   - Theoretical Background:
     - Theoretical Background: theory/theory_intro.md
+    - Tight Binding Moiré Hamiltonian: theory/tight_binding_ham.md
     - Searching Algorithm & KDTree: theory/search_algorithm_kdtree.md
     - Angle Calculation Process: theory/angle_calculation_process.md
     - Angle Value Calculator: theory/avc.md
@@ -82,6 +97,9 @@ markdown_extensions:
   - footnotes
   - pymdownx.arithmatex:
       generic: true
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
 
 extra_javascript:
   - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js

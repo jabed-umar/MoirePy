@@ -62,16 +62,11 @@ class SquareLayer(Layer):  # Inherit the Layer class
         super().__init__(pbc=pbc, study_proximity=study_proximity)
 ```
 
-<details open>
-    <summary><strong>Things to Note</strong></summary>
+!!! note "Things to Note"
+    - Make sure to define all required properties for the lattice.
+    - Remember to include `super().__init__(pbc=pbc, study_proximity=study_proximity)` at the end of your `__init__` method to properly initialize the parent class.
+    - The values in `self.neighbours` are defined *relative to the lattice points*. So if the lattice point moves, the neighbour positions will automatically update — no manual changes needed.
 
-	<ul>
-		<li>Make sure to define all required properties for the lattice.</li>
-		<li>Remember to include <code>super().__init__(pbc=pbc, study_proximity=study_proximity)</code> at the end of your <code>__init__</code> method to properly initialize the parent class.</li>
-		<li>The values in <code>self.neighbours</code> are defined <em>relative to the lattice points</em>. So if the lattice point moves, the neighbour positions will automatically update — no manual changes needed.</li>
-	</ul>
-
-</details>
 
 Now we can create an instance of this `SquareLayer` class:
 
@@ -205,4 +200,6 @@ We encourage you to experiment with creating your own layer classes suited to yo
 
 ---
 
-In the next section, we’ll explore how to **combine two layers into a moiré superlattice**, and how to use these structures to **build tight-binding Hamiltonians** and compute physical observables.
+In this section we learned how to **define custom layers** using the `Layer` class. We also noted the inbuilt layers available in MoirePy for quick testing.
+
+In the next section, we’ll explore how to **combine two layers into a moiré superlattice**, and how to use these structures to **build the tight-binding Hamiltonians** and compute physical observables.
