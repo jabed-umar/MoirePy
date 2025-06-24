@@ -48,8 +48,6 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#upcoming-features">Upcoming Features</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a>
-    </li>
     </ul>
                 </li>
               </ul>
@@ -113,7 +111,9 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="moirepy-twist-it-solve-it-own-it">MoirePy: Twist It, Solve It, Own It!</h1>
-<p><strong>MoirePy</strong> is a Python package for the simulation and analysis of <strong>bilayer moiré lattices</strong> using <strong>tight-binding models</strong>. Built for computational physicists and material scientists, it enables fast and flexible moiré band structure calculations, visualization, and manipulation. Our primary focus is on <strong>commensurate</strong> moiré lattices only.</p>
+<p>The <strong>moiré effect</strong> is a fascinating visual phenomenon seen in <em>modern art</em>, <em>textile patterns</em>, and even <em>currency anti-counterfeiting techniques</em>, where overlapping periodic structures create intricate interference patterns. But beyond its aesthetic appeal, <strong>moiré effect</strong> has taken centre stage in <strong>condensed matter physics</strong>, where geometry meets electronics, and simple twists unlock a playground of quantum phenomena. </p>
+<p>The discovery of emergent phenomena in <strong>moiré materials</strong>—such as <em>superconductivity</em>, <em>correlated insulating states</em>, and <em>topological phases of matter</em> has sparked a revolution in condensed matter physics. These systems, formed by stacking two-dimensional crystals at small twist angles, give rise to rich electronic landscapes governed by long-wavelength moiré patterns. As the field rapidly expands, the need for intuitive, efficient, and high-precision computational tools has never been greater.</p>
+<p><strong>MoirePy</strong> is an open source (free) Python package built to support the needs of <em>researchers, theorists, computational</em> and <em>material scientists</em> for the numerical calculation of moiré lattices with a focus on commensurate structure. It enables fast, flexible <em>atomistic simulations of commensurate moiré lattices</em>, with tools to compute <em>dispersion relation</em>, visualize <em>band structures</em> and <em>density of states</em>, study <em>non-hermitian systems</em> and explore <em>quantum transport</em> phenomena with precision and control. It can simulate <em>metal</em>, <em>topological insulators</em>, <em>quantum hall effect, superconductivity, spintronics</em>, or any combination. </p>
 <p><strong>Documentation:</strong> <a href="https://jabed-umar.github.io/MoirePy/">https://jabed-umar.github.io/MoirePy/</a>
 <br>
 <strong>Github Repository:</strong> <a href="https://github.com/jabed-umar/MoirePy">https://github.com/jabed-umar/MoirePy</a>
@@ -130,33 +130,33 @@
 <li>Kagome</li>
 </ul>
 </li>
-<li>both <strong>real</strong> and <strong>k space Hamiltonian</strong> generation for tight-binding models:<ul>
-<li>On-site coupling</li>
+<li>both <strong>real</strong> and <strong>k-space Hamiltonian</strong> generation for tight-binding models with:<ul>
 <li>Nearest-neighbour coupling</li>
-<li>nth nearest-neighbour coupling</li>
-<li>Asymmetric interlayer coupling</li>
-<li>arbitrary number of orbitals per site</li>
-<li>all couplings can be real (default), or complex numbers.</li>
-<li>all couplings can be functions of position of the point(s) and the point type(s) (for example, different coupling for A-A, A-B, B-B sites for hexagonal lattices)</li>
+<li>Nth nearest-neighbour coupling</li>
+<li>Arbitrary number of orbitals per site</li>
+<li>All couplings can be real (default), or complex numbers.</li>
+<li>All couplings can be functions of position of the point(s) and the point type(s) (for example, different coupling for A-A, A-B, B-B sites for hexagonal lattices)</li>
+<li>Custom Intra and Interlayer Coupling Design.</li>
 </ul>
 </li>
 <li><a href="https://jabed-umar.github.io/MoirePy/theory/avc/">Web based tool</a> makes it convenient to calculate lattice angles before simulation.</li>
 <li>Extensive Documentation and examples for easy onboarding.</li>
-<li>Compatible with other related libraries like Kwant (so that you can generate Hamiltonian and use it with Kwant for further analysis).</li>
+<li>Compatible with other related libraries like Kwant (so that you can generate moire Hamiltonian and use it with Kwant for further analysis).</li>
 <li><strong>Freedom to researcher:</strong> We allow you to define your layers and apply whatever couplings you want. If you want the lattice points to have 53 orbitals each—sure, go ahead. As long as you know what you're doing, we won’t stop you. We don't verify whether it's physically possible.</li>
 </ul>
 <h2 id="upcoming-features">Upcoming Features</h2>
 <ul>
 <li><strong>Support for higher-dimensional layers</strong>: Extend current 2D-only support to include higher dimensional constituent layers.</li>
 <li><strong>Multi-layer stacking</strong>: Go beyond bilayers; enable simulation of trilayers and complex heterostructures.</li>
-<li><strong>Recursive Green's function support</strong> <em>(research in progress)</em>: Develop tools for computing Green’s functions efficiently.</li>
+<li><strong>Non-equilibrium Green's function support</strong> <em>(research in progress)</em>: Develop tools for computing Green’s functions efficiently to study non-equilibrium and quantum transport phenomena.</li>
 </ul>
-<h2 id="installation">Installation</h2>
+<p>&lt;!--## Installation</p>
 <p>You can install MoirePy via pip:</p>
 <pre class="highlight"><code class="language-bash">pip install moirepy</code></pre>
-<p>&lt;!-- ## Basic Usage</p>
+<p>## Basic Usage</p>
 <p>For detailed usage, please refer to our <a href="https://jabed-umar.github.io/MoirePy/">documentation</a>.</p>
-<pre class="highlight"><code class="language-python">from moirepy import MoireLattice
+<pre class="highlight"><code class="language-python">from moirepy import MoireLattice  # this i think we dont need as we have one dedicated installation page.
+#### u might add  a line like cheek here (link inserted) to install the MoirePy
 ``` --&gt;
 
 
@@ -175,7 +175,7 @@ If you use this software or a modified version in academic or scientific researc
 ```BibTeX
 @misc{MoirePy2025,
     author = {Aritra Mukhopadhyay, Jabed Umar},
-    title = {MoirePy: Python package for efficient tight binding simulation of bilayer moiré lattices},
+    title = {MoirePy: Python package for efficient atomistic simulation of moiré lattices},
     year = {2025},
     url = {https://jabed-umar.github.io/MoirePy/},
 }</code></pre>
@@ -232,5 +232,5 @@ If you use this software or a modified version in academic or scientific researc
 
 <!--
 MkDocs version : 1.6.1
-Build Date UTC : 2025-06-23 17:05:49.799432+00:00
+Build Date UTC : 2025-06-24 15:47:54.641711+00:00
 -->
