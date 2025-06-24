@@ -1,6 +1,10 @@
 # MoirePy: Twist It, Solve It, Own It!
 
-**MoirePy** is a Python package for the simulation and analysis of **bilayer moiré lattices** using **tight-binding models**. Built for computational physicists and material scientists, it enables fast and flexible moiré band structure calculations, visualization, and manipulation. Our primary focus is on **commensurate** moiré lattices only.
+The **moiré effect** is a fascinating visual phenomenon seen in *modern art*, *textile patterns*, and even *currency anti-counterfeiting techniques*, where overlapping periodic structures create intricate interference patterns. But beyond its aesthetic appeal, **moiré physics** has taken centre stage in **condensed matter research**, where geometry meets electronics, and simple twists unlock a playground of quantum phenomena. 
+
+The discovery of emergent phenomena in **moiré materials**—such as *superconductivity*, *correlated insulating states*, and *topological phases of matter* has sparked a revolution in condensed matter physics. These systems, formed by stacking two-dimensional crystals at small twist angles, give rise to rich electronic landscapes governed by long-wavelength moiré patterns. As the field rapidly expands, the need for intuitive, efficient, and high-precision computational tools has never been greater.
+
+**MoirePy** is an open source (free) Python package built to support the needs of *researchers, theorists, computational* and *material scientists* for the numerical calculation of moiré lattices with a focus on commensurate structure. It enables fast, flexible atomistic simulations of commensurate moiré lattices, with tools to compute dispersion relation, visualize band structures and density of states, study non-hermitian systems and explore quantum transport phenomena with precision and control. It can simulate metal, topological insulators, quantum hall effects, superconductivity, spintronics, or any combination. 
 
 
 **Documentation:** [https://jabed-umar.github.io/MoirePy/](https://jabed-umar.github.io/MoirePy/)
@@ -37,7 +41,7 @@
 - **Multi-layer stacking**: Go beyond bilayers; enable simulation of trilayers and complex heterostructures.
 - **Recursive Green's function support** *(research in progress)*: Develop tools for computing Green’s functions efficiently.
 
-## Installation
+<!--## Installation
 
 You can install MoirePy via pip:
 
@@ -45,12 +49,13 @@ You can install MoirePy via pip:
 pip install moirepy
 ```
 
-<!-- ## Basic Usage
+ ## Basic Usage
 
 For detailed usage, please refer to our [documentation](https://jabed-umar.github.io/MoirePy/).
 
 ```python
-from moirepy import MoireLattice
+from moirepy import MoireLattice  # this i think we dont need as we have one dedicated installation page.
+#### u might add  a line like cheek here (link inserted) to install the MoirePy
 ``` -->
 
 
@@ -69,7 +74,7 @@ If you use this software or a modified version in academic or scientific researc
 ```BibTeX
 @misc{MoirePy2025,
 	author = {Aritra Mukhopadhyay, Jabed Umar},
-	title = {MoirePy: Python package for efficient tight binding simulation of bilayer moiré lattices},
+	title = {MoirePy: Python package for efficient atomistic simulation of moiré lattices},
 	year = {2025},
 	url = {https://jabed-umar.github.io/MoirePy/},
 }
