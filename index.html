@@ -48,6 +48,10 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#upcoming-features">Upcoming Features</a>
     </li>
+    <li class="toctree-l2"><a class="reference internal" href="#license">License</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#cite-this-work">Cite This Work</a>
+    </li>
     </ul>
                 </li>
               </ul>
@@ -111,13 +115,9 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="moirepy-twist-it-solve-it-own-it">MoirePy: Twist It, Solve It, Own It!</h1>
-<p>The <strong>moiré effect</strong> is a fascinating visual phenomenon seen in <em>modern art</em>, <em>textile patterns</em>, and even <em>currency anti-counterfeiting techniques</em>, where overlapping periodic structures create intricate interference patterns. But beyond its aesthetic appeal, <strong>moiré effect</strong> has taken centre stage in <strong>condensed matter physics</strong>, where geometry meets electronics, and simple twists unlock a playground of quantum phenomena. </p>
-<p>The discovery of emergent phenomena in <strong>moiré materials</strong>—such as <em>superconductivity</em>, <em>correlated insulating states</em>, and <em>topological phases of matter</em> has sparked a revolution in condensed matter physics. These systems, formed by stacking two-dimensional crystals at small twist angles, give rise to rich electronic landscapes governed by long-wavelength moiré patterns. As the field rapidly expands, the need for intuitive, efficient, and high-precision computational tools has never been greater.</p>
-<p><strong>MoirePy</strong> is an open source (free) Python package built to support the needs of <em>researchers, theorists, computational</em> and <em>material scientists</em> for the numerical calculation of moiré lattices with a focus on commensurate structure. It enables fast, flexible <em>atomistic simulations of commensurate moiré lattices</em>, with tools to compute <em>dispersion relation</em>, visualize <em>band structures</em> and <em>density of states</em>, study <em>non-hermitian systems</em> and explore <em>quantum transport</em> phenomena with precision and control. It can simulate <em>metal</em>, <em>topological insulators</em>, <em>quantum hall effect, superconductivity, spintronics</em>, or any combination. </p>
-<p><strong>Documentation:</strong> <a href="https://jabed-umar.github.io/MoirePy/">https://jabed-umar.github.io/MoirePy/</a>
-<br>
-<strong>Github Repository:</strong> <a href="https://github.com/jabed-umar/MoirePy">https://github.com/jabed-umar/MoirePy</a>
-<br>
+<p><strong>MoirePy</strong> is a FOSS Python package for the simulation and analysis of <strong>bilayer moiré lattices</strong> using <strong>tight-binding models</strong>. Built for computational physicists and material scientists, it enables quick and flexible moiré band structure calculations, visualization, and manipulation. Our primary focus is on <strong>commensurate</strong> moiré lattices only.</p>
+<p><strong>Documentation:</strong> <a href="https://jabed-umar.github.io/MoirePy/">https://jabed-umar.github.io/MoirePy/</a><br>
+<strong>Github Repository:</strong> <a href="https://github.com/jabed-umar/MoirePy">https://github.com/jabed-umar/MoirePy</a><br>
 <strong>PyPI page:</strong> <a href="https://pypi.org/project/moirepy/">https://pypi.org/project/moirepy/</a></p>
 <h2 id="features">Features</h2>
 <ul>
@@ -131,8 +131,8 @@
 </ul>
 </li>
 <li>both <strong>real</strong> and <strong>k-space Hamiltonian</strong> generation for tight-binding models with:<ul>
-<li>Nearest-neighbour coupling</li>
-<li>Nth nearest-neighbour coupling</li>
+<li>Nearest-neighbour coupling
+<!-- - Nth nearest-neighbour coupling --></li>
 <li>Arbitrary number of orbitals per site</li>
 <li>All couplings can be real (default), or complex numbers.</li>
 <li>All couplings can be functions of position of the point(s) and the point type(s) (for example, different coupling for A-A, A-B, B-B sites for hexagonal lattices)</li>
@@ -150,30 +150,12 @@
 <li><strong>Multi-layer stacking</strong>: Go beyond bilayers; enable simulation of trilayers and complex heterostructures.</li>
 <li><strong>Non-equilibrium Green's function support</strong> <em>(research in progress)</em>: Develop tools for computing Green’s functions efficiently to study non-equilibrium and quantum transport phenomena.</li>
 </ul>
-<p>&lt;!--## Installation</p>
-<p>You can install MoirePy via pip:</p>
-<pre class="highlight"><code class="language-bash">pip install moirepy</code></pre>
-<p>## Basic Usage</p>
-<p>For detailed usage, please refer to our <a href="https://jabed-umar.github.io/MoirePy/">documentation</a>.</p>
-<pre class="highlight"><code class="language-python">from moirepy import MoireLattice  # this i think we dont need as we have one dedicated installation page.
-#### u might add  a line like cheek here (link inserted) to install the MoirePy
-``` --&gt;
-
-
-## License
-
-This project is licensed under the [MIT License](https://opensource.org/licenses/MIT).
-
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-
-
-
-## Cite This Work
-
-If you use this software or a modified version in academic or scientific research, please cite:
-
-```BibTeX
-@misc{MoirePy2025,
+<h2 id="license">License</h2>
+<p>This project is licensed under the <a href="https://opensource.org/licenses/MIT">MIT License</a>.</p>
+<p><a href="https://opensource.org/licenses/MIT"><img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg" /></a></p>
+<h2 id="cite-this-work">Cite This Work</h2>
+<p>If you use this software or a modified version in academic or scientific research, please cite:</p>
+<pre class="highlight"><code class="language-BibTeX">@misc{MoirePy2025,
     author = {Aritra Mukhopadhyay, Jabed Umar},
     title = {MoirePy: Python package for efficient atomistic simulation of moiré lattices},
     year = {2025},
@@ -232,5 +214,5 @@ If you use this software or a modified version in academic or scientific researc
 
 <!--
 MkDocs version : 1.6.1
-Build Date UTC : 2025-06-24 15:47:54.641711+00:00
+Build Date UTC : 2025-06-24 19:18:30.641279+00:00
 -->
