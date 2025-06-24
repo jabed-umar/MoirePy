@@ -5,7 +5,6 @@ import math
 from .utils import get_rotation_matrix
 from scipy.spatial import KDTree
 import json
-from bidict import bidict
 
 
 class Layer:  # parent class
@@ -651,11 +650,11 @@ class Layer:  # parent class
         if len(colours) == 1: cols = {t[-1]:colours[0] for i, t, in enumerate(self.lattice_points)}
         else: cols = {t[-1]:colours[i] for i, t, in enumerate(self.lattice_points)}
 
-        plt.scatter(
-            [self.points[:, 0]],
-            [self.points[:, 1]],
-            s=10, c=np.vectorize(cols.get)(self.point_types)
-        )
+        # plt.scatter(
+        #     [self.points[:, 0]],
+        #     [self.points[:, 1]],
+        #     s=10, c=np.vectorize(cols.get)(self.point_types)
+        # )
 
         if plot_connections:
             a = []

@@ -28,10 +28,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements_dev.txt
 
-      - name: Copy README and populate examples
-        run: |
-          cat README.md > docs/index.md
-          python docs/routine/pop.py
+      # - name: Copy README and populate examples
+      #   run: |
+      #     cat README.md > docs/index.md
+      #     python docs/routine/pop.py
 
       - name: Deploy with MkDocs
         run: |

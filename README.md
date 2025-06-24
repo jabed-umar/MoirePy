@@ -1,16 +1,10 @@
 # MoirePy: Twist It, Solve It, Own It!
 
-The **moiré effect** is a fascinating visual phenomenon seen in *modern art*, *textile patterns*, and even *currency anti-counterfeiting techniques*, where overlapping periodic structures create intricate interference patterns. But beyond its aesthetic appeal, **moiré effect** has taken centre stage in **condensed matter physics**, where geometry meets electronics, and simple twists unlock a playground of quantum phenomena. 
-
-The discovery of emergent phenomena in **moiré materials**—such as *superconductivity*, *correlated insulating states*, and *topological phases of matter* has sparked a revolution in condensed matter physics. These systems, formed by stacking two-dimensional crystals at small twist angles, give rise to rich electronic landscapes governed by long-wavelength moiré patterns. As the field rapidly expands, the need for intuitive, efficient, and high-precision computational tools has never been greater.
-
-**MoirePy** is an open source (free) Python package built to support the needs of *researchers, theorists, computational* and *material scientists* for the numerical calculation of moiré lattices with a focus on commensurate structure. It enables fast, flexible *atomistic simulations of commensurate moiré lattices*, with tools to compute *dispersion relation*, visualize *band structures* and *density of states*, study *non-hermitian systems* and explore *quantum transport* phenomena with precision and control. It can simulate *metal*, *topological insulators*, *quantum hall effect, superconductivity, spintronics*, or any combination. 
+**MoirePy** is a FOSS Python package for the simulation and analysis of **bilayer moiré lattices** using **tight-binding models**. Built for computational physicists and material scientists, it enables quick and flexible moiré band structure calculations, visualization, and manipulation. Our primary focus is on **commensurate** moiré lattices only.
 
 
-**Documentation:** [https://jabed-umar.github.io/MoirePy/](https://jabed-umar.github.io/MoirePy/)
-<br>
-**Github Repository:** [https://github.com/jabed-umar/MoirePy](https://github.com/jabed-umar/MoirePy)
-<br>
+**Documentation:** [https://jabed-umar.github.io/MoirePy/](https://jabed-umar.github.io/MoirePy/)<br>
+**Github Repository:** [https://github.com/jabed-umar/MoirePy](https://github.com/jabed-umar/MoirePy)<br>
 **PyPI page:** [https://pypi.org/project/moirepy/](https://pypi.org/project/moirepy/)
 
 ## Features
@@ -24,7 +18,7 @@ The discovery of emergent phenomena in **moiré materials**—such as *supercond
     - Kagome
 - both **real** and **k-space Hamiltonian** generation for tight-binding models with:
     - Nearest-neighbour coupling
-    - Nth nearest-neighbour coupling
+    <!-- - Nth nearest-neighbour coupling -->
     - Arbitrary number of orbitals per site
     - All couplings can be real (default), or complex numbers.
     - All couplings can be functions of position of the point(s) and the point type(s) (for example, different coupling for A-A, A-B, B-B sites for hexagonal lattices)
@@ -40,23 +34,38 @@ The discovery of emergent phenomena in **moiré materials**—such as *supercond
 - **Multi-layer stacking**: Go beyond bilayers; enable simulation of trilayers and complex heterostructures.
 - **Non-equilibrium Green's function support** *(research in progress)*: Develop tools for computing Green’s functions efficiently to study non-equilibrium and quantum transport phenomena.
 
-<!--## Installation
+## Installation
 
-You can install MoirePy via pip:
+You can install MoirePy from PyPI via pip:
 
 ```bash
-pip install moirepy
+$ pip install moirepy
 ```
 
- ## Basic Usage
+## Basic Usage
 
 For detailed usage, please refer to our [documentation](https://jabed-umar.github.io/MoirePy/).
 
 ```python
-from moirepy import MoireLattice  # this i think we dont need as we have one dedicated installation page.
-#### u might add  a line like cheek here (link inserted) to install the MoirePy
-``` -->
-
+>>> import matplotlib.pyplot as plt
+>>> from moirepy import BilayerMoireLattice, TriangularLayer
+>>> # Define the Moiré lattice with two triangular layers
+>>> moire_lattice = BilayerMoireLattice(
+>>>     latticetype=TriangularLayer,
+>>>     ll1=9, ll2=10,
+>>>     ul1=10, ul2=9,
+>>>     n1=1, n2=1,  # number of unit cells
+>>> )
+twist angle = 0.0608 rad (3.4810 deg)
+271 points in lower lattice
+271 points in upper lattice
+>>> ham = moire_lattice.generate_hamiltonian(
+>>>     tll=1, tuu=1, tlu=1, tul=1,
+>>>     tuself=1, tlself=1,
+>>> )
+>>> plt.matshow(ham, cmap="gray")
+```
+![alt text](docs/images/getting_started/moire_lattice_and_hamiltonian/out2.png)
 
 ## License
 

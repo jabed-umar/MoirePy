@@ -44,3 +44,10 @@ python3 -m pip install moirepy
 ```
 
 If you experience any problems during installation, please refer to the [project's issue tracker](https://github.com/jabed-umar/MoirePy/issues) on GitHub.
+
+
+
+<!-- 
+- pip
+- clone from source
+ -->
