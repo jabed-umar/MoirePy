@@ -520,107 +520,61 @@ class Layer:  # parent class
             smaller_distances_all.append(smaller_distances)
 
         return bigger_indices_all, smaller_indices_all, smaller_distances_all
-
-    def query_one(self, points: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
+    
+    def get_neighbors_within_radius(self, query_points: np.ndarray, radius: float):
         """
-        Queries the KDTree for the nearest neighbors of given points and applies PBC if enabled.
-
+        Finds all neighbors within a radius. Handles PBC mapping automatically.
+        
         Args:
-            points (np.ndarray): An (N, 2) array of points for which to find the nearest neighbors.
-            k (int, optional): The number of nearest neighbors to query. Defaults to 1.
+            query_points: (N, 2) array of points looking for neighbors.
+            radius: Cutoff distance.
 
         Returns:
-            Tuple[np.ndarray, np.ndarray]:
-                - distances (np.ndarray): An (N, k) array containing the distances to the k nearest neighbors.
-                - indices (np.ndarray): An (N, k) array containing the indices of the k nearest neighbors
-                in `self.points`. If PBC is enabled, the indices are remapped using `self.mappings`.
-
-        Raises:
-            AssertionError: If `self.kdtree` is not initialized.
-            RuntimeError: If PBC is enabled and the mapping process fails.
-            RuntimeError: If there are uneven row lengths in the returned arrays due to inconsistent filtering.
-
-        Behavior:
-            - If `self.pbc` is False, the function returns the nearest neighbors as given by KDTree.
-            - If `self.pbc` is True, the function applies `self.mappings` to remap indices according
-            to periodic boundary conditions.
-
-        Example:
-        ```python
-        layer = Layer()
-        layer.generate_kdtree()
-        points = np.array([[0.5, 0.5], [1.0, 1.0]])
-        distances, indices = layer.query(points, k=2)
-        ```
+            query_indices (np.array): Indices of the query_points (who is asking).
+            lattice_indices (np.array): Indices of the found neighbors in this layer (0..N).
+            neighbor_coords (np.array): Actual coordinates of neighbors (including ghosts).
         """
-        # Step 1:
-        # - get a normal query from KDTree
-        # - distance, index = self.kdtree.query(points, k=k)
-        # - remove all the points farther than (1+0.1*toll_scale) * min distance
-        # - return here just that if OBC
+        assert self.kdtree is not None, "KDTree not initialized"
 
-        # Step 2: it will come here if PBC is True
-        # - for all the points map them using self.mappings
-        # - replace the indices with the mapped indices
-        # - return the mapped indices and distances (distance will be the same)
-        assert self.kdtree is not None, "Generate the KDTree first by calling `Layer.generate_kdtree()`."
-        distances, indices = self.kdtree.query(points, k=[1])
+        # 1. Scipy's fast radius search
+        # Returns a list of lists (one list of neighbors per query point)
+        # indices_list contains indices into 'self.bigger_points' (if PBC) or 'self.points'
+        indices_list = self.kdtree.query_ball_point(query_points, r=radius)
 
-        # for k=1, it returns squeezed arrays... so we need to unsqueeze them
-        # distances = distances[:, None]
-        # indices = indices[:, None]
+        # 2. Vectorize/Flatten the result
+        # We want flat arrays: [src_0, src_0, src_1], [tgt_a, tgt_b, tgt_c]
+        query_indices = []
+        tree_indices = []
 
-        if not self.pbc:
-            return indices, indices, distances
+        for i, neighbors in enumerate(indices_list):
+            if len(neighbors) > 0:
+                query_indices.extend([i] * len(neighbors))
+                tree_indices.extend(neighbors)
 
-        try:
-            vectorized_fn = np.vectorize(self.mappings.get)
-            remapped_indices = vectorized_fn(indices)
-        except TypeError as e:
-            raise RuntimeError("FATAL ERROR: Mapping failed during vectorization. Check if all indices are valid.") from e
-        return indices, remapped_indices, distances
+        if not query_indices:
+            return np.array([]), np.array([]), np.array([])
 
-    # def query_non_self(self, points: np.ndarray, k: int = 1) -> Tuple[np.ndarray, np.ndarray]:
-    #     """
-    #     Queries the KDTree for the k nearest neighbors of given points, excluding the point itself.
+        query_indices = np.array(query_indices)
+        tree_indices = np.array(tree_indices)
 
-    #     Args:
-    #         points (np.ndarray): An (N, 2) array of points for which to find the nearest neighbors.
-    #         k (int, optional): The number of nearest neighbors to query (excluding the point itself).
-    #             Defaults to 1.
+        # 3. Retrieve Coordinates (Crucial for Physics!)
+        # We need the 'Ghost' coordinate to calculate the correct distance/angle
+        if self.pbc:
+             neighbor_coords = self.bigger_points[tree_indices]
+        else:
+             neighbor_coords = self.points[tree_indices]
 
-    #     Returns:
-    #         Tuple[np.ndarray, np.ndarray]:
-    #             - distances (np.ndarray): An (N, k) array containing the distances to the k nearest neighbors.
-    #             - indices (np.ndarray): An (N, k) array containing the indices of the k nearest neighbors
-    #                 in `self.points`. If PBC is enabled, the indices are remapped using `self.mappings`.
+        # 4. Map 'Ghost' indices back to 'Real' indices (0..N)
+        # This ensures H[i, j] lands in the valid matrix range
+        if self.pbc:
+            # vectorized dictionary lookup to map ghost_idx -> real_idx
+            # We use a lambda because vectorizing a dict.get is tricky with defaults
+            mapper = np.vectorize(lambda x: self.mappings[x]) 
+            lattice_indices = mapper(tree_indices)
+        else:
+            lattice_indices = tree_indices
 
-    #     Behavior:
-    #         - Calls `self.query(points, k=k+1)` to get `k+1` neighbors, including the point itself.
-    #         - Removes the first neighbor (which is the query point itself) from both distances and indices.
-    #         - If `self.pbc` is False, it processes the lists iteratively.
-    #         - If `self.pbc` is True, it slices the arrays to exclude the self-point.
-
-    #     Example:
-    #     ```python
-    #     layer = Layer()
-    #     layer.generate_kdtree()
-    #     points = np.array([[0.5, 0.5], [1.0, 1.0]])
-    #     distances, indices = layer.query_non_self(points, k=2)
-    #     ```
-    #     """
-    #     distances, indices = self.query(points, k=k + 1)
-
-    #     if self.pbc is False:
-    #         for i in range(len(indices)):
-    #             indices[i] = indices[i][1:]
-    #             distances[i] = distances[i][1:]
-    #     else:
-    #         indices = indices[:, 1:]
-    #         distances = distances[:, 1:]
-
-    #     # return distances[:, 1:], indices[:, 1:]
-    #     return distances, indices
+        return query_indices, lattice_indices, neighbor_coords
 
     def plot_lattice(self, plot_connections: bool = True, colours:list=["r", "g", "b", "c", "m", "y", "k"]) -> None:
         """

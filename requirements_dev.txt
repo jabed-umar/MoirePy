@@ -3,7 +3,7 @@ scipy
 matplotlib
 tqdm
 
-# notebook
+notebook
 mkdocstrings
 mkdocstrings-python
 # mkdocs-jupyter
