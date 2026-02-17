@@ -4,6 +4,17 @@ from .layers import Layer
 import matplotlib.pyplot as plt
 from .utils import get_rotation_matrix, are_coeffs_integers
 
+class COOBuilder:
+    def __init__(self, dtype=np.float64, rows=[], cols=[], data=[]):
+        self.rows, self.cols, self.data = rows, cols, data
+        assert len(self.rows) == len(self.cols) == len(self.data), "Initial rows, cols, and data must be of the same length."
+        self.dtype = dtype
+
+    def add(self, r, c, val):
+        self.rows.append(r)
+        self.cols.append(c)
+        self.data.append(val)
+
 class BilayerMoireLattice:  # both layers same, only one point in one unit cell
     def __init__(
         self,
@@ -14,6 +25,7 @@ class BilayerMoireLattice:  # both layers same, only one point in one unit cell
         translate_upper=(0, 0),
         pbc:bool=True,
         k:int=1,  # number of orbitals
+        verbose = True,
     ):
         """
         Initializes a Moiré lattice composed of two twisted layers of the same type.
@@ -48,7 +60,7 @@ class BilayerMoireLattice:  # both layers same, only one point in one unit cell
         assert np.isclose(np.linalg.norm(one), np.linalg.norm(two)), "INPUT ERROR: the two points are not overlapping, check ll1, ll2, ul1, ul2 values"
         c = np.dot(one, two) / (np.linalg.norm(one) * np.linalg.norm(two))
         theta = np.arccos(c)  # in radians
-        print(f"twist angle = {theta:.4f} rad ({np.rad2deg(theta):.4f} deg)")
+        if verbose: print(f"twist angle = {theta:.4f} rad ({np.rad2deg(theta):.4f} deg)")
 
         upper_lattice.perform_rotation_translation(theta, translate_upper)
         assert (
@@ -76,8 +88,9 @@ class BilayerMoireLattice:  # both layers same, only one point in one unit cell
         self.orbitals = k
         self.ham = None
 
-        print(f"{len(self.lower_lattice.points)} points in lower lattice")
-        print(f"{len(self.upper_lattice.points)} points in upper lattice")
+        if verbose:
+            print(f"{len(self.lower_lattice.points)} points in lower lattice")
+            print(f"{len(self.upper_lattice.points)} points in upper lattice")
         assert len(self.lower_lattice.points) == len(self.upper_lattice.points), "FATAL ERROR: number of points in lower and upper lattice are not equal, take different ll1, ll2, ul1, ul2 values"
 
         # self.plot_lattice()
@@ -140,36 +153,49 @@ class BilayerMoireLattice:  # both layers same, only one point in one unit cell
         data_type: np.dtype = np.float64,
     ):
         k = self.orbitals
+        n_lower = len(self.lower_lattice.points)
+        n_upper = len(self.upper_lattice.points)
+        total_dim = (n_lower + n_upper) * k
+        
         tll, tuu, tlu, tul, tuself, tlself = self._validate_hamiltonian_inputs(tll, tuu, tlu, tul, tuself, tlself)
+        builder = COOBuilder(dtype=data_type)
 
-        # 1. Lower Lattice Intra-layer
-        ham_ll = np.zeros((len(self.lower_lattice.points)*k, len(self.lower_lattice.points)*k), dtype=data_type)
-        for i in range(len(self.lower_lattice.points)):
-            ham_ll[i*k:(i+1)*k, i*k:(i+1)*k] += tlself(self.lower_lattice.points[i], self.lower_lattice.point_types[i])
-            
+        # 1. Lower Lattice Intra-layer (Indices: 0 to n_lower*k - 1)
+        for i in range(n_lower):
+            val = tlself(self.lower_lattice.points[i], self.lower_lattice.point_types[i])
+            for o in range(k):
+                builder.add(i*k + o, i*k + o, val)
+
         bigger_indices, indices, _ = self.lower_lattice.first_nearest_neighbours(self.lower_lattice.points, self.lower_lattice.point_types)
-        for this_i in range(len(self.lower_lattice.points)):
+        for this_i in range(n_lower):
             this_coo, this_type = self.lower_lattice.points[this_i], self.lower_lattice.point_types[this_i]
             for phantom_neigh_i, neigh_i in zip(bigger_indices[this_i], indices[this_i]):
                 neigh_coo = self.lower_lattice.bigger_points[phantom_neigh_i] if self.pbc else self.lower_lattice.points[neigh_i]
                 neigh_type = self.lower_lattice.point_types[neigh_i]
-                ham_ll[this_i*k:(this_i+1)*k, neigh_i*k:(neigh_i+1)*k] += tll(this_coo, neigh_coo, this_type, neigh_type)
+                val = tll(this_coo, neigh_coo, this_type, neigh_type)
+                for o1 in range(k):
+                    for o2 in range(k):
+                        builder.add(this_i*k + o1, neigh_i*k + o2, val)
 
-        # 2. Upper Lattice Intra-layer
-        ham_uu = np.zeros((len(self.upper_lattice.points)*k, len(self.upper_lattice.points)*k), dtype=data_type)
-        for i in range(len(self.upper_lattice.points)):
-            ham_uu[i*k:(i+1)*k, i*k:(i+1)*k] += tuself(self.upper_lattice.points[i], self.upper_lattice.point_types[i])
+        # 2. Upper Lattice Intra-layer (Indices: n_lower*k to total_dim - 1)
+        offset = n_lower * k
+        for i in range(n_upper):
+            val = tuself(self.upper_lattice.points[i], self.upper_lattice.point_types[i])
+            for o in range(k):
+                builder.add(offset + i*k + o, offset + i*k + o, val)
             
         bigger_indices, indices, _ = self.upper_lattice.first_nearest_neighbours(self.upper_lattice.points, self.upper_lattice.point_types)
-        for this_i in range(len(self.upper_lattice.points)):
+        for this_i in range(n_upper):
             this_coo, this_type = self.upper_lattice.points[this_i], self.upper_lattice.point_types[this_i]
             for phantom_neigh_i, neigh_i in zip(bigger_indices[this_i], indices[this_i]):
                 neigh_coo = self.upper_lattice.bigger_points[phantom_neigh_i] if self.pbc else self.upper_lattice.points[neigh_i]
                 neigh_type = self.upper_lattice.point_types[neigh_i]
-                ham_uu[this_i*k:(this_i+1)*k, neigh_i*k:(neigh_i+1)*k] += tuu(this_coo, neigh_coo, this_type, neigh_type)
+                val = tuu(this_coo, neigh_coo, this_type, neigh_type)
+                for o1 in range(k):
+                    for o2 in range(k):
+                        builder.add(offset + this_i*k + o1, offset + neigh_i*k + o2, val)
 
         # 3. Inter-layer (Radius Search)
-        ham_ul = np.zeros((len(self.upper_lattice.points)*k, len(self.lower_lattice.points)*k), dtype=data_type)
         u_indices, l_indices, l_coords = self.lower_lattice.get_neighbors_within_radius(self.upper_lattice.points, inter_layer_radius)
         
         for i in range(len(u_indices)):
@@ -177,13 +203,21 @@ class BilayerMoireLattice:  # both layers same, only one point in one unit cell
             u_pos, l_pos = self.upper_lattice.points[u_idx], l_coords[i]
             u_type, l_type = self.upper_lattice.point_types[u_idx], self.lower_lattice.point_types[l_idx]
             
-            ham_ul[u_idx*k:(u_idx+1)*k, l_idx*k:(l_idx+1)*k] += tul(u_pos, l_pos, u_type, l_type)
+            # tul: Upper -> Lower hopping
+            val_ul = tul(u_pos, l_pos, u_type, l_type)
+            # tlu: Lower -> Upper hopping (assuming Hermiticity if not provided)
+            val_lu = np.conj(val_ul).T if tlu is None else tlu(l_pos, u_pos, l_type, u_type)
 
-        ham_lu = ham_ul.conj().T
+            for o1 in range(k):
+                for o2 in range(k):
+                    # Upper row, Lower col (H_ul block)
+                    builder.add(offset + u_idx*k + o1, l_idx*k + o2, val_ul)
+                    # Lower row, Upper col (H_lu block)
+                    builder.add(l_idx*k + o1, offset + u_idx*k + o2, val_lu)
 
-        # 4. Combine
-        self.ham = np.block([[ham_ll, ham_lu], [ham_ul, ham_uu]])
-        return self.ham
+        from scipy.sparse import coo_matrix
+        self.ham = coo_matrix((builder.data, (builder.rows, builder.cols)), shape=(total_dim, total_dim), dtype=data_type)
+        return self.ham.tocsc()
 
     def generate_k_space_hamiltonian(
         self,
