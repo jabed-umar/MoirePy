@@ -458,120 +458,77 @@ class Layer:  # parent class
     #     distance_matrix = self.kdtree.sparse_distance_matrix(self.kdtree, k)
 
     def first_nearest_neighbours(self, points: np.ndarray, types: np.ndarray):
-        """
-        Finds the first nearest neighbors for each point in the given array.
+        assert self.kdtree is not None
+        
+        unique_types = np.unique(types)
+        max_neighs = max(len(self.neighbours[t]) for t in unique_types)
+        n_points = points.shape[0]
 
-        Args:
-            points (np.ndarray): An (N, 2) array of N points for which to find nearest neighbors.
-            types (np.ndarray): An (N,) array of types corresponding to each point in `points`.
+        bigger_indices_arr = np.full((n_points, max_neighs), -1, dtype=int)
+        smaller_indices_arr = np.full((n_points, max_neighs), -1, dtype=int)
+        smaller_distances_arr = np.full((n_points, max_neighs), np.nan, dtype=float)
 
-        Returns:
-            distances (list): A list of lists, where each inner list contains the distances
-                to the nearest neighbors for the corresponding point.
-            indices (list): A list of lists, where each inner list contains the indices
-                of the nearest neighbors in `self.points`.
+        # Pre-compute mapping array for vectorized indexing
+        if self.pbc:
+            map_arr = np.array([self.mappings[i] for i in range(len(self.bigger_points))])
 
-        Raises:
-            AssertionError: If `self.kdtree` is not initialized.
-            AssertionError: If the number of points does not match the number of types.
-            ValueError: If a point type is not defined in `self.neighbours`.
-            ValueError: If PBC is enabled and a distance exceeds
-                the specified tolerance.
+        for t in unique_types:
+            # 1. Mask to find all points of this specific type
+            mask = (types == t)
+            type_points = points[mask]  # Shape (N_t, 2)
+            rel_neighs = np.array(self.neighbours[t])  # Shape (M_t, 2)
+            n_curr = len(rel_neighs)
 
-        Example:
-        ```python
-        layer = Layer()
-        layer.generate_kdtree()
-        points = np.array([[0.5, 0.5], [1.0, 1.0]])
-        types = np.array([0, 1])
-        distances, indices = layer.first_nearest_neighbours(points, types)
-        ```
-        """
-        assert self.kdtree is not None, "Generate the KDTree first by calling `Layer.generate_kdtree()`."
-        assert points.shape[0] == types.shape[0], "Mismatch between number of points and types."
+            # 2. Vectorized meshgrid to get all absolute neighbor coordinates
+            # absolute_coords shape: (N_t, M_t, 2)
+            absolute_coords = type_points[:, np.newaxis, :] + rel_neighs[np.newaxis, :, :]
+            
+            # 3. Bulk Query (KDTree supports multidimensional input)
+            # distances/indices shape: (N_t, M_t)
+            distances, indices = self.kdtree.query(absolute_coords, k=1)
 
-        bigger_indices_all, smaller_indices_all, smaller_distances_all = [], [], []
+            # 4. Bulk Assignment
+            if self.pbc:
+                if np.any(distances > 1e-2 * self.toll_scale):
+                    raise ValueError(f"Distance exceeds tolerance for type {t}")
+                
+                bigger_indices_arr[mask, :n_curr] = indices
+                smaller_indices_arr[mask, :n_curr] = map_arr[indices]
+            else:
+                bigger_indices_arr[mask, :n_curr] = indices
+                smaller_indices_arr[mask, :n_curr] = indices
+                
+            smaller_distances_arr[mask, :n_curr] = distances
 
-        for point, t in zip(points, types):
-            if t not in self.neighbours:
-                raise ValueError(f"Point type '{t}' is not defined in self.neighbours.")
-
-            relative_neighbours = np.array(self.neighbours[t])
-            absolute_neighbours = point + relative_neighbours
-            distances, indices = self.kdtree.query(absolute_neighbours, k=1)
-
-            bigger_indices, smaller_distances, smaller_indices = [], [], []
-            for dist, idx in zip(distances, indices):
-                if self.pbc:
-                    if dist > 1e-2 * self.toll_scale:
-                        raise ValueError(f"Distance {dist} exceeds tolerance.")
-                    bigger_indices.append(idx)
-                    smaller_indices.append(self.mappings[idx])
-                    smaller_distances.append(dist)
-                else:
-                    # if dist > 1e-2 * self.toll_scale:
-                    #     raise ValueError(f"Distance {dist} exceeds tolerance.")
-                    bigger_indices.append(idx)
-                    smaller_indices.append(idx)
-                    smaller_distances.append(dist)
-
-            bigger_indices_all.append(bigger_indices)
-            smaller_indices_all.append(smaller_indices)
-            smaller_distances_all.append(smaller_distances)
-
-        return bigger_indices_all, smaller_indices_all, smaller_distances_all
+        return bigger_indices_arr, smaller_indices_arr, smaller_distances_arr
     
     def get_neighbors_within_radius(self, query_points: np.ndarray, radius: float):
-        """
-        Finds all neighbors within a radius. Handles PBC mapping automatically.
+        assert self.kdtree is not None
         
-        Args:
-            query_points: (N, 2) array of points looking for neighbors.
-            radius: Cutoff distance.
-
-        Returns:
-            query_indices (np.array): Indices of the query_points (who is asking).
-            lattice_indices (np.array): Indices of the found neighbors in this layer (0..N).
-            neighbor_coords (np.array): Actual coordinates of neighbors (including ghosts).
-        """
-        assert self.kdtree is not None, "KDTree not initialized"
-
         # 1. Scipy's fast radius search
-        # Returns a list of lists (one list of neighbors per query point)
-        # indices_list contains indices into 'self.bigger_points' (if PBC) or 'self.points'
+        # Returns a list of lists: [[neighs_for_p0], [neighs_for_p1], ...]
         indices_list = self.kdtree.query_ball_point(query_points, r=radius)
 
-        # 2. Vectorize/Flatten the result
-        # We want flat arrays: [src_0, src_0, src_1], [tgt_a, tgt_b, tgt_c]
-        query_indices = []
-        tree_indices = []
+        # 2. Vectorized Flattening
+        # Calculate counts per query point to repeat indices correctly
+        counts = np.array([len(nb) for nb in indices_list])
+        if counts.sum() == 0:
+            return np.array([], dtype=int), np.array([], dtype=int), np.array([]).reshape(0, 2)
 
-        for i, neighbors in enumerate(indices_list):
-            if len(neighbors) > 0:
-                query_indices.extend([i] * len(neighbors))
-                tree_indices.extend(neighbors)
+        # query_indices: [0, 0, 0, 1, 1, ...]
+        query_indices = np.repeat(np.arange(len(query_points)), counts)
+        # tree_indices: flattened neighbor indices from the KDTree
+        tree_indices = np.concatenate([nb for nb in indices_list if len(nb) > 0])
 
-        if not query_indices:
-            return np.array([]), np.array([]), np.array([])
-
-        query_indices = np.array(query_indices)
-        tree_indices = np.array(tree_indices)
-
-        # 3. Retrieve Coordinates (Crucial for Physics!)
-        # We need the 'Ghost' coordinate to calculate the correct distance/angle
+        # 3. Retrieve Coordinates
         if self.pbc:
-             neighbor_coords = self.bigger_points[tree_indices]
+            neighbor_coords = self.bigger_points[tree_indices]
+            # REPLACEMENT FOR LAMBDA MAPPER: Direct Array Lookup
+            # We pre-mapped these during generate_kdtree
+            map_arr = np.array([self.mappings[i] for i in range(len(self.bigger_points))])
+            lattice_indices = map_arr[tree_indices]
         else:
-             neighbor_coords = self.points[tree_indices]
-
-        # 4. Map 'Ghost' indices back to 'Real' indices (0..N)
-        # This ensures H[i, j] lands in the valid matrix range
-        if self.pbc:
-            # vectorized dictionary lookup to map ghost_idx -> real_idx
-            # We use a lambda because vectorizing a dict.get is tricky with defaults
-            mapper = np.vectorize(lambda x: self.mappings[x]) 
-            lattice_indices = mapper(tree_indices)
-        else:
+            neighbor_coords = self.points[tree_indices]
             lattice_indices = tree_indices
 
         return query_indices, lattice_indices, neighbor_coords

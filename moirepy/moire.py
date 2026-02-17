@@ -5,10 +5,9 @@ import matplotlib.pyplot as plt
 from .utils import get_rotation_matrix, are_coeffs_integers
 
 class COOBuilder:
-    def __init__(self, dtype=np.float64, rows=[], cols=[], data=[]):
+    def __init__(self, rows=[], cols=[], data=[]):
         self.rows, self.cols, self.data = rows, cols, data
         assert len(self.rows) == len(self.cols) == len(self.data), "Initial rows, cols, and data must be of the same length."
-        self.dtype = dtype
 
     def add(self, r, c, val):
         self.rows.append(r)
@@ -158,7 +157,7 @@ class BilayerMoireLattice:  # both layers same, only one point in one unit cell
         total_dim = (n_lower + n_upper) * k
         
         tll, tuu, tlu, tul, tuself, tlself = self._validate_hamiltonian_inputs(tll, tuu, tlu, tul, tuself, tlself)
-        builder = COOBuilder(dtype=data_type)
+        builder = COOBuilder()
 
         # 1. Lower Lattice Intra-layer (Indices: 0 to n_lower*k - 1)
         for i in range(n_lower):
