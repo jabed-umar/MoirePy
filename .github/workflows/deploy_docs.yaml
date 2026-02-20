@@ -37,4 +37,5 @@ jobs:
         run: |
           git config user.name "${{ github.actor }}"
           git config user.email "${{ github.actor }}@users.noreply.github.com"
+          cat README.md > docs/index.md
           JUPYTER_PLATFORM_DIRS=1 mkdocs gh-deploy -b docs

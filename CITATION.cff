@@ -1,0 +1,25 @@
+cff-version: 1.2.0
+title: "MoirePy: Python package for efficient atomistic simulation of moiré lattices"
+message: "If you use this software, please cite it as below."
+type: software
+
+authors:
+  - family-names: Mukhopadhyay
+    given-names: Aritra
+  - family-names: Umar
+    given-names: Jabed
+
+version: "0.1.0"
+date-released: 2025
+
+url: "https://github.com/jabed-umar/MoirePy"
+
+repository-code: "https://github.com/jabed-umar/MoirePy"
+
+keywords:
+  - moire lattices
+  - twisted bilayer graphene
+  - tight binding
+  - computational physics
+
+license: MIT

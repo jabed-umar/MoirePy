@@ -1,89 +1,109 @@
 # MoirePy: Twist It, Solve It, Own It!
 
-**MoirePy** is a FOSS Python package for the simulation and analysis of **bilayer moiré lattices** using **tight-binding models**. Built for computational physicists and material scientists, it enables quick and flexible moiré band structure calculations, visualization, and manipulation. Our primary focus is on **commensurate** moiré lattices only.
+**MoirePy** is a FOSS Python library for simulating **moire lattices** with a clean, highly Pythonic API.
 
+It is designed to be easy to use while remaining fully flexible. You can define custom lattice geometries, program arbitrary hopping functions, and build tight-binding Hamiltonians in both **real space** and **k-space**, with support for **open (OBC)** and **periodic (PBC)** boundary conditions. Generated Hamiltonians can also be exported to tools like Kwant for further analysis.
 
-**Documentation:** [https://jabed-umar.github.io/MoirePy/](https://jabed-umar.github.io/MoirePy/)<br>
-**Github Repository:** [https://github.com/jabed-umar/MoirePy](https://github.com/jabed-umar/MoirePy)<br>
-**PyPI page:** [https://pypi.org/project/moirepy/](https://pypi.org/project/moirepy/)
+* **Documentation:** [https://jabed-umar.github.io/MoirePy/](https://jabed-umar.github.io/MoirePy/)<br>
+* **Github Repository:** [https://github.com/jabed-umar/MoirePy](https://github.com/jabed-umar/MoirePy)<br>
+* **PyPI page:** [https://pypi.org/project/moirepy/](https://pypi.org/project/moirepy/)
 
-## Features
+<p align="center">
+  <!-- Replace with GIF later -->
+  <img src="https://upload.wikimedia.org/wikipedia/commons/7/70/Example.png" width="500">
+</p>
 
-- Fast and efficient simulation of 2D bilayer moiré lattices.
-- Efficient $O(\log n)$ time nearest neighbour searches.
-- supports **custom lattice definitions** with some basic predefined ones:
-    - Triangular
-    - Square
-    - Hexagonal
-    - Kagome
-- both **real** and **k-space Hamiltonian** generation for tight-binding models with:
-    - Nearest-neighbour coupling
-    <!-- - Nth nearest-neighbour coupling -->
-    - Arbitrary number of orbitals per site
-    - All couplings can be real (default), or complex numbers.
-    - All couplings can be functions of position of the point(s) and the point type(s) (for example, different coupling for A-A, A-B, B-B sites for hexagonal lattices)
-    - Custom Intra and Interlayer Coupling Design.
-- [Web based tool](https://jabed-umar.github.io/MoirePy/theory/avc/) makes it convenient to calculate lattice angles before simulation.
-- Extensive Documentation and examples for easy onboarding.
-- Compatible with other related libraries like Kwant (so that you can generate moire Hamiltonian and use it with Kwant for further analysis).
-- **Freedom to researcher:** We allow you to define your layers and apply whatever couplings you want. If you want the lattice points to have 53 orbitals each—sure, go ahead. As long as you know what you're doing, we won’t stop you. We don't verify whether it's physically possible.
+---
 
-## Upcoming Features
+## Why MoirePy
 
-- **Support for higher-dimensional layers**: Extend current 2D-only support to include higher dimensional constituent layers.
-- **Multi-layer stacking**: Go beyond bilayers; enable simulation of trilayers and complex heterostructures.
-- **Non-equilibrium Green's function support** *(research in progress)*: Develop tools for computing Green’s functions efficiently to study non-equilibrium and quantum transport phenomena.
+* **Define anything**: No restrictions on lattice geometry or orbitals
+* **Pythonic API**: If you know Python, MoirePy is intuitive
+* **Custom hoppings**: Fully programmable intra/inter-layer couplings
+* **Real-space + k-space**: Both supported natively
+* **OBC + PBC**: Switch boundary conditions easily
+* **Kwant-compatible**: Export Hamiltonians for further analysis
+* **Fast construction**: Efficient neighbour search using KDTree
+* **Reproducibility-first**: Designed to replicate known results and papers
+
+---
 
 ## Installation
 
-You can install MoirePy from PyPI via pip:
-
 ```bash
-$ pip install moirepy
+pip install moirepy
 ```
 
-## Basic Usage
+---
 
-For detailed usage, please refer to our [documentation](https://jabed-umar.github.io/MoirePy/).
+## Quick Example: Twisted Bilayer Graphene
 
 ```python
->>> import matplotlib.pyplot as plt
->>> from moirepy import BilayerMoireLattice, TriangularLayer
->>> # Define the Moiré lattice with two triangular layers
->>> moire_lattice = BilayerMoireLattice(
->>>     latticetype=TriangularLayer,
->>>     ll1=9, ll2=10,
->>>     ul1=10, ul2=9,
->>>     n1=1, n2=1,  # number of unit cells
->>> )
-twist angle = 0.0608 rad (3.4810 deg)
-271 points in lower lattice
-271 points in upper lattice
->>> ham = moire_lattice.generate_hamiltonian(
->>>     tll=1, tuu=1, tlu=1, tul=1,
->>>     tuself=1, tlself=1,
->>> )
->>> plt.matshow(ham, cmap="gray")
+import numpy as np
+import matplotlib.pyplot as plt
+from moirepy import BilayerMoireLattice, HexagonalLayer
+
+# Define a twisted bilayer moiré lattice
+lattice = BilayerMoireLattice(
+    latticetype=HexagonalLayer,
+    # you choose the next 4 values based on the twist angle using this tool:
+    # Angle-Value Calculator: https://jabed-umar.github.io/MoirePy/theory/avc/
+    ll1=3, ll2=4, ul1=4, ul2=3,
+    n1=1, n2=1,
+)
+
+# Visualize the lattice
+lattice.plot_lattice()
+plt.show()
+
+ham = lattice.generate_hamiltonian(
+    tll=1, tuu=1,
+    tlu=1, tul=1,
+    tlself=0, tuself=0
+)  # returns scipy sparse matrix
+
+print(ham.shape)
 ```
-![alt text](docs/images/getting_started/moire_lattice_and_hamiltonian/out2.png)
 
-## License
+---
 
-This project is licensed under the [MIT License](https://opensource.org/licenses/MIT).
+## Philosophy
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+MoirePy does not try to enforce what is “physically valid”.
 
+If you want:
 
+* unusual lattices
+* non-standard couplings
+* high orbital counts
 
-## Cite This Work
+you are free to do so.
 
-If you use this software or a modified version in academic or scientific research, please cite:
+> The library gives you control. You decide what makes sense.
 
-```BibTeX
+---
+
+## Contributing
+
+Contributions are welcome.
+
+* Report bugs or request features via issues
+* Submit pull requests for improvements
+* Add examples, tutorials, or benchmarks
+
+A detailed contributing guide will be added soon.
+
+---
+
+## Citation
+
+If you use this work in research:
+
+```bibtex
 @misc{MoirePy2025,
-	author = {Aritra Mukhopadhyay, Jabed Umar},
-	title = {MoirePy: Python package for efficient atomistic simulation of moiré lattices},
-	year = {2025},
-	url = {https://jabed-umar.github.io/MoirePy/},
+  author = {Aritra Mukhopadhyay and Jabed Umar},
+  title = {MoirePy: Python package for efficient atomistic simulation of moiré lattices},
+  year = {2025},
+  url = {https://jabed-umar.github.io/MoirePy/}
 }
 ```

@@ -54,44 +54,32 @@ extra_css:
 # extra_javascript:
 #   - assets/script_find_theta.js
 
-# nav:
-#   - Home: index.md
-#   - installation.md
-#   - getting_started.md
-#   - tight_binding_ham.md
-#   - angle_calculation_process.md
-#   - find_theta.md
-#   - examples.md
-#   - API Reference:
-#       - Layers: api/layers.md
-#       - Moire: api/moire.md
-#       - Utils: api/utils.md
-      # - examples/angle_calculation.ipynb
-      # - examples/tight_binding_ham.ipynb
-      # - examples/k_space_ham.ipynb
-      # - examples/dos_calculation.ipynb
-
 
 nav:
   - Home: index.md
   - Getting Started:
-    - Getting Started: getting_started/gs_intro.md
-    - Installation: getting_started/installation.md
-    - Prepare Layers: getting_started/prepare_layers.md
-    - Moiré Lattice and Hamiltonian: getting_started/moire_lattice_and_hamiltonian.md
-    - EXAMPLE NOTEBOOKS: examples.md
-  - Theoretical Background:
-    - Theoretical Background: theory/theory_intro.md
-    - Tight Binding Moiré Hamiltonian: theory/tight_binding_ham.md
-    - Searching Algorithm & KDTree: theory/search_algorithm_kdtree.md
-    - Angle Calculation Process: theory/angle_calculation_process.md
-    - Angle Value Calculator: theory/avc.md
-  - API Reference:  
+      - Quickstart TBG in 5 Minutes: getting_started/quickstart_tbg.md
+      - K-Space Hamiltonian Generation: getting_started/k_space_hamiltonian.md
+      - Simulating Lattices in Open vs. Periodic Boundary Conditions: getting_started/obc_vs_pbc.md
+      - Defining Custom Layers: getting_started/prepare_layers.md
+      - Designing Custom Hopping: getting_started/custom_hoppings.md  # don't worry too much about names, we will follow this... forget what exists and what not... anyway gonna rewrite all
+      # - add things I might have forgot.. also later maybe we will add stuff here as new APIs come... like 3d lattices etc...
+  - Tutorials and Benchmarks:
+    - Tutorials and Replicated Papers: examples.md  # this will contain list of notebooks topic wise sorted... in chapters maybe if we are feeling fancy...
+    - Benchmarks and Performance Tips: benchmarks.md
+  - Theory:
+      - Theoretical Background: theory/theory_intro.md
+      - Tight Binding Formulation: theory/tight_binding_ham.md
+      - Searching Algorithm & KDTree: theory/search_algorithm_kdtree.md
+      - Angle Calculation Logic: theory/angle_calculation_process.md
+      - Angle Value Calculator: theory/avc.md
+  - API Reference:
       - Layers: api/layers.md
       - Moire: api/moire.md
       - Utils: api/utils.md
 
-# find_theta.md is actually a web (JS) tool which they will use to know what specifications will give them what angles of rotation
+
+
 
 markdown_extensions:
   - footnotes

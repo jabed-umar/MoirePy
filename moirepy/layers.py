@@ -578,9 +578,9 @@ class Layer:  # parent class
             # print(a)
             plt.plot(*a, alpha=0.1)
 
-        plt.title("Lattice Points")
-        plt.xlabel("X Coordinate")
-        plt.ylabel("Y Coordinate")
+        # plt.title("Lattice Points")
+        # plt.xlabel("X Coordinate")
+        # plt.ylabel("Y Coordinate")
         plt.axis("equal")
 
     def __repr__(self):

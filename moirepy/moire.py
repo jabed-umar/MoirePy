@@ -88,9 +88,9 @@ class BilayerMoireLattice:  # both layers same, only one point in one unit cell
         self.ham = None
 
         if verbose:
-            print(f"{len(self.lower_lattice.points)} points in lower lattice")
-            print(f"{len(self.upper_lattice.points)} points in upper lattice")
-        assert len(self.lower_lattice.points) == len(self.upper_lattice.points), "FATAL ERROR: number of points in lower and upper lattice are not equal, take different ll1, ll2, ul1, ul2 values"
+            print(f"{len(self.upper_lattice.points)} cells in upper lattice")
+            print(f"{len(self.lower_lattice.points)} cells in lower lattice")
+        assert len(self.lower_lattice.points) == len(self.upper_lattice.points), "FATAL ERROR: number of cells in lower and upper lattice are not equal, report and take different ll1, ll2, ul1, ul2 values"
 
         # self.plot_lattice()
 
@@ -205,7 +205,7 @@ class BilayerMoireLattice:  # both layers same, only one point in one unit cell
             # tul: Upper -> Lower hopping
             val_ul = tul(u_pos, l_pos, u_type, l_type)
             # tlu: Lower -> Upper hopping (assuming Hermiticity if not provided)
-            val_lu = np.conj(val_ul).T if tlu is None else tlu(l_pos, u_pos, l_type, u_type)
+            val_lu = tlu(l_pos, u_pos, l_type, u_type)
 
             for o1 in range(k):
                 for o2 in range(k):
