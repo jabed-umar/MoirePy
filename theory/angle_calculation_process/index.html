@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://jabed-umar.github.io/MoirePy/theory/angle_calculation_process/" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>Angle Calculation Process - MoirePy – Python Library for Moiré Lattice Simulation</title>
+    <title>Angle Calculation Logic - MoirePy – Python Library for Moiré Lattice Simulation</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
@@ -14,7 +14,7 @@
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Angle Calculation Process";
+        var mkdocs_page_name = "Angle Calculation Logic";
         var mkdocs_page_input_path = "theory/angle_calculation_process.md";
         var mkdocs_page_url = "/MoirePy/theory/angle_calculation_process/";
       </script>
@@ -47,26 +47,33 @@
               </ul>
               <p class="caption"><span class="caption-text">Getting Started</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/gs_intro/">Getting Started</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/quickstart_tbg/">Quickstart TBG in 5 Minutes</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/installation/">Installation</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/k_space_hamiltonian/">K-Space Hamiltonian Generation</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/prepare_layers/">Prepare Layers</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/obc_vs_pbc/">Simulating Lattices in Open vs. Periodic Boundary Conditions</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/moire_lattice_and_hamiltonian/">Moiré Lattice and Hamiltonian</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/prepare_layers/">Defining Custom Layers</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../examples/">EXAMPLE NOTEBOOKS</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/custom_hoppings/">Designing Custom Hopping</a>
                   </li>
               </ul>
-              <p class="caption"><span class="caption-text">Theoretical Background</span></p>
+              <p class="caption"><span class="caption-text">Tutorials and Benchmarks</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../examples/">Tutorials and Replicated Papers</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="../../benchmarks.md">Benchmarks and Performance Tips</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Theory</span></p>
               <ul class="current">
                   <li class="toctree-l1"><a class="reference internal" href="../theory_intro/">Theoretical Background</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../tight_binding_ham/">Tight Binding Moiré Hamiltonian</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../tight_binding_ham/">Tight Binding Formulation</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../search_algorithm_kdtree/">Searching Algorithm & KDTree</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Angle Calculation Process</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Angle Calculation Logic</a>
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#1-problem-statement">1. Problem Statement</a>
     </li>
@@ -118,8 +125,8 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
-          <li class="breadcrumb-item">Theoretical Background</li>
-      <li class="breadcrumb-item active">Angle Calculation Process</li>
+          <li class="breadcrumb-item">Theory</li>
+      <li class="breadcrumb-item active">Angle Calculation Logic</li>
     <li class="wy-breadcrumbs-aside">
           <a href="https://github.com/jabed-umar/MoirePy/edit/master/docs/theory/angle_calculation_process.md">Edit on jabed-umar/MoirePy</a>
     </li>
@@ -136,7 +143,7 @@
 </style>
 
 <h1 id="angle-calculation-process">Angle Calculation Process</h1>
-<p>When two single layers of a 2D material are stacked with a small misalignment, they produce a moiré pattern with a length scale much larger than the periodicity of either individual layer. At specific twist angles, this results in a <strong><em>commensurate moiré pattern</em></strong>—a structure where atoms from one layer align exactly with those of the other.</p>
+<p>When two single layers of a 2D material are stacked with a small misalignment, they produce a moiré pattern with a length scale much larger than the periodicity of either individual layer. At specific twist angles, this results in a <strong><em>commensurate moiré pattern</em></strong>; a structure where atoms from one layer align exactly with those of the other.</p>
 <p>In this section, we describe how <strong>MoirePy</strong> calculates the <strong><em>commensurate rotation angles</em></strong> between two lattices confined to a bounded region. The goal is to identify angles where the lattices align periodically, producing well-ordered moiré patterns that are physically observable.</p>
 <h2 id="1-problem-statement">1. Problem Statement</h2>
 <p>Let lattices <span class="arithmatex">\(A\)</span> and <span class="arithmatex">\(B\)</span> be two periodic point sets in two dimensions, each defined by their respective lattice vectors.</p>
@@ -269,7 +276,7 @@ r = |\vec{r}| = \sqrt{a^2 + b^2 + 2ab\cos\beta}
 <li>Only overlapping radii are considered</li>
 <li>Pairwise angle differences yield the commensurate angles</li>
 </ul>
-<p>This makes <strong>MoirePy</strong>’s angle detection both <strong>fast and visual</strong>, and opens up room for further optimizations or generalizations.</p>
+<p>This makes <strong>MoirePy</strong>'s angle detection both <strong>fast and visual</strong>, and opens up room for further optimizations or generalizations.</p>
               
             </div>
           </div><footer>

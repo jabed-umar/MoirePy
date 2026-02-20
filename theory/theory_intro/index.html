@@ -47,18 +47,25 @@
               </ul>
               <p class="caption"><span class="caption-text">Getting Started</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/gs_intro/">Getting Started</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/quickstart_tbg/">Quickstart TBG in 5 Minutes</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/installation/">Installation</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/k_space_hamiltonian/">K-Space Hamiltonian Generation</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/prepare_layers/">Prepare Layers</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/obc_vs_pbc/">Simulating Lattices in Open vs. Periodic Boundary Conditions</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/moire_lattice_and_hamiltonian/">Moiré Lattice and Hamiltonian</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/prepare_layers/">Defining Custom Layers</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../examples/">EXAMPLE NOTEBOOKS</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/custom_hoppings/">Designing Custom Hopping</a>
                   </li>
               </ul>
-              <p class="caption"><span class="caption-text">Theoretical Background</span></p>
+              <p class="caption"><span class="caption-text">Tutorials and Benchmarks</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../examples/">Tutorials and Replicated Papers</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="../../benchmarks.md">Benchmarks and Performance Tips</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Theory</span></p>
               <ul class="current">
                   <li class="toctree-l1 current"><a class="reference internal current" href="#">Theoretical Background</a>
     <ul class="current">
@@ -66,11 +73,11 @@
     </li>
     </ul>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../tight_binding_ham/">Tight Binding Moiré Hamiltonian</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../tight_binding_ham/">Tight Binding Formulation</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../search_algorithm_kdtree/">Searching Algorithm & KDTree</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../angle_calculation_process/">Angle Calculation Process</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../angle_calculation_process/">Angle Calculation Logic</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../avc/">Angle Value Calculator</a>
                   </li>
@@ -98,7 +105,7 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
-          <li class="breadcrumb-item">Theoretical Background</li>
+          <li class="breadcrumb-item">Theory</li>
       <li class="breadcrumb-item active">Theoretical Background</li>
     <li class="wy-breadcrumbs-aside">
           <a href="https://github.com/jabed-umar/MoirePy/edit/master/docs/theory/theory_intro.md">Edit on jabed-umar/MoirePy</a>
@@ -113,13 +120,13 @@
 
 The **moiré effect** is a fascinating visual phenomenon seen in *modern art*, *textile patterns*, and even *currency anti-counterfeiting techniques*, where overlapping periodic structures create intricate interference patterns. But beyond its aesthetic appeal, the **moiré effect** has taken centre stage in **condensed matter physics**, where geometry meets electronics, and simple twists unlock a playground of quantum phenomena.
 
-The discovery of emergent phenomena in **moiré materials**—such as *superconductivity*, *correlated insulating states*, and *topological phases of matter*—has sparked a revolution in condensed matter physics. These systems, formed by stacking two-dimensional crystals at small twist angles, give rise to rich electronic landscapes governed by long-wavelength moiré patterns. As the field rapidly expands, the need for intuitive, efficient, and high-precision computational tools has never been greater.
+The discovery of emergent phenomena in **moiré materials**, such as *superconductivity*, *correlated insulating states*, and *topological phases of matter*, has sparked a revolution in condensed matter physics. These systems, formed by stacking two-dimensional crystals at small twist angles, give rise to rich electronic landscapes governed by long-wavelength moiré patterns. As the field rapidly expands, the need for intuitive, efficient, and high-precision computational tools has never been greater.
 
 **MoirePy** is an open-source Python package built to support the needs of *researchers, theorists, computational* and *material scientists* for the numerical calculation of moiré lattices, with a focus on commensurate structures. It enables fast, flexible *atomistic simulations* of such systems, with tools to compute *dispersion relations*, visualize *band structures* and *density of states*, study *non-Hermitian systems*, and explore *quantum transport phenomena*. It can simulate *metals*, *topological insulators*, *quantum Hall systems*, *superconductivity*, *spintronics*, or any combination thereof. -->
 
 <h1 id="theoretical-background">Theoretical Background</h1>
-<p>The discovery that twisting two atomically-thin layers—like graphene—by a small angle can induce superconductivity and other correlated phases has transformed condensed matter physics. At the heart of this transformation lies the <strong>moiré pattern</strong>: a long-wavelength lattice emerging from the interference of two periodic structures. These patterns reshape the electronic landscape, giving rise to flat bands, topological states, and strong interaction effects absent in the individual layers.</p>
-<p>Simulating such systems demands a careful balance between <strong>atomistic resolution</strong> and <strong>large-scale periodicity</strong>. Full ab-initio methods become computationally infeasible at moiré scales, while naive tight-binding models often miss crucial geometrical and symmetry constraints. <strong>MoirePy</strong> is designed to bridge this gap — converting clean geometric input into efficient, flexible, and physically grounded tight-binding models for commensurate moiré lattices.</p>
+<p>The discovery that twisting two atomically-thin layers, like graphene, by a small angle can induce superconductivity and other correlated phases has transformed condensed matter physics. At the heart of this transformation lies the <strong>moiré pattern</strong>: a long-wavelength lattice emerging from the interference of two periodic structures. These patterns reshape the electronic landscape, giving rise to flat bands, topological states, and strong interaction effects absent in the individual layers.</p>
+<p>Simulating such systems demands a careful balance between <strong>atomistic resolution</strong> and <strong>large-scale periodicity</strong>. Full ab-initio methods become computationally infeasible at moiré scales, while naive tight-binding models often miss crucial geometrical and symmetry constraints. <strong>MoirePy</strong> is designed to bridge this gap, converting clean geometric input into efficient, flexible, and physically grounded tight-binding models for commensurate moiré lattices.</p>
 <h2 id="purpose-of-this-section">Purpose of This Section</h2>
 <p>This section documents the theoretical models and computational strategies implemented in MoirePy. From the construction of <strong>tight-binding Hamiltonians</strong> and their <strong>real- and <span class="arithmatex">\(k\)</span>-space formulations</strong>, to <strong>geometry-based neighbor search algorithms</strong> and <strong>quantized twist-angle calculations</strong>, we outline the core principles underlying the package.</p>
 <p>We believe in <strong>transparent scientific software</strong>, and this section is written not just for end users, but also for researchers and developers who want to understand, modify, or build upon MoirePy. Whether you're reviewing our assumptions, adapting our algorithms, or simply learning the methods behind moiré modeling, these notes aim to make the theoretical foundations as clear and open as possible.</p>
@@ -127,8 +134,8 @@ The discovery of emergent phenomena in **moiré materials**—such as *supercond
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../../examples/" class="btn btn-neutral float-left" title="EXAMPLE NOTEBOOKS"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../tight_binding_ham/" class="btn btn-neutral float-right" title="Tight Binding Moiré Hamiltonian">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../../examples/" class="btn btn-neutral float-left" title="Tutorials and Replicated Papers"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../tight_binding_ham/" class="btn btn-neutral float-right" title="Tight Binding Formulation">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>

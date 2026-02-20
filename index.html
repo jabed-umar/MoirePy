@@ -44,39 +44,50 @@
               <ul class="current">
                 <li class="toctree-l1 current"><a class="reference internal current" href="#">Home</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#features">Features</a>
+    <li class="toctree-l2"><a class="reference internal" href="#why-moirepy">Why MoirePy</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#upcoming-features">Upcoming Features</a>
+    <li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#license">License</a>
+    <li class="toctree-l2"><a class="reference internal" href="#quick-example-twisted-bilayer-graphene">Quick Example: Twisted Bilayer Graphene</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#cite-this-work">Cite This Work</a>
+    <li class="toctree-l2"><a class="reference internal" href="#philosophy">Philosophy</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#contributing">Contributing</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#citation">Citation</a>
     </li>
     </ul>
                 </li>
               </ul>
               <p class="caption"><span class="caption-text">Getting Started</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="getting_started/gs_intro/">Getting Started</a>
+                  <li class="toctree-l1"><a class="reference internal" href="getting_started/quickstart_tbg/">Quickstart TBG in 5 Minutes</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="getting_started/installation/">Installation</a>
+                  <li class="toctree-l1"><a class="reference internal" href="getting_started/k_space_hamiltonian/">K-Space Hamiltonian Generation</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="getting_started/prepare_layers/">Prepare Layers</a>
+                  <li class="toctree-l1"><a class="reference internal" href="getting_started/obc_vs_pbc/">Simulating Lattices in Open vs. Periodic Boundary Conditions</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="getting_started/moire_lattice_and_hamiltonian/">Moiré Lattice and Hamiltonian</a>
+                  <li class="toctree-l1"><a class="reference internal" href="getting_started/prepare_layers/">Defining Custom Layers</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="examples/">EXAMPLE NOTEBOOKS</a>
+                  <li class="toctree-l1"><a class="reference internal" href="getting_started/custom_hoppings/">Designing Custom Hopping</a>
                   </li>
               </ul>
-              <p class="caption"><span class="caption-text">Theoretical Background</span></p>
+              <p class="caption"><span class="caption-text">Tutorials and Benchmarks</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="examples/">Tutorials and Replicated Papers</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="benchmarks.md">Benchmarks and Performance Tips</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Theory</span></p>
               <ul>
                   <li class="toctree-l1"><a class="reference internal" href="theory/theory_intro/">Theoretical Background</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="theory/tight_binding_ham/">Tight Binding Moiré Hamiltonian</a>
+                  <li class="toctree-l1"><a class="reference internal" href="theory/tight_binding_ham/">Tight Binding Formulation</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="theory/search_algorithm_kdtree/">Searching Algorithm & KDTree</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="theory/angle_calculation_process/">Angle Calculation Process</a>
+                  <li class="toctree-l1"><a class="reference internal" href="theory/angle_calculation_process/">Angle Calculation Logic</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="theory/avc/">Angle Value Calculator</a>
                   </li>
@@ -115,57 +126,98 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="moirepy-twist-it-solve-it-own-it">MoirePy: Twist It, Solve It, Own It!</h1>
-<p><strong>MoirePy</strong> is a FOSS Python package for the simulation and analysis of <strong>bilayer moiré lattices</strong> using <strong>tight-binding models</strong>. Built for computational physicists and material scientists, it enables quick and flexible moiré band structure calculations, visualization, and manipulation. Our primary focus is on <strong>commensurate</strong> moiré lattices only.</p>
-<p><strong>Documentation:</strong> <a href="https://jabed-umar.github.io/MoirePy/">https://jabed-umar.github.io/MoirePy/</a><br>
-<strong>Github Repository:</strong> <a href="https://github.com/jabed-umar/MoirePy">https://github.com/jabed-umar/MoirePy</a><br>
-<strong>PyPI page:</strong> <a href="https://pypi.org/project/moirepy/">https://pypi.org/project/moirepy/</a></p>
-<h2 id="features">Features</h2>
+<p><strong>MoirePy</strong> is a FOSS Python library for simulating <strong>moire lattices</strong> with a clean, highly Pythonic API.</p>
+<p>It is designed to be easy to use while remaining fully flexible. You can define custom lattice geometries, program arbitrary hopping functions, and build tight-binding Hamiltonians in both <strong>real space</strong> and <strong>k-space</strong>, with support for <strong>open (OBC)</strong> and <strong>periodic (PBC)</strong> boundary conditions. Generated Hamiltonians can also be exported to tools like Kwant for further analysis.</p>
 <ul>
-<li>Fast and efficient simulation of 2D bilayer moiré lattices.</li>
-<li>Efficient <span class="arithmatex">\(O(\log n)\)</span> time nearest neighbour searches.</li>
-<li>supports <strong>custom lattice definitions</strong> with some basic predefined ones:<ul>
-<li>Triangular</li>
-<li>Square</li>
-<li>Hexagonal</li>
-<li>Kagome</li>
+<li><strong>Documentation:</strong> <a href="https://jabed-umar.github.io/MoirePy/">https://jabed-umar.github.io/MoirePy/</a><br></li>
+<li><strong>Github Repository:</strong> <a href="https://github.com/jabed-umar/MoirePy">https://github.com/jabed-umar/MoirePy</a><br></li>
+<li><strong>PyPI page:</strong> <a href="https://pypi.org/project/moirepy/">https://pypi.org/project/moirepy/</a></li>
 </ul>
-</li>
-<li>both <strong>real</strong> and <strong>k-space Hamiltonian</strong> generation for tight-binding models with:<ul>
-<li>Nearest-neighbour coupling
-<!-- - Nth nearest-neighbour coupling --></li>
-<li>Arbitrary number of orbitals per site</li>
-<li>All couplings can be real (default), or complex numbers.</li>
-<li>All couplings can be functions of position of the point(s) and the point type(s) (for example, different coupling for A-A, A-B, B-B sites for hexagonal lattices)</li>
-<li>Custom Intra and Interlayer Coupling Design.</li>
-</ul>
-</li>
-<li><a href="https://jabed-umar.github.io/MoirePy/theory/avc/">Web based tool</a> makes it convenient to calculate lattice angles before simulation.</li>
-<li>Extensive Documentation and examples for easy onboarding.</li>
-<li>Compatible with other related libraries like Kwant (so that you can generate moire Hamiltonian and use it with Kwant for further analysis).</li>
-<li><strong>Freedom to researcher:</strong> We allow you to define your layers and apply whatever couplings you want. If you want the lattice points to have 53 orbitals each—sure, go ahead. As long as you know what you're doing, we won’t stop you. We don't verify whether it's physically possible.</li>
-</ul>
-<h2 id="upcoming-features">Upcoming Features</h2>
+<p align="center">
+  <!-- Replace with GIF later -->
+  <img src="https://upload.wikimedia.org/wikipedia/commons/7/70/Example.png" width="500">
+</p>
+
+<hr />
+<h2 id="why-moirepy">Why MoirePy</h2>
 <ul>
-<li><strong>Support for higher-dimensional layers</strong>: Extend current 2D-only support to include higher dimensional constituent layers.</li>
-<li><strong>Multi-layer stacking</strong>: Go beyond bilayers; enable simulation of trilayers and complex heterostructures.</li>
-<li><strong>Non-equilibrium Green's function support</strong> <em>(research in progress)</em>: Develop tools for computing Green’s functions efficiently to study non-equilibrium and quantum transport phenomena.</li>
+<li><strong>Define anything</strong>: No restrictions on lattice geometry or orbitals</li>
+<li><strong>Pythonic API</strong>: If you know Python, MoirePy is intuitive</li>
+<li><strong>Custom hoppings</strong>: Fully programmable intra/inter-layer couplings</li>
+<li><strong>Real-space + k-space</strong>: Both supported natively</li>
+<li><strong>OBC + PBC</strong>: Switch boundary conditions easily</li>
+<li><strong>Kwant-compatible</strong>: Export Hamiltonians for further analysis</li>
+<li><strong>Fast construction</strong>: Efficient neighbour search using KDTree</li>
+<li><strong>Reproducibility-first</strong>: Designed to replicate known results and papers</li>
 </ul>
-<h2 id="license">License</h2>
-<p>This project is licensed under the <a href="https://opensource.org/licenses/MIT">MIT License</a>.</p>
-<p><a href="https://opensource.org/licenses/MIT"><img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg" /></a></p>
-<h2 id="cite-this-work">Cite This Work</h2>
-<p>If you use this software or a modified version in academic or scientific research, please cite:</p>
-<pre class="highlight"><code class="language-BibTeX">@misc{MoirePy2025,
-    author = {Aritra Mukhopadhyay, Jabed Umar},
-    title = {MoirePy: Python package for efficient atomistic simulation of moiré lattices},
-    year = {2025},
-    url = {https://jabed-umar.github.io/MoirePy/},
-}</code></pre>
+<hr />
+<h2 id="installation">Installation</h2>
+<div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>moirepy
+</code></pre></div>
+<hr />
+<h2 id="quick-example-twisted-bilayer-graphene">Quick Example: Twisted Bilayer Graphene</h2>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">moirepy</span><span class="w"> </span><span class="kn">import</span> <span class="n">BilayerMoireLattice</span><span class="p">,</span> <span class="n">HexagonalLayer</span>
+
+<span class="c1"># Define a twisted bilayer moiré lattice</span>
+<span class="n">lattice</span> <span class="o">=</span> <span class="n">BilayerMoireLattice</span><span class="p">(</span>
+    <span class="n">latticetype</span><span class="o">=</span><span class="n">HexagonalLayer</span><span class="p">,</span>
+    <span class="c1"># you choose the next 4 values based on the twist angle using this tool:</span>
+    <span class="c1"># Angle-Value Calculator: https://jabed-umar.github.io/MoirePy/theory/avc/</span>
+    <span class="n">ll1</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">ll2</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">ul1</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">ul2</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+    <span class="n">n1</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">n2</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># Visualize the lattice</span>
+<span class="n">lattice</span><span class="o">.</span><span class="n">plot_lattice</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="n">ham</span> <span class="o">=</span> <span class="n">lattice</span><span class="o">.</span><span class="n">generate_hamiltonian</span><span class="p">(</span>
+    <span class="n">tll</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">tuu</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">tlu</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">tul</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">tlself</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">tuself</span><span class="o">=</span><span class="mi">0</span>
+<span class="p">)</span>  <span class="c1"># returns scipy sparse matrix</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">ham</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</code></pre></div>
+<hr />
+<h2 id="philosophy">Philosophy</h2>
+<p>MoirePy does not try to enforce what is "physically valid".</p>
+<p>If you want:</p>
+<ul>
+<li>unusual lattices</li>
+<li>non-standard couplings</li>
+<li>high orbital counts</li>
+</ul>
+<p>you are free to do so.</p>
+<blockquote>
+<p>The library gives you control. You decide what makes sense.</p>
+</blockquote>
+<hr />
+<h2 id="contributing">Contributing</h2>
+<p>Contributions are welcome.</p>
+<ul>
+<li>Report bugs or request features via issues</li>
+<li>Submit pull requests for improvements</li>
+<li>Add examples, tutorials, or benchmarks</li>
+</ul>
+<p>A detailed contributing guide will be added soon.</p>
+<hr />
+<h2 id="citation">Citation</h2>
+<p>If you use this work in research:</p>
+<div class="highlight"><pre><span></span><code><span class="nc">@misc</span><span class="p">{</span><span class="nl">MoirePy2025</span><span class="p">,</span>
+<span class="w">  </span><span class="na">author</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{Aritra Mukhopadhyay and Jabed Umar}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">title</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{MoirePy: Python package for efficient atomistic simulation of moiré lattices}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">year</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{2025}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">url</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{https://jabed-umar.github.io/MoirePy/}</span>
+<span class="p">}</span>
+</code></pre></div>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="getting_started/gs_intro/" class="btn btn-neutral float-right" title="Getting Started">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="getting_started/quickstart_tbg/" class="btn btn-neutral float-right" title="Quickstart TBG in 5 Minutes">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -193,7 +245,7 @@
     
     
     
-      <span><a href="getting_started/gs_intro/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="getting_started/quickstart_tbg/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
@@ -214,5 +266,5 @@
 
 <!--
 MkDocs version : 1.6.1
-Build Date UTC : 2025-06-24 19:18:30.641279+00:00
+Build Date UTC : 2026-02-20 19:30:09.177676+00:00
 -->

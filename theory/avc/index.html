@@ -47,26 +47,33 @@
               </ul>
               <p class="caption"><span class="caption-text">Getting Started</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/gs_intro/">Getting Started</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/quickstart_tbg/">Quickstart TBG in 5 Minutes</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/installation/">Installation</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/k_space_hamiltonian/">K-Space Hamiltonian Generation</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/prepare_layers/">Prepare Layers</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/obc_vs_pbc/">Simulating Lattices in Open vs. Periodic Boundary Conditions</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/moire_lattice_and_hamiltonian/">Moiré Lattice and Hamiltonian</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/prepare_layers/">Defining Custom Layers</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../examples/">EXAMPLE NOTEBOOKS</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/custom_hoppings/">Designing Custom Hopping</a>
                   </li>
               </ul>
-              <p class="caption"><span class="caption-text">Theoretical Background</span></p>
+              <p class="caption"><span class="caption-text">Tutorials and Benchmarks</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../examples/">Tutorials and Replicated Papers</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="../../benchmarks.md">Benchmarks and Performance Tips</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Theory</span></p>
               <ul class="current">
                   <li class="toctree-l1"><a class="reference internal" href="../theory_intro/">Theoretical Background</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../tight_binding_ham/">Tight Binding Moiré Hamiltonian</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../tight_binding_ham/">Tight Binding Formulation</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../search_algorithm_kdtree/">Searching Algorithm & KDTree</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../angle_calculation_process/">Angle Calculation Process</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../angle_calculation_process/">Angle Calculation Logic</a>
                   </li>
                   <li class="toctree-l1 current"><a class="reference internal current" href="#">Angle Value Calculator</a>
     <ul class="current">
@@ -98,7 +105,7 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
-          <li class="breadcrumb-item">Theoretical Background</li>
+          <li class="breadcrumb-item">Theory</li>
       <li class="breadcrumb-item active">Angle Value Calculator</li>
     <li class="wy-breadcrumbs-aside">
           <a href="https://github.com/jabed-umar/MoirePy/edit/master/docs/theory/avc.md">Edit on jabed-umar/MoirePy</a>
@@ -171,7 +178,7 @@
 </style>
 
 <h1 id="angle-value-calculator">Angle Value Calculator</h1>
-<p>The <strong>Moiré Angle Calculator</strong> finds all possible commensurate angles between two stacked lattices by trimming both layers within a given radius and checking for periodic overlaps following the <a href="../angle_calculation_process/">Angle Calculation Process</a>. After calculation, it provides a list of angles with their corresponding <code>ll1</code>, <code>ll2</code>, <code>ul1</code>, <code>ul2</code> values that define the rotation between the two lattices along with the number of points in each cell of the Moiré lattice. Since most angles are irrational and can't be precisely represented, the rotation is defined using these coordinate pairs instead — they mark the overlapping points between the two lattices. Once you've selected an angle from the list, just copy the <code>ll1</code>, <code>ll2</code>, <code>ul1</code>, and <code>ul2</code> values into your code — the system will figure out the exact rotation angle from that. This also makes it easy to calculate the moire lattice vectors.</p>
+<p>The <strong>Moiré Angle Calculator</strong> finds all possible commensurate angles between two stacked lattices by trimming both layers within a given radius and checking for periodic overlaps following the <a href="../angle_calculation_process/">Angle Calculation Process</a>. After calculation, it provides a list of angles with their corresponding <code>ll1</code>, <code>ll2</code>, <code>ul1</code>, <code>ul2</code> values that define the rotation between the two lattices along with the number of points in each cell of the Moiré lattice. Since most angles are irrational and can't be precisely represented, the rotation is defined using these coordinate pairs instead, they mark the overlapping points between the two lattices. Once you've selected an angle from the list, just copy the <code>ll1</code>, <code>ll2</code>, <code>ul1</code>, and <code>ul2</code> values into your code. The system will figure out the exact rotation angle from that. This also makes it easy to calculate the moire lattice vectors.</p>
 <details class="warning">
 <summary>Some Guidelines</summary>
 <p>A <strong>radius</strong> must be specified to define the extent of the circular region centred at the origin. This value is used to truncate <em>both</em> the upper and lower lattices. <strong>Larger radius</strong> Includes more lattice points, potentially giving more precise calculations and revealing smaller angles, <strong>but</strong> increases computation time. <strong>Smaller radius</strong> Produces faster results, yet may detect only larger angle values.</p>
@@ -180,7 +187,7 @@
 <li>Both layers <strong>60<span class="arithmatex">\(^\circ\)</span></strong> (Triangular, Hexagonal and Kagome lattices)</li>
 <li>Both layers <strong>90<span class="arithmatex">\(^\circ\)</span></strong> (Square lattice)</li>
 <li>
-<p><strong>Custom mode</strong> – <em>experimental</em>  </p>
+<p><strong>Custom mode</strong> (<em>experimental</em>)</p>
 <p><em>Possible problems</em><br />
 - Erroneous or nonsensical output<br />
 - Unresponsiveness or infinite loops<br />
@@ -495,7 +502,7 @@
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../angle_calculation_process/" class="btn btn-neutral float-left" title="Angle Calculation Process"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../angle_calculation_process/" class="btn btn-neutral float-left" title="Angle Calculation Logic"><span class="icon icon-circle-arrow-left"></span> Previous</a>
         <a href="../../api/layers/" class="btn btn-neutral float-right" title="Layers">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 

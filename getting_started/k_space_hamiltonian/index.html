@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://jabed-umar.github.io/MoirePy/getting_started/k_space_hamiltonian/" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>K-Space Hamiltonian Generation - MoirePy – Python Library for Moiré Lattice Simulation</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
+        <link href="../../assets/style.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "K-Space Hamiltonian Generation";
+        var mkdocs_page_input_path = "getting_started/k_space_hamiltonian.md";
+        var mkdocs_page_url = "/MoirePy/getting_started/k_space_hamiltonian/";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> MoirePy – Python Library for Moiré Lattice Simulation
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Getting Started</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../quickstart_tbg/">Quickstart TBG in 5 Minutes</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">K-Space Hamiltonian Generation</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#1-recap-and-setup">1. Recap and Setup</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#2-single-k-point-generation">2. Single k-point Generation</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#3-band-structure-calculation-the-physics-payoff">3. Band Structure Calculation (The Physics Payoff)</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#step-1-define-the-path">Step 1: Define the Path</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#step-2-iterative-solver">Step 2: Iterative Solver</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#step-3-visualization">Step 3: Visualization</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#summary">Summary</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#next-steps">Next Steps</a>
+    </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../obc_vs_pbc/">Simulating Lattices in Open vs. Periodic Boundary Conditions</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../prepare_layers/">Defining Custom Layers</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../custom_hoppings/">Designing Custom Hopping</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Tutorials and Benchmarks</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../examples/">Tutorials and Replicated Papers</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="../../benchmarks.md">Benchmarks and Performance Tips</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Theory</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../theory/theory_intro/">Theoretical Background</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../theory/tight_binding_ham/">Tight Binding Formulation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../theory/search_algorithm_kdtree/">Searching Algorithm & KDTree</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../theory/angle_calculation_process/">Angle Calculation Logic</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../theory/avc/">Angle Value Calculator</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">API Reference</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/layers/">Layers</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/moire/">Moire</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/utils/">Utils</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">MoirePy – Python Library for Moiré Lattice Simulation</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Getting Started</li>
+      <li class="breadcrumb-item active">K-Space Hamiltonian Generation</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/jabed-umar/MoirePy/edit/master/docs/getting_started/k_space_hamiltonian.md">Edit on jabed-umar/MoirePy</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="k-space-hamiltonian-and-band-structure">K-Space Hamiltonian and Band Structure</h1>
+<p>In this section, we will see how to generate the k-space Hamiltonian for a moiré system and compute its band structure. This is essential for understanding the electronic properties of the system, such as the presence of flat bands or Dirac cones.</p>
+<h2 id="1-recap-and-setup">1. Recap and Setup</h2>
+<p>To work in k-space, <strong>Periodic Boundary Conditions (<code>pbc=True</code>) are strictly required</strong>. Momentum is only a well-defined quantum number in a periodic system; without PBC, there is no Brillouin Zone to sample.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">moirepy</span><span class="w"> </span><span class="kn">import</span> <span class="n">BilayerMoireLattice</span><span class="p">,</span> <span class="n">HexagonalLayer</span>
+
+<span class="n">lattice</span> <span class="o">=</span> <span class="n">BilayerMoireLattice</span><span class="p">(</span>
+    <span class="n">latticetype</span><span class="o">=</span><span class="n">HexagonalLayer</span><span class="p">,</span>
+    <span class="n">ll1</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">ll2</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+    <span class="n">ul1</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">ul2</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+    <span class="n">n1</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">n2</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">pbc</span><span class="o">=</span><span class="kc">True</span> <span class="c1"># Mandatory for k-space</span>
+<span class="p">)</span>
+</code></pre></div>
+<hr />
+<h2 id="2-single-k-point-generation">2. Single k-point Generation</h2>
+<p>A k-space Hamiltonian represents the system's energy at a specific crystal momentum. Note that these matrices are complex-valued even if your hopping parameters are real numbers.</p>
+<div class="highlight"><pre><span></span><code><span class="n">k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">])</span>
+
+<span class="c1"># Matrices are smaller but complex: we use complex128 internally</span>
+<span class="n">Hk</span> <span class="o">=</span> <span class="n">lattice</span><span class="o">.</span><span class="n">generate_k_space_hamiltonian</span><span class="p">(</span>
+    <span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="p">,</span>
+    <span class="n">tll</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">tuu</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+    <span class="n">tul</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">tlu</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="c1"># User must ensure tlu = conj(tul) for Hermiticity</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Matrix shape: </span><span class="si">{</span><span class="n">Hk</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div>
+<div class="admonition warning">
+<p class="admonition-title">Manual Hermiticity</p>
+<p>MoirePy gives you raw control over the hopping directions. To maintain a physical, Hermitian Hamiltonian, you must ensure your <code>tlu</code> (Lower to Upper) values are the complex conjugates of your <code>tul</code> (Upper to Lower) terms.</p>
+</div>
+<hr />
+<h2 id="3-band-structure-calculation-the-physics-payoff">3. Band Structure Calculation (The Physics Payoff)</h2>
+<p>The primary use of k-space is to visualize how energy levels evolve across the <strong>Moiré Brillouin Zone (MBZ)</strong>.</p>
+<h3 id="step-1-define-the-path">Step 1: Define the Path</h3>
+<p>We sample the zone by interpolating between High-Symmetry points ().</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Defined using the reciprocal lattice vectors of the moire system</span>
+<span class="n">G</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+<span class="n">K</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">lattice</span><span class="o">.</span><span class="n">mlv1</span> <span class="o">+</span> <span class="n">lattice</span><span class="o">.</span><span class="n">mlv2</span><span class="p">)</span> 
+<span class="n">M</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">lattice</span><span class="o">.</span><span class="n">mlv1</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">get_path</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">steps</span><span class="o">=</span><span class="mi">50</span><span class="p">):</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">points</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">steps</span><span class="p">):</span>
+            <span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">points</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">t</span><span class="p">)</span> <span class="o">+</span> <span class="n">points</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">t</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+
+<span class="n">k_path</span> <span class="o">=</span> <span class="n">get_path</span><span class="p">([</span><span class="n">G</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">G</span><span class="p">])</span>
+</code></pre></div>
+<h3 id="step-2-iterative-solver">Step 2: Iterative Solver</h3>
+<p>Since k-space Hamiltonians represent a single unit cell, they are much smaller than real-space matrices. We can use dense solvers like <code>np.linalg.eigvalsh</code> for high precision.</p>
+<div class="highlight"><pre><span></span><code><span class="n">bands</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">k_path</span><span class="p">:</span>
+    <span class="n">Hk</span> <span class="o">=</span> <span class="n">lattice</span><span class="o">.</span><span class="n">generate_k_space_hamiltonian</span><span class="p">(</span>
+        <span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">tll</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">tuu</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">tul</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">tlu</span><span class="o">=</span><span class="mf">0.1</span>
+    <span class="p">)</span>
+    <span class="c1"># Convert sparse k-matrix to dense for the eigensolver</span>
+    <span class="n">eigvals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigvalsh</span><span class="p">(</span><span class="n">Hk</span><span class="o">.</span><span class="n">toarray</span><span class="p">())</span>
+    <span class="n">bands</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">eigvals</span><span class="p">)</span>
+
+<span class="n">bands</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">bands</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="step-3-visualization">Step 3: Visualization</h3>
+<div class="highlight"><pre><span></span><code><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">bands</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># Mark the high-symmetry transitions</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">150</span><span class="p">],</span> <span class="p">[</span><span class="sa">r</span><span class="s1">&#39;$\Gamma$&#39;</span><span class="p">,</span> <span class="s1">&#39;K&#39;</span><span class="p">,</span> <span class="s1">&#39;M&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;$\Gamma$&#39;</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Energy (t)&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Moiré Band Structure&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div>
+<p><img alt="Band Structure" src="../../images/getting_started/k_space_hamiltonian/1.webp" style="max-width: 50%;" /></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Using constant hopping (<span class="arithmatex">\(t=1\)</span>) over a large supercell results in a dense, folded band structure. To see the isolated flat bands characteristic of the Magic Angle, refer to the Replicated Papers section where we implement distance-dependent (exponential) hopping.</p>
+</div>
+<hr />
+<h2 id="summary">Summary</h2>
+<ul>
+<li>We constructed the k-space Hamiltonian from the same lattice definition  </li>
+<li>We sampled momentum space along a high-symmetry path  </li>
+<li>We computed and visualized the band structure  </li>
+</ul>
+<p>This is the standard workflow for studying electronic structure in periodic moiré systems.</p>
+<hr />
+<h2 id="next-steps">Next Steps</h2>
+<ol>
+<li><strong><a href="../obc_vs_pbc/">OBC vs PBC</a></strong>: Understand how boundary conditions affect the Hamiltonian.  </li>
+<li><strong><a href="../prepare_layers/">Defining Custom Layers</a></strong>: Go beyond built-in lattices.  </li>
+<li><strong><a href="../custom_hoppings/">Designing Custom Hopping</a></strong>: Introduce realistic physics.  </li>
+<li><strong><a href="../../examples/">Tutorials and Replicated Papers</a></strong>: See full physical results.  </li>
+</ol>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../quickstart_tbg/" class="btn btn-neutral float-left" title="Quickstart TBG in 5 Minutes"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../obc_vs_pbc/" class="btn btn-neutral float-right" title="Simulating Lattices in Open vs. Periodic Boundary Conditions">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/jabed-umar/MoirePy" class="fa fa-code-fork" style="color: #fcfcfc"> jabed-umar/MoirePy</a>
+        </span>
+    
+    
+      <span><a href="../quickstart_tbg/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../obc_vs_pbc/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

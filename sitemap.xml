@@ -2,58 +2,62 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://jabed-umar.github.io/MoirePy/</loc>
-         <lastmod>2025-06-24</lastmod>
+         <lastmod>2026-02-20</lastmod>
     </url>
     <url>
          <loc>https://jabed-umar.github.io/MoirePy/examples/</loc>
-         <lastmod>2025-06-24</lastmod>
+         <lastmod>2026-02-20</lastmod>
     </url>
     <url>
          <loc>https://jabed-umar.github.io/MoirePy/api/layers/</loc>
-         <lastmod>2025-06-24</lastmod>
+         <lastmod>2026-02-20</lastmod>
     </url>
     <url>
          <loc>https://jabed-umar.github.io/MoirePy/api/moire/</loc>
-         <lastmod>2025-06-24</lastmod>
+         <lastmod>2026-02-20</lastmod>
     </url>
     <url>
          <loc>https://jabed-umar.github.io/MoirePy/api/utils/</loc>
-         <lastmod>2025-06-24</lastmod>
+         <lastmod>2026-02-20</lastmod>
     </url>
     <url>
-         <loc>https://jabed-umar.github.io/MoirePy/getting_started/gs_intro/</loc>
-         <lastmod>2025-06-24</lastmod>
+         <loc>https://jabed-umar.github.io/MoirePy/getting_started/custom_hoppings/</loc>
+         <lastmod>2026-02-20</lastmod>
     </url>
     <url>
-         <loc>https://jabed-umar.github.io/MoirePy/getting_started/installation/</loc>
-         <lastmod>2025-06-24</lastmod>
+         <loc>https://jabed-umar.github.io/MoirePy/getting_started/k_space_hamiltonian/</loc>
+         <lastmod>2026-02-20</lastmod>
     </url>
     <url>
-         <loc>https://jabed-umar.github.io/MoirePy/getting_started/moire_lattice_and_hamiltonian/</loc>
-         <lastmod>2025-06-24</lastmod>
+         <loc>https://jabed-umar.github.io/MoirePy/getting_started/obc_vs_pbc/</loc>
+         <lastmod>2026-02-20</lastmod>
     </url>
     <url>
          <loc>https://jabed-umar.github.io/MoirePy/getting_started/prepare_layers/</loc>
-         <lastmod>2025-06-24</lastmod>
+         <lastmod>2026-02-20</lastmod>
+    </url>
+    <url>
+         <loc>https://jabed-umar.github.io/MoirePy/getting_started/quickstart_tbg/</loc>
+         <lastmod>2026-02-20</lastmod>
     </url>
     <url>
          <loc>https://jabed-umar.github.io/MoirePy/theory/angle_calculation_process/</loc>
-         <lastmod>2025-06-24</lastmod>
+         <lastmod>2026-02-20</lastmod>
     </url>
     <url>
          <loc>https://jabed-umar.github.io/MoirePy/theory/avc/</loc>
-         <lastmod>2025-06-24</lastmod>
+         <lastmod>2026-02-20</lastmod>
     </url>
     <url>
          <loc>https://jabed-umar.github.io/MoirePy/theory/search_algorithm_kdtree/</loc>
-         <lastmod>2025-06-24</lastmod>
+         <lastmod>2026-02-20</lastmod>
     </url>
     <url>
          <loc>https://jabed-umar.github.io/MoirePy/theory/theory_intro/</loc>
-         <lastmod>2025-06-24</lastmod>
+         <lastmod>2026-02-20</lastmod>
     </url>
     <url>
          <loc>https://jabed-umar.github.io/MoirePy/theory/tight_binding_ham/</loc>
-         <lastmod>2025-06-24</lastmod>
+         <lastmod>2026-02-20</lastmod>
     </url>
 </urlset>

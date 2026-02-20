@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://jabed-umar.github.io/MoirePy/getting_started/quickstart_tbg/" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Quickstart TBG in 5 Minutes - MoirePy – Python Library for Moiré Lattice Simulation</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
+        <link href="../../assets/style.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Quickstart TBG in 5 Minutes";
+        var mkdocs_page_input_path = "getting_started/quickstart_tbg.md";
+        var mkdocs_page_url = "/MoirePy/getting_started/quickstart_tbg/";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> MoirePy – Python Library for Moiré Lattice Simulation
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Getting Started</span></p>
+              <ul class="current">
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Quickstart TBG in 5 Minutes</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#1-minimal-installation">1. Minimal Installation</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#2-construct-the-moire-lattice">2. Construct the Moire Lattice</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#3-generate-the-hamiltonian">3. Generate the Hamiltonian</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#real-space-hamiltonian">Real-Space Hamiltonian</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#k-space-hamiltonian">k-Space Hamiltonian</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#4-compute-low-energy-states">4. Compute Low-Energy States</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#the-getting-started-roadmap">The "Getting Started" Roadmap</a>
+    </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../k_space_hamiltonian/">K-Space Hamiltonian Generation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../obc_vs_pbc/">Simulating Lattices in Open vs. Periodic Boundary Conditions</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../prepare_layers/">Defining Custom Layers</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../custom_hoppings/">Designing Custom Hopping</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Tutorials and Benchmarks</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../examples/">Tutorials and Replicated Papers</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="../../benchmarks.md">Benchmarks and Performance Tips</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Theory</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../theory/theory_intro/">Theoretical Background</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../theory/tight_binding_ham/">Tight Binding Formulation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../theory/search_algorithm_kdtree/">Searching Algorithm & KDTree</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../theory/angle_calculation_process/">Angle Calculation Logic</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../theory/avc/">Angle Value Calculator</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">API Reference</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/layers/">Layers</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/moire/">Moire</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/utils/">Utils</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">MoirePy – Python Library for Moiré Lattice Simulation</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Getting Started</li>
+      <li class="breadcrumb-item active">Quickstart TBG in 5 Minutes</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/jabed-umar/MoirePy/edit/master/docs/getting_started/quickstart_tbg.md">Edit on jabed-umar/MoirePy</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="quickstart-twisted-bilayer-graphene-in-5-minutes">Quickstart: Twisted Bilayer Graphene in 5 Minutes</h1>
+<p>In this tutorial, you will simulate <strong>Twisted Bilayer Graphene (TBG)</strong> from scratch. MoirePy abstracts the geometric complexity of commensurate lattice construction, allowing you to go from a twist angle to a Hamiltonian in seconds.</p>
+<hr />
+<h2 id="1-minimal-installation">1. Minimal Installation</h2>
+<div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>moirepy
+</code></pre></div>
+<hr />
+<h2 id="2-construct-the-moire-lattice">2. Construct the Moire Lattice</h2>
+<p>We use the built-in <code>HexagonalLayer</code> (Graphene) to construct the bilayer. While this example focuses on graphene, MoirePy includes several other built-in geometries:</p>
+<ul>
+<li><strong><code>SquareLayer</code></strong></li>
+<li><strong><code>TriangularLayer</code></strong></li>
+<li><strong><code>KagomeLayer</code></strong></li>
+<li><strong><code>Rhombus60Layer</code></strong></li>
+</ul>
+<p>You can also define your own entirely unique geometries; see <a href="../prepare_layers/">Defining Custom Layers</a> for more.</p>
+<p><div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">moirepy</span><span class="w"> </span><span class="kn">import</span> <span class="n">BilayerMoireLattice</span><span class="p">,</span> <span class="n">HexagonalLayer</span>
+
+<span class="c1"># Define a commensurate TBG lattice</span>
+<span class="n">lattice</span> <span class="o">=</span> <span class="n">BilayerMoireLattice</span><span class="p">(</span>
+    <span class="n">latticetype</span><span class="o">=</span><span class="n">HexagonalLayer</span><span class="p">,</span>
+    <span class="c1"># Indices for a ~9.43 degree twist</span>
+    <span class="c1"># Find these via our tool: https://jabed-umar.github.io/MoirePy/theory/avc/</span>
+    <span class="n">ll1</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">ll2</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">ul1</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">ul2</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> 
+    <span class="n">n1</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">n2</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>    <span class="c1"># Number of moiré unit cells</span>
+    <span class="n">pbc</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>      <span class="c1"># Periodic Boundary Conditions, set False for OBC</span>
+    <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span>   <span class="c1"># Displays twist angle and atom counts</span>
+<span class="p">)</span>
+
+<span class="c1"># Visualize the atomistic structure</span>
+<span class="n">lattice</span><span class="o">.</span><span class="n">plot_lattice</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div>
+<img alt="TBG Lattice Visualization" src="../../images/getting_started/quickstart_tbg/1.webp" style="max-width: 50%;" /></p>
+<hr />
+<h2 id="3-generate-the-hamiltonian">3. Generate the Hamiltonian</h2>
+<p>MoirePy separates <strong>geometry</strong> (KDTree-based neighbor search) from <strong>physics</strong> (hopping values). You can pass constants or custom functions for every term.</p>
+<h3 id="real-space-hamiltonian">Real-Space Hamiltonian</h3>
+<p>Ideal for studying local defects or large-scale samples under <strong>Open Boundary Conditions (OBC)</strong>.</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Returns a scipy.sparse.csc_matrix</span>
+<span class="n">ham</span> <span class="o">=</span> <span class="n">lattice</span><span class="o">.</span><span class="n">generate_hamiltonian</span><span class="p">(</span>
+    <span class="n">tll</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>      <span class="c1"># Lower-layer intra-layer hopping</span>
+    <span class="n">tuu</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>      <span class="c1"># Upper-layer intra-layer hopping</span>
+    <span class="n">tul</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>      <span class="c1"># Inter-layer hopping (Upper -&gt; Lower)</span>
+    <span class="n">tlu</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>      <span class="c1"># Inter-layer hopping (Lower -&gt; Upper)</span>
+    <span class="n">tlself</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>   <span class="c1"># Lower-layer onsite potential</span>
+    <span class="n">tuself</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>   <span class="c1"># Upper-layer onsite potential</span>
+    <span class="n">inter_layer_radius</span><span class="o">=</span><span class="mi">3</span> <span class="c1"># Cut-off circle for interlayer search</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Hamiltonian Dimension: </span><span class="si">{</span><span class="n">ham</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="c1"># Output: Hamiltonian Dimension: (148, 148)</span>
+</code></pre></div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>For a Hermitian system, ensure that your <code>tlu</code> function/value is the complex conjugate of <code>tul</code>. MoirePy does not enforce this automatically by design.</p>
+</div>
+<!-- > [!WARNING]
+> For a Hermitian system, ensure that your `tlu` function/value is the complex conjugate of `tul`. MoirePy does not enforce this automatically by design. -->
+
+<h3 id="k-space-hamiltonian">k-Space Hamiltonian</h3>
+<p>Essential for band structure calculations. Switching to momentum space requires no structural changes to your logic.</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># k-point at the Gamma point (0, 0)</span>
+<span class="n">kham</span> <span class="o">=</span> <span class="n">lattice</span><span class="o">.</span><span class="n">generate_k_space_hamiltonian</span><span class="p">(</span>
+    <span class="n">k</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]),</span>
+    <span class="n">tll</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">tuu</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> 
+    <span class="n">tul</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">tlu</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> 
+    <span class="n">tlself</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">tuself</span><span class="o">=</span><span class="mf">0.0</span>
+<span class="p">)</span>
+</code></pre></div>
+<hr />
+<h2 id="4-compute-low-energy-states">4. Compute Low-Energy States</h2>
+<p>Because the Hamiltonian is returned as a standard SciPy sparse matrix, it integrates perfectly with the scientific Python ecosystem.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">scipy.sparse.linalg</span><span class="w"> </span><span class="kn">import</span> <span class="n">eigsh</span>
+
+<span class="c1"># Find the 20 eigenvalues closest to zero</span>
+<span class="n">eigenvalues</span> <span class="o">=</span> <span class="n">eigsh</span><span class="p">(</span><span class="n">ham</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s1">&#39;LM&#39;</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">return_eigenvectors</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">eigenvalues</span><span class="p">)),</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">eigenvalues</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Energy (t)&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Low-energy spectrum near Fermi level&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div>
+<p><img alt="Low-Energy Spectrum" src="../../images/getting_started/quickstart_tbg/2.webp" /></p>
+<hr />
+<h2 id="the-getting-started-roadmap">The "Getting Started" Roadmap</h2>
+<p>Now that you've built your first lattice, dive deeper into the core mechanics:</p>
+<ol>
+<li><strong><a href="../k_space_hamiltonian/">K-Space &amp; Band Structures</a></strong>: How to generate k-space Hamiltonians and compute band structures.</li>
+<li><strong><a href="../obc_vs_pbc/">OBC vs PBC</a></strong>: How we can simulate both infinite and finite systems using PBC and OBC respectively.</li>
+<li><strong><a href="../prepare_layers/">Defining Custom Layers</a></strong>: Move beyond graphene to MoS2, Square lattices, or Kagome.</li>
+<li><strong><a href="../custom_hoppings/">Designing Custom Hopping</a></strong>: How to implement distance-dependent (exponential) hopping or strain.</li>
+<li><strong><a href="../../examples/">Tutorials and Replicated Papers</a></strong>: See full physical results.</li>
+</ol>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../.." class="btn btn-neutral float-left" title="Home"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../k_space_hamiltonian/" class="btn btn-neutral float-right" title="K-Space Hamiltonian Generation">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/jabed-umar/MoirePy" class="fa fa-code-fork" style="color: #fcfcfc"> jabed-umar/MoirePy</a>
+        </span>
+    
+    
+      <span><a href="../.." style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../k_space_hamiltonian/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://jabed-umar.github.io/MoirePy/getting_started/obc_vs_pbc/" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Simulating Lattices in Open vs. Periodic Boundary Conditions - MoirePy – Python Library for Moiré Lattice Simulation</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
+        <link href="../../assets/style.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Simulating Lattices in Open vs. Periodic Boundary Conditions";
+        var mkdocs_page_input_path = "getting_started/obc_vs_pbc.md";
+        var mkdocs_page_url = "/MoirePy/getting_started/obc_vs_pbc/";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> MoirePy – Python Library for Moiré Lattice Simulation
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Getting Started</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../quickstart_tbg/">Quickstart TBG in 5 Minutes</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../k_space_hamiltonian/">K-Space Hamiltonian Generation</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Simulating Lattices in Open vs. Periodic Boundary Conditions</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#1-physical-difference-bulk-vs-flake">1. Physical Difference: Bulk vs. Flake</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#2-minimal-setup">2. Minimal Setup</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#3-hamiltonian-and-connectivity">3. Hamiltonian and Connectivity</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#4-visual-comparison-hamiltonian-structure">4. Visual Comparison (Hamiltonian Structure)</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#5-spectrum-comparison">5. Spectrum Comparison</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#what-we-did">What We Did</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#next-steps">Next Steps</a>
+    </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../prepare_layers/">Defining Custom Layers</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../custom_hoppings/">Designing Custom Hopping</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Tutorials and Benchmarks</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../examples/">Tutorials and Replicated Papers</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="../../benchmarks.md">Benchmarks and Performance Tips</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Theory</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../theory/theory_intro/">Theoretical Background</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../theory/tight_binding_ham/">Tight Binding Formulation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../theory/search_algorithm_kdtree/">Searching Algorithm & KDTree</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../theory/angle_calculation_process/">Angle Calculation Logic</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../theory/avc/">Angle Value Calculator</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">API Reference</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/layers/">Layers</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/moire/">Moire</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../api/utils/">Utils</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">MoirePy – Python Library for Moiré Lattice Simulation</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Getting Started</li>
+      <li class="breadcrumb-item active">Simulating Lattices in Open vs. Periodic Boundary Conditions</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/jabed-umar/MoirePy/edit/master/docs/getting_started/obc_vs_pbc.md">Edit on jabed-umar/MoirePy</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="simulating-lattices-obc-vs-pbc">Simulating Lattices: OBC vs. PBC</h1>
+<p>In this section, you will learn how to simulate both <strong>Periodic Boundary Conditions (PBC)</strong> and <strong>Open Boundary Conditions (OBC)</strong> using MoirePy. Understanding the transition between these two is vital for distinguishing between bulk properties and edge-specific phenomena.</p>
+<hr />
+<h2 id="1-physical-difference-bulk-vs-flake">1. Physical Difference: Bulk vs. Flake</h2>
+<ul>
+<li><strong>PBC (<code>pbc=True</code>)</strong>: Represents an <strong>infinite periodic system</strong>. Atoms at the boundary "wrap around" to connect with atoms on the opposite side of the moiré unit cell, simulating an endless bulk material.</li>
+<li><strong>OBC (<code>pbc=False</code>)</strong>: Represents a <strong>finite flake or nanostructure</strong>. Atoms at the boundaries have fewer neighbors because the lattice physically ends, creating edges.</li>
+</ul>
+<hr />
+<h2 id="2-minimal-setup">2. Minimal Setup</h2>
+<p>We define the same lattice geometry once, toggling only the <code>pbc</code> flag to see how it changes the connectivity.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">moirepy</span><span class="w"> </span><span class="kn">import</span> <span class="n">BilayerMoireLattice</span><span class="p">,</span> <span class="n">HexagonalLayer</span>
+
+<span class="c1"># Parameters for a ~9.43 degree twist</span>
+<span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;latticetype&quot;</span><span class="p">:</span> <span class="n">HexagonalLayer</span><span class="p">,</span>
+    <span class="s2">&quot;ll1&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;ll2&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s2">&quot;ul1&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s2">&quot;ul2&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+    <span class="s2">&quot;n1&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;n2&quot;</span><span class="p">:</span> <span class="mi">1</span>
+<span class="p">}</span>  <span class="c1"># yes, u can do this in python</span>
+
+<span class="c1"># 1. Open Boundary Conditions (Finite Flake)</span>
+<span class="n">lattice_obc</span> <span class="o">=</span> <span class="n">BilayerMoireLattice</span><span class="p">(</span><span class="o">**</span><span class="n">params</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1"># 2. Periodic Boundary Conditions (Infinite Bulk)</span>
+<span class="n">lattice_pbc</span> <span class="o">=</span> <span class="n">BilayerMoireLattice</span><span class="p">(</span><span class="o">**</span><span class="n">params</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</code></pre></div>
+<hr />
+<h2 id="3-hamiltonian-and-connectivity">3. Hamiltonian and Connectivity</h2>
+<p>The internal logic for finding neighbors changes significantly. In PBC, MoirePy uses a <strong>KDTree</strong> on a set of "ghost" atoms (bigger lattice) to ensure that atoms near the edge find their counterparts on the other side.</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Generate Hamiltonians with identical hopping parameters</span>
+<span class="n">ham_obc</span> <span class="o">=</span> <span class="n">lattice_obc</span><span class="o">.</span><span class="n">generate_hamiltonian</span><span class="p">(</span><span class="n">tll</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">tuu</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">tul</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">tlu</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="n">ham_pbc</span> <span class="o">=</span> <span class="n">lattice_pbc</span><span class="o">.</span><span class="n">generate_hamiltonian</span><span class="p">(</span><span class="n">tll</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">tuu</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">tul</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">tlu</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;OBC Non-zero entries: </span><span class="si">{</span><span class="n">ham_obc</span><span class="o">.</span><span class="n">nnz</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># 6062</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;PBC Non-zero entries: </span><span class="si">{</span><span class="n">ham_pbc</span><span class="o">.</span><span class="n">nnz</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># 9728</span>
+</code></pre></div>
+<div class="admonition info automatic neighbor wrapping">
+<p class="admonition-title">Info</p>
+<p>In <strong>PBC</strong>, an atom at the far right edge connects to a neighbor at the far left edge. MoirePy handles this mapping automatically. You don't need to manually calculate wrapped coordinates. This results in a higher number of non-zero entries (<code>nnz</code>) in the PBC Hamiltonian.</p>
+</div>
+<hr />
+<h2 id="4-visual-comparison-hamiltonian-structure">4. Visual Comparison (Hamiltonian Structure)</h2>
+<p>Let's plot the hamiltonian matrices and let's see how they look like:</p>
+<div class="highlight"><pre><span></span><code><span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">ham_obc</span><span class="o">.</span><span class="n">toarray</span><span class="p">(),</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;gray&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">ham_pbc</span><span class="o">.</span><span class="n">toarray</span><span class="p">(),</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;gray&quot;</span><span class="p">)</span>
+</code></pre></div>
+<p><img alt="Hamiltonians" src="../../images/getting_started/obc_vs_pbc/1.webp" /></p>
+<hr />
+<h2 id="5-spectrum-comparison">5. Spectrum Comparison</h2>
+<p>The choice of boundary conditions significantly affects the energy eigenvalues. OBC introduces "edge states" that may appear in gaps where the bulk (PBC) system has no states.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">scipy.sparse.linalg</span><span class="w"> </span><span class="kn">import</span> <span class="n">eigsh</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">get_spectrum</span><span class="p">(</span><span class="n">ham</span><span class="p">):</span>
+    <span class="c1"># Get 100 eigenvalues near zero energy</span>
+    <span class="n">vals</span> <span class="o">=</span> <span class="n">eigsh</span><span class="p">(</span><span class="n">ham</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s1">&#39;LM&#39;</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">return_eigenvectors</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">vals</span><span class="p">)</span>
+
+<span class="n">spec_obc</span> <span class="o">=</span> <span class="n">get_spectrum</span><span class="p">(</span><span class="n">ham_obc</span><span class="p">)</span>
+<span class="n">spec_pbc</span> <span class="o">=</span> <span class="n">get_spectrum</span><span class="p">(</span><span class="n">ham_pbc</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">spec_obc</span><span class="p">,</span> <span class="s1">&#39;ro&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;OBC (Edges)&#39;</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">spec_pbc</span><span class="p">,</span> <span class="s1">&#39;k.&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;PBC (Bulk)&#39;</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Energy&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Spectrum Comparison&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div>
+<p><img alt="Spectrum Comparison" src="../../images/getting_started/obc_vs_pbc/2.webp" /></p>
+<hr />
+<h2 id="what-we-did">What We Did</h2>
+<ul>
+<li>Constructed the same lattice with OBC and PBC  </li>
+<li>Observed how connectivity changes at the boundaries  </li>
+<li>Compared Hamiltonians and resulting spectra  </li>
+</ul>
+<p>This demonstrates how boundary conditions control whether you simulate a finite system or an infinite periodic system.</p>
+<hr />
+<h2 id="next-steps">Next Steps</h2>
+<ol>
+<li><strong><a href="../k_space_hamiltonian/">K-Space &amp; Band Structures</a></strong>: Work in momentum space for periodic systems.  </li>
+<li><strong><a href="../prepare_layers/">Defining Custom Layers</a></strong>: Build your own lattice geometries.  </li>
+<li><strong><a href="../custom_hoppings/">Designing Custom Hopping</a></strong>: Add realistic physics.  </li>
+<li><strong><a href="../../examples/">Tutorials and Replicated Papers</a></strong>: See full physical results.  </li>
+</ol>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../k_space_hamiltonian/" class="btn btn-neutral float-left" title="K-Space Hamiltonian Generation"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../prepare_layers/" class="btn btn-neutral float-right" title="Defining Custom Layers">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/jabed-umar/MoirePy" class="fa fa-code-fork" style="color: #fcfcfc"> jabed-umar/MoirePy</a>
+        </span>
+    
+    
+      <span><a href="../k_space_hamiltonian/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../prepare_layers/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

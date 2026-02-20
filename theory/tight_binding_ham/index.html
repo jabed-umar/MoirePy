@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://jabed-umar.github.io/MoirePy/theory/tight_binding_ham/" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>Tight Binding Moiré Hamiltonian - MoirePy – Python Library for Moiré Lattice Simulation</title>
+    <title>Tight Binding Formulation - MoirePy – Python Library for Moiré Lattice Simulation</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
@@ -14,7 +14,7 @@
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Tight Binding Moir\u00e9 Hamiltonian";
+        var mkdocs_page_name = "Tight Binding Formulation";
         var mkdocs_page_input_path = "theory/tight_binding_ham.md";
         var mkdocs_page_url = "/MoirePy/theory/tight_binding_ham/";
       </script>
@@ -47,28 +47,35 @@
               </ul>
               <p class="caption"><span class="caption-text">Getting Started</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/gs_intro/">Getting Started</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/quickstart_tbg/">Quickstart TBG in 5 Minutes</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/installation/">Installation</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/k_space_hamiltonian/">K-Space Hamiltonian Generation</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/prepare_layers/">Prepare Layers</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/obc_vs_pbc/">Simulating Lattices in Open vs. Periodic Boundary Conditions</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/moire_lattice_and_hamiltonian/">Moiré Lattice and Hamiltonian</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/prepare_layers/">Defining Custom Layers</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../examples/">EXAMPLE NOTEBOOKS</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../getting_started/custom_hoppings/">Designing Custom Hopping</a>
                   </li>
               </ul>
-              <p class="caption"><span class="caption-text">Theoretical Background</span></p>
+              <p class="caption"><span class="caption-text">Tutorials and Benchmarks</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../examples/">Tutorials and Replicated Papers</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="../../benchmarks.md">Benchmarks and Performance Tips</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Theory</span></p>
               <ul class="current">
                   <li class="toctree-l1"><a class="reference internal" href="../theory_intro/">Theoretical Background</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Tight Binding Moiré Hamiltonian</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Tight Binding Formulation</a>
     <ul class="current">
     </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../search_algorithm_kdtree/">Searching Algorithm & KDTree</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../angle_calculation_process/">Angle Calculation Process</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../angle_calculation_process/">Angle Calculation Logic</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../avc/">Angle Value Calculator</a>
                   </li>
@@ -96,8 +103,8 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
-          <li class="breadcrumb-item">Theoretical Background</li>
-      <li class="breadcrumb-item active">Tight Binding Moiré Hamiltonian</li>
+          <li class="breadcrumb-item">Theory</li>
+      <li class="breadcrumb-item active">Tight Binding Formulation</li>
     <li class="wy-breadcrumbs-aside">
           <a href="https://github.com/jabed-umar/MoirePy/edit/master/docs/theory/tight_binding_ham.md">Edit on jabed-umar/MoirePy</a>
     </li>
@@ -108,14 +115,14 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="tight-binding-moire-hamiltonian-construction">Tight Binding Moiré Hamiltonian Construction</h1>
-<p>The <strong>tight-binding Hamiltonian</strong> <sup id="fnref:ashcroft1976"><a class="footnote-ref" href="#fn:ashcroft1976">1</a></sup> is a widely used model in solid-state physics and quantum chemistry to describe the electronic structure of solids — especially in crystals and layered materials. In this model, electrons are considered <em>localized</em> around atomic sites but can <em>hop</em> to neighbouring atoms. To describe such a Hamiltonian for a <strong>Moiré system</strong>, we use the second quantized <sup id="fnref:bruus2004"><a class="footnote-ref" href="#fn:bruus2004">2</a></sup> form:  </p>
+<p>The <strong>tight-binding Hamiltonian</strong> <sup id="fnref:ashcroft1976"><a class="footnote-ref" href="#fn:ashcroft1976">1</a></sup> is a widely used model in solid-state physics and quantum chemistry to describe the electronic structure of solids, specially in crystals and layered materials. In this model, electrons are considered <em>localized</em> around atomic sites but can <em>hop</em> to neighbouring atoms. To describe such a Hamiltonian for a <strong>Moiré system</strong>, we use the second quantized <sup id="fnref:bruus2004"><a class="footnote-ref" href="#fn:bruus2004">2</a></sup> form:  </p>
 <div class="arithmatex">\[
 H = \sum_{\alpha, \beta;\, r,r' \in L} t^1_{rr', \alpha\beta}c^{\dagger}_{r,\beta}c_{r',\alpha} 
 + \sum_{\alpha, \beta;\, r,r' \in U} t^2_{rr', \alpha\beta}d^{\dagger}_{r,\beta}d_{r',\alpha} 
 + \sum_{\alpha, \beta;\, r,r'} t^{\perp}_{rr', \alpha\beta}c^{\dagger}_{r,\beta}d_{r',\alpha} + \text{h.c.}
 \]</div>
 <p>Here, <span class="arithmatex">\(c^{\dagger}_{r,\beta}\)</span> and <span class="arithmatex">\(c_{r',\alpha}\)</span> denote the electron creation and annihilation operators at lattice sites <span class="arithmatex">\(r\)</span> and <span class="arithmatex">\(r'\)</span> in the <strong>lower layer</strong> (<span class="arithmatex">\(L\)</span>), associated with orbitals <span class="arithmatex">\(\beta\)</span> and <span class="arithmatex">\(\alpha\)</span>, respectively. Likewise, <span class="arithmatex">\(d^{\dagger}_{r,\beta}\)</span> and <span class="arithmatex">\(d_{r',\alpha}\)</span> are the corresponding operators in the <strong>upper layer</strong> (<span class="arithmatex">\(U\)</span>).</p>
-<p>The terms <span class="arithmatex">\(t^1_{rr', \alpha\beta}\)</span> and <span class="arithmatex">\(t^2_{rr', \alpha\beta}\)</span> represent the <em>intralayer hopping amplitudes</em>, describing electron tunneling from orbital <span class="arithmatex">\(\alpha\)</span> at site <span class="arithmatex">\(r'\)</span> to orbital <span class="arithmatex">\(\beta\)</span> at site <span class="arithmatex">\(r\)</span> within the lower and upper layers, respectively. In the special case where <span class="arithmatex">\(r = r'\)</span> and <span class="arithmatex">\(\alpha = \beta\)</span>, these terms correspond to the <em>on-site potential</em>—the energy of an electron residing in a particular orbital. The <em>interlayer coupling</em> is described by <span class="arithmatex">\(t^{\perp}_{rr', \alpha\beta}\)</span>, which governs the hopping of an electron from orbital <span class="arithmatex">\(\alpha\)</span> at site <span class="arithmatex">\(r'\)</span> in the upper layer to orbital <span class="arithmatex">\(\beta\)</span> at site <span class="arithmatex">\(r\)</span> in the lower layer.</p>
+<p>The terms <span class="arithmatex">\(t^1_{rr', \alpha\beta}\)</span> and <span class="arithmatex">\(t^2_{rr', \alpha\beta}\)</span> represent the <em>intralayer hopping amplitudes</em>, describing electron tunneling from orbital <span class="arithmatex">\(\alpha\)</span> at site <span class="arithmatex">\(r'\)</span> to orbital <span class="arithmatex">\(\beta\)</span> at site <span class="arithmatex">\(r\)</span> within the lower and upper layers, respectively. In the special case where <span class="arithmatex">\(r = r'\)</span> and <span class="arithmatex">\(\alpha = \beta\)</span>, these terms correspond to the <em>on-site potential</em>, the energy of an electron residing in a particular orbital. The <em>interlayer coupling</em> is described by <span class="arithmatex">\(t^{\perp}_{rr', \alpha\beta}\)</span>, which governs the hopping of an electron from orbital <span class="arithmatex">\(\alpha\)</span> at site <span class="arithmatex">\(r'\)</span> in the upper layer to orbital <span class="arithmatex">\(\beta\)</span> at site <span class="arithmatex">\(r\)</span> in the lower layer.</p>
 <p>For simplicity, consider only <strong>nearest-neighbour hopping</strong> with a single orbital per site (<strong>MoirePy</strong> can handle any arbitrary number of orbital systems). In such cases, the orbital indices <span class="arithmatex">\( \alpha \)</span> and <span class="arithmatex">\( \beta \)</span> can be omitted to simplify the notation. We can define the basis as:</p>
 <div class="arithmatex">\[
 \Psi^{\dagger} = (c^{\dagger}_{1}, c^{\dagger}_{2}, \dots, c^{\dagger}_{n}, d^{\dagger}_{1}, d^{\dagger}_{2}, \dots, d^{\dagger}_{n})
