@@ -65,7 +65,7 @@
 
 # Angle Value Calculator
 
-The **Moiré Angle Calculator** finds all possible commensurate angles between two stacked lattices by trimming both layers within a given radius and checking for periodic overlaps following the [Angle Calculation Process](angle_calculation_process.md). After calculation, it provides a list of angles with their corresponding `ll1`, `ll2`, `ul1`, `ul2` values that define the rotation between the two lattices along with the number of points in each cell of the Moiré lattice. Since most angles are irrational and can't be precisely represented, the rotation is defined using these coordinate pairs instead — they mark the overlapping points between the two lattices. Once you've selected an angle from the list, just copy the `ll1`, `ll2`, `ul1`, and `ul2` values into your code — the system will figure out the exact rotation angle from that. This also makes it easy to calculate the moire lattice vectors.
+The **Moiré Angle Calculator** finds all possible commensurate angles between two stacked lattices by trimming both layers within a given radius and checking for periodic overlaps following the [Angle Calculation Process](angle_calculation_process.md). After calculation, it provides a list of angles with their corresponding `ll1`, `ll2`, `ul1`, `ul2` values that define the rotation between the two lattices along with the number of points in each cell of the Moiré lattice. Since most angles are irrational and can't be precisely represented, the rotation is defined using these coordinate pairs instead, they mark the overlapping points between the two lattices. Once you've selected an angle from the list, just copy the `ll1`, `ll2`, `ul1`, and `ul2` values into your code. The system will figure out the exact rotation angle from that. This also makes it easy to calculate the moire lattice vectors.
 
 
 ??? warning "Some Guidelines"
@@ -75,7 +75,7 @@ The **Moiré Angle Calculator** finds all possible commensurate angles between t
 
     - Both layers **60$^\circ$** (Triangular, Hexagonal and Kagome lattices)
     - Both layers **90$^\circ$** (Square lattice)
-    - **Custom mode** – *experimental*  
+    - **Custom mode** (*experimental*)
         
         *Possible problems*  
         - Erroneous or nonsensical output  

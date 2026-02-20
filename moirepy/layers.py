@@ -533,7 +533,7 @@ class Layer:  # parent class
 
         return query_indices, lattice_indices, neighbor_coords
 
-    def plot_lattice(self, plot_connections: bool = True, colours:list=["r", "g", "b", "c", "m", "y", "k"]) -> None:
+    def plot_lattice(self, plot_connections: bool = True, colours: list = ["r", "g", "b", "c", "m", "y", "k"]) -> None:
         """
         Plots the lattice points and optionally the connections between them and the unit cell structure.
 
@@ -644,7 +644,8 @@ class Rhombus60Layer(Layer):
         cos_angle = np.cos(np.radians(angle))
         sin_angle = np.sin(np.radians(angle))
         self.lv2 = np.array([cos_angle, sin_angle])  # Lattice vector at specified angle
-        self.lattice_points = np.array(
+        # single lattice point stored as a tuple of lists for consistency
+        self.lattice_points = (
             [0, 0, "A"],
         )
         self.neighbours = {

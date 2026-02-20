@@ -44,8 +44,7 @@ lattice = BilayerMoireLattice(
 lattice.plot_lattice()
 plt.show()
 ```
-
-![TBG Lattice Visualization](../images/getting_started/quickstart_tbg/1.webp)
+![TBG Lattice Visualization](../images/getting_started/quickstart_tbg/1.webp){: style="max-width: 50%;" }
 
 ---
 
@@ -104,11 +103,12 @@ Because the Hamiltonian is returned as a standard SciPy sparse matrix, it integr
 from scipy.sparse.linalg import eigsh
 
 # Find the 20 eigenvalues closest to zero
-eigenvalues = eigsh(ham, k=20, which='LM', sigma=0, return_eigenvectors=False)
+eigenvalues = eigsh(ham, k=50, which='LM', sigma=0, return_eigenvectors=False)
 
 plt.scatter(range(len(eigenvalues)), np.sort(eigenvalues), color='black')
 plt.ylabel("Energy (t)")
 plt.title("Low-energy spectrum near Fermi level")
+plt.show()
 ```
 
 ![Low-Energy Spectrum](../images/getting_started/quickstart_tbg/2.webp)
@@ -119,7 +119,8 @@ plt.title("Low-energy spectrum near Fermi level")
 
 Now that you've built your first lattice, dive deeper into the core mechanics:
 
-1. **[K-Space & Band Structures](k_space_hamiltonian.md)**: How to sweep the Brillouin zone.
-2. **[OBC vs PBC](obc_vs_pbc.md)**: Understanding how the KDTree handles periodic wrapping.
+1. **[K-Space & Band Structures](k_space_hamiltonian.md)**: How to generate k-space Hamiltonians and compute band structures.
+2. **[OBC vs PBC](obc_vs_pbc.md)**: How we can simulate both infinite and finite systems using PBC and OBC respectively.
 3. **[Defining Custom Layers](prepare_layers.md)**: Move beyond graphene to MoS2, Square lattices, or Kagome.
 4. **[Designing Custom Hopping](custom_hoppings.md)**: How to implement distance-dependent (exponential) hopping or strain.
+5. **[Tutorials and Replicated Papers](../examples.md)**: See full physical results.

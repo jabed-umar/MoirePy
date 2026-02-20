@@ -6,7 +6,7 @@
 
 # Angle Calculation Process
 
-When two single layers of a 2D material are stacked with a small misalignment, they produce a moiré pattern with a length scale much larger than the periodicity of either individual layer. At specific twist angles, this results in a ***commensurate moiré pattern***—a structure where atoms from one layer align exactly with those of the other.
+When two single layers of a 2D material are stacked with a small misalignment, they produce a moiré pattern with a length scale much larger than the periodicity of either individual layer. At specific twist angles, this results in a ***commensurate moiré pattern***; a structure where atoms from one layer align exactly with those of the other.
 
 In this section, we describe how **MoirePy** calculates the ***commensurate rotation angles*** between two lattices confined to a bounded region. The goal is to identify angles where the lattices align periodically, producing well-ordered moiré patterns that are physically observable.
 
@@ -184,4 +184,4 @@ We avoided solving Diophantine equations by leaning on geometry and symmetry:
 - Only overlapping radii are considered
 - Pairwise angle differences yield the commensurate angles
 
-This makes **MoirePy**’s angle detection both **fast and visual**, and opens up room for further optimizations or generalizations.
+This makes **MoirePy**'s angle detection both **fast and visual**, and opens up room for further optimizations or generalizations.

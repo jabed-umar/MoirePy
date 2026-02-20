@@ -5,8 +5,10 @@ import matplotlib.pyplot as plt
 from .utils import get_rotation_matrix, are_coeffs_integers
 
 class COOBuilder:
-    def __init__(self, rows=[], cols=[], data=[]):
-        self.rows, self.cols, self.data = rows, cols, data
+    def __init__(self, rows=None, cols=None, data=None):
+        self.rows = rows if rows is not None else []
+        self.cols = cols if cols is not None else []
+        self.data = data if data is not None else []
         assert len(self.rows) == len(self.cols) == len(self.data), "Initial rows, cols, and data must be of the same length."
 
     def add(self, r, c, val):
@@ -229,9 +231,15 @@ class BilayerMoireLattice:  # both layers same, only one point in one unit cell
         tlself: Union[float, int, Callable] = None,
         inter_layer_radius: float = 3.0,
         suppress_nxny_warning: bool = False,
+        suppress_pbc_warning: bool = False,
     ):
         if not suppress_nxny_warning and (self.n1 != 1 or self.n2 != 1):
-            print("WARNING: n1 or n2 != 1. Momentum space is usually for n1=n2=1.")
+            print("WARNING: n1 or n2 != 1. Momentum space is usually for n1=n2=1. Aborting mission. set suppress_nxny_warning=True to override this check.")
+            return
+
+        if not suppress_pbc_warning and not self.pbc:
+            print("WARNING: k-space generation is only physically meaningful with pbc=True. Aborting mission. set suppress_pbc_warning=True to override this check.")
+            return
 
         # Validate and convert inputs to callables
         tll, tuu, tlu, tul, tuself, tlself = self._validate_hamiltonian_inputs(

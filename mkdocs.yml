@@ -79,8 +79,6 @@ nav:
       - Utils: api/utils.md
 
 
-
-
 markdown_extensions:
   - footnotes
   - pymdownx.arithmatex:
@@ -88,6 +86,7 @@ markdown_extensions:
   - admonition
   - pymdownx.details
   - pymdownx.superfences
+  - attr_list
 
 extra_javascript:
   - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js

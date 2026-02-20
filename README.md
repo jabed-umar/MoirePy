@@ -69,7 +69,7 @@ print(ham.shape)
 
 ## Philosophy
 
-MoirePy does not try to enforce what is “physically valid”.
+MoirePy does not try to enforce what is "physically valid".
 
 If you want:
 
