@@ -26,6 +26,12 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Sync Cargo version with Tag
+        shell: bash
+        run: |
+          CLEAN_VERSION=$(echo "${{ github.ref_name }}" | sed 's/^v//')
+          sed -i "s/^version = .*/version = \"$CLEAN_VERSION\"/" Cargo.toml
+
       - name: Build wheels
         uses: PyO3/maturin-action@v1
         with:
