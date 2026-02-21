@@ -1,0 +1,49 @@
+[build-system]
+requires = ["maturin>=1.5,<2.0"]
+build-backend = "maturin"
+
+[project]
+name = "moirepy"
+description = "Simulate moire lattice systems in both real and momentum space and calculate various related observables."
+authors = [
+    { name = "Aritra Mukhopadhyay", email = "amukherjeeniser@gmail.com" },
+    { name = "Jabed Umar", email = "jabedumar12@gmail.com" }
+]
+license = { text = "MIT" }
+readme = "README.md"
+keywords = [
+    "python", "moire", "moiré", "moire lattice", "twistronics",
+    "bilayer graphene", "tight binding", "lattice simulation",
+    "physics", "material science", "condensed matter", "k-space", "real-space"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Education",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Education",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: Chemistry",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "Topic :: Scientific/Engineering :: Physics",
+]
+requires-python = ">=3.12"
+dynamic = ["version", "dependencies"]
+
+[project.urls]
+"Documentation" = "https://jabed-umar.github.io/MoirePy/"
+"Source Code" = "https://github.com/jabed-umar/MoirePy"
+"Bug Tracker" = "https://github.com/jabed-umar/MoirePy/issues"
+
+[tool.maturin]
+module-name = "moirepy._rust"
+features = ["pyo3/extension-module"]
+
+[tool.setuptools.dynamic]
+dependencies = { file = ["requirements.txt"] }
+

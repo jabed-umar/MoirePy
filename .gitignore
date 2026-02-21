@@ -12,3 +12,6 @@ site/
 
 *copy*
 
+old_docs
+target
+*.so

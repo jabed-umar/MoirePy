@@ -3,6 +3,7 @@ import numpy as np
 from .layers import Layer
 import matplotlib.pyplot as plt
 from .utils import get_rotation_matrix, are_coeffs_integers
+import moirepy_rust
 
 class COOBuilder:
     def __init__(self, rows=None, cols=None, data=None):
@@ -157,6 +158,8 @@ class BilayerMoireLattice:  # both layers same, only one point in one unit cell
         n_lower = len(self.lower_lattice.points)
         n_upper = len(self.upper_lattice.points)
         total_dim = (n_lower + n_upper) * k
+        
+        moirepy_rust.hello_world()
         
         tll, tuu, tlu, tul, tuself, tlself = self._validate_hamiltonian_inputs(tll, tuu, tlu, tul, tuself, tlself)
         builder = COOBuilder()

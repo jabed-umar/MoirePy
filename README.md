@@ -100,10 +100,10 @@ A detailed contributing guide will be added soon.
 If you use this work in research:
 
 ```bibtex
-@misc{MoirePy2025,
-  author = {Aritra Mukhopadhyay and Jabed Umar},
-  title = {MoirePy: Python package for efficient atomistic simulation of moiré lattices},
-  year = {2025},
-  url = {https://jabed-umar.github.io/MoirePy/}
+@software{MoirePy2025,
+  author = {Mukhopadhyay, Aritra and Umar, Jabed},
+  license = {MIT},
+  title = {{MoirePy: Python package for efficient atomistic simulation of moiré lattices}},
+  url = {https://github.com/jabed-umar/MoirePy}
 }
 ```

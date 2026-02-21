@@ -9,7 +9,7 @@ authors:
   - family-names: Umar
     given-names: Jabed
 
-version: "0.1.0"
+# version: "0.0.10"
 date-released: 2025
 
 url: "https://github.com/jabed-umar/MoirePy"
