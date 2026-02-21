@@ -13,12 +13,12 @@ jobs:
         include:
           - os: ubuntu-latest
             target: x86_64
-          # - os: ubuntu-latest
-          #   target: aarch64
-          # - os: windows-latest
-          #   target: x86_64
-          # - os: macos-latest
-          #   target: x86_64
+          - os: ubuntu-latest
+            target: aarch64
+          - os: windows-latest
+            target: x86_64
+          - os: macos-latest
+            target: x86_64
 
     steps:
       - name: Checkout code
@@ -46,12 +46,6 @@ jobs:
           target: ${{ matrix.target }}
           sdist: ${{ matrix.os == 'ubuntu-latest' && matrix.target == 'x86_64' }}
 
-      - name: Verify Wheel Filenames
-        shell: bash
-        run: |
-          echo "Listing generated files in dist/:"
-          ls -R dist/
-
       - name: Upload wheels as artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -70,10 +64,10 @@ jobs:
           merge-multiple: true
           path: dist
 
-      # - name: Publish to PyPI
-      #   uses: pypa/gh-action-pypi-publish@release/v1
-      #   with:
-      #     # password: ${{ secrets.PYPI_API_TOKEN }}
-      #     # Use your existing secrets
-      #     # user: ${{ secrets.PYPI_USERNAME }}
-      #     password: ${{ secrets.PYPI_PASSWORD }}
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          # password: ${{ secrets.PYPI_API_TOKEN }}
+          # Use your existing secrets
+          # user: ${{ secrets.PYPI_USERNAME }}
+          password: ${{ secrets.PYPI_PASSWORD }}
