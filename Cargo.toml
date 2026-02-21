@@ -1,6 +1,6 @@
 [package]
 name = "moirepy-rust"
-version = "0.1.0"
+version = "0.1.0"  # this needs to be in L3, don't move it, hardcoded in .github/workflows/pypi_publish.yaml
 edition = "2021"
 
 [lib]

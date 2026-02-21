@@ -24,19 +24,30 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # Essential for Maturin to see git history
+          fetch-depth: 0
 
       - name: Sync Cargo version with Tag
         shell: bash
         run: |
-          # v0.0.10 -> 0.0.10
-          CLEAN_VERSION=$(echo "${{ github.ref_name }}" | sed 's/^v//')
+          python3 -c "
+          import os
+          tag = os.getenv('GITHUB_REF_NAME', 'v0.0.0')
+          version = tag.lstrip('v')
           
-          # More robust sed: matches 'version =' with any number of spaces
-          sed -i "s/^version[[:space:]]*=[[:space:]]*\".*\"/version = \"$CLEAN_VERSION\"/" Cargo.toml
+          with open('Cargo.toml', 'r') as f:
+              lines = f.readlines()
+          
+          # We know version is on the 3rd line (index 2)
+          lines[2] = f'version = \"{version}\"\n'
+          
+          with open('Cargo.toml', 'w') as f:
+              f.writelines(lines)
+          
+          print(f'Cargo.toml synced to version: {version}')
+          "
           
           echo "Verified Version for Build: $CLEAN_VERSION"
-          grep "^version" Cargo.toml # Print to log to double-check the file was changed
+          grep "^version" Cargo.toml
 
       - name: Build wheels
         uses: PyO3/maturin-action@v1
