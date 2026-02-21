@@ -53,9 +53,9 @@ jobs:
         uses: PyO3/maturin-action@v1
         with:
           command: build
-          args: --release --out dist --find-interpreter
+          # We use a shell conditional to append --sdist ONLY for the x86_64 Linux runner
+          args: --release --out dist --find-interpreter ${{ (matrix.os == 'ubuntu-latest' && matrix.target == 'x86_64') && '--sdist' || '' }}
           target: ${{ matrix.target }}
-          sdist: ${{ matrix.os == 'ubuntu-latest' && matrix.target == 'x86_64' }}
 
       - name: Upload wheels as artifacts
         uses: actions/upload-artifact@v4
