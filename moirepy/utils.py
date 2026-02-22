@@ -45,3 +45,12 @@ def are_coeffs_integers(v1, v2, v3, tol=1e-8):
 
     ret = abs(a - round(a)) < tol and abs(b - round(b)) < tol
     return ret
+
+# class LatticeAlreadyFinalisedError(RuntimeError):
+class LatticeAlreadyFinalisedError(Exception):
+    def __init__(self, varname: str, classname: str):
+        message = (
+            f"Variable '{varname}' is not editable after creation."
+            f"Please make a new instance of {classname} instead."
+        )
+        super().__init__(message)

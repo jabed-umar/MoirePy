@@ -33,7 +33,13 @@ classifiers = [
     "Topic :: Scientific/Engineering :: Physics",
 ]
 requires-python = ">=3.12"
-dynamic = ["version", "dependencies"]
+dynamic = ["version"]
+dependencies = [
+    "numpy",
+    "scipy",
+    "matplotlib",
+    "tqdm",
+]
 
 [project.urls]
 "Documentation" = "https://jabed-umar.github.io/MoirePy/"
@@ -41,9 +47,12 @@ dynamic = ["version", "dependencies"]
 "Bug Tracker" = "https://github.com/jabed-umar/MoirePy/issues"
 
 [tool.maturin]
-module-name = "moirepy._rust"
+module-name = "moirepy.moirepy_rust"
 features = ["pyo3/extension-module"]
 
-[tool.setuptools.dynamic]
-dependencies = { file = ["requirements.txt"] }
-
+dependencies = [
+    "numpy",
+    "scipy",
+    "matplotlib",
+    "tqdm",
+]

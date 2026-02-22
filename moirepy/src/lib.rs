@@ -1,13 +1,11 @@
+pub mod utils;
+pub mod layers;
+pub mod moire;
+
 use pyo3::prelude::*;
 
-#[pyfunction]
-fn hello_world() -> PyResult<()> {
-    println!("Hello World from Rust!");
-    Ok(())
-}
-
 #[pymodule]
-fn moirepy_rust(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
-    m.add_function(wrap_pyfunction!(hello_world, m)?)?;
+fn moirepy_rust(m: &Bound<'_, PyModule>) -> PyResult<()> {
+    m.add_class::<layers::Layer>()?;
     Ok(())
 }

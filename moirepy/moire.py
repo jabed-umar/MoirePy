@@ -3,7 +3,7 @@ import numpy as np
 from .layers import Layer
 import matplotlib.pyplot as plt
 from .utils import get_rotation_matrix, are_coeffs_integers
-import moirepy_rust
+# import moirepy_rust
 
 class COOBuilder:
     def __init__(self, rows=None, cols=None, data=None):
@@ -93,9 +93,7 @@ class BilayerMoireLattice:  # both layers same, only one point in one unit cell
         if verbose:
             print(f"{len(self.upper_lattice.points)} cells in upper lattice")
             print(f"{len(self.lower_lattice.points)} cells in lower lattice")
-        assert len(self.lower_lattice.points) == len(self.upper_lattice.points), "FATAL ERROR: number of cells in lower and upper lattice are not equal, report and take different ll1, ll2, ul1, ul2 values"
-
-        # self.plot_lattice()
+        assert len(self.lower_lattice.points) == len(self.upper_lattice.points), "FATAL ERROR: number of cells in lower and upper lattice are not equal, report and try different ll1, ll2, ul1, ul2 values."
 
     def plot_lattice(self):
         mlv1 = self.mlv1
@@ -159,7 +157,7 @@ class BilayerMoireLattice:  # both layers same, only one point in one unit cell
         n_upper = len(self.upper_lattice.points)
         total_dim = (n_lower + n_upper) * k
         
-        moirepy_rust.hello_world()
+        # moirepy_rust.hello_world()
         
         tll, tuu, tlu, tul, tuself, tlself = self._validate_hamiltonian_inputs(tll, tuu, tlu, tul, tuself, tlself)
         builder = COOBuilder()

@@ -6,7 +6,7 @@ edition = "2021"
 [lib]
 # This name must match tool.maturin.module-name in pyproject.toml
 # except the module-name includes the package prefix
-name = "_rust"
+name = "moirepy_rust"
 crate-type = ["cdylib"]
 path = "moirepy/src/lib.rs"
 
@@ -16,7 +16,8 @@ path = "moirepy/src/lib.rs"
 pyo3 = { version = "0.23.4", features = ["extension-module", "abi3-py312"] }
 
 # numpy: allows zero-copy sharing of arrays between Rust and Python
-numpy = "0.23.0" 
+numpy = "0.23.0"
 
 # kiddo: high-performance KD-Tree for neighbor searching
-kiddo = "4.2.0"
+kiddo = "5.2.0"
+ndarray = "0.16.0"
