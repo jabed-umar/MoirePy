@@ -7,5 +7,6 @@ use pyo3::prelude::*;
 #[pymodule]
 fn moirepy_rust(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<layers::Layer>()?;
+    m.add_class::<moire::BilayerMoire>()?;
     Ok(())
 }
