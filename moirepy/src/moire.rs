@@ -1,10 +1,95 @@
-use std::ops::{Mul, AddAssign};
 use num_complex::Complex;
-use ndarray::{Array1, array};
+use ndarray::{Array1};
 use pyo3::prelude::*;
-use numpy::{PyReadonlyArray1, ToPyArray, PyArrayMethods, IntoPyArray, Element, PyArray1};
+use numpy::{PyReadonlyArray1,  IntoPyArray, Element, PyArray1};
 use crate::layers::Layer;
 use crate::utils::{COOBuilder, HoppingInstruction, SelfInstruction};
+
+trait Pushable<T> {
+    fn push_self(&self, builder: &mut COOBuilder<T>, inst: &SelfInstruction, off: i32, k: i32);
+    fn push_hop(&self, builder: &mut COOBuilder<T>, inst: &HoppingInstruction, r_off: i32, c_off: i32, k: i32);
+}
+
+impl<T: Copy> Pushable<T> for T {
+    fn push_self(&self, builder: &mut COOBuilder<T>, inst: &SelfInstruction, off: i32, k: i32) {
+        for &i in &inst.site_i {
+            // Fill the entire k x k block for this site
+            for row in 0..k {
+                for col in 0..k {
+                    builder.add(i * k + row + off, i * k + col + off, *self);
+                }
+            }
+        }
+    }
+
+    fn push_hop(&self, builder: &mut COOBuilder<T>, inst: &HoppingInstruction, r_off: i32, c_off: i32, k: i32) {
+        for (&i, &j) in inst.site_i.iter().zip(inst.site_j.iter()) {
+            // Fill the entire k x k block for this hopping pair
+            for row in 0..k {
+                for col in 0..k {
+                    builder.add(i * k + row + r_off, j * k + col + c_off, *self);
+                }
+            }
+        }
+    }
+}
+
+impl<T: Copy> Pushable<T> for Vec<T> {
+    fn push_self(&self, builder: &mut COOBuilder<T>, inst: &SelfInstruction, off: i32, k: i32) {
+        let k_sq = (k * k) as usize;
+        // Zip the site indices with k*k chunks of the flattened data
+        for (&i, block) in inst.site_i.iter().zip(self.chunks_exact(k_sq)) {
+            for row in 0..k {
+                for col in 0..k {
+                    let val = block[(row * k + col) as usize];
+                    // Self-energy can have off-diagonal orbital terms too!
+                    builder.add(i * k + row + off, i * k + col + off, val);
+                }
+            }
+        }
+    }
+
+    fn push_hop(&self, builder: &mut COOBuilder<T>, inst: &HoppingInstruction, r_off: i32, c_off: i32, k: i32) {
+        let k_sq = (k * k) as usize;
+        // Zip (i, j) pairs with k*k chunks of the flattened data
+        for ((&i, &j), block) in inst.site_i.iter().zip(inst.site_j.iter()).zip(self.chunks_exact(k_sq)) {
+            for row in 0..k {
+                for col in 0..k {
+                    let val = block[(row * k + col) as usize];
+                    builder.add(i * k + row + r_off, j * k + col + c_off, val);
+                }
+            }
+        }
+    }
+}
+
+
+#[derive(FromPyObject)]
+pub enum Input<T> {
+    Scalar(T),      // This variant catches a single value (f64 or Complex)
+    Vector(Vec<T>), // This variant catches a Python list or NumPy array
+}
+
+// Now we implement the Pushable trait FOR the Input enum itself.
+// This is where the routing happens.
+impl<T: Copy> Pushable<T> for Input<T> {
+    fn push_self(&self, builder: &mut COOBuilder<T>, inst: &SelfInstruction, off: i32, k: i32) {
+        match self {
+            // If it's a Scalar, call Definition 1 (The Scalar Worker)
+            Input::Scalar(val) => val.push_self(builder, inst, off, k),
+            // If it's a Vector, call Definition 2 (The Vector Worker)
+            Input::Vector(vec) => vec.push_self(builder, inst, off, k),
+        }
+    }
+
+    fn push_hop(&self, builder: &mut COOBuilder<T>, inst: &HoppingInstruction, r_off: i32, c_off: i32, k: i32) {
+        match self {
+            Input::Scalar(val) => val.push_hop(builder, inst, r_off, c_off, k),
+            Input::Vector(vec) => vec.push_hop(builder, inst, r_off, c_off, k),
+        }
+    }
+}
+
 
 
 #[pyclass]
@@ -184,32 +269,33 @@ impl BilayerMoire {
         self.calculate_total_nnz();
     }
 
-    pub fn build_ham_from_scalars<'py>(
+    pub fn build_ham<'py>(
         &self,
         py: Python<'py>,
-        tll: f64,
-        tuu: f64,
-        tlu: f64,
-        tul: f64,
-        tuself: f64,
-        tlself: f64,
+        tll: Input<f64>,
+        tuu: Input<f64>,
+        tlu: Input<f64>,
+        tul: Input<f64>,
+        tuself: Input<f64>,
+        tlself: Input<f64>,
     ) -> PyResult<(Bound<'py, PyArray1<f64>>, Bound<'py, PyArray1<i32>>, Bound<'py, PyArray1<i32>>)> {
-        self.build_ham_from_scalars_internal(py, tll, tuu, tlu, tul, tuself, tlself)
+        self.build_ham_internal(py, tll, tuu, tlu, tul, tuself, tlself)
     }
 
-    // Exposes the complex128 version to Python
-    pub fn build_ham_from_complex_scalars<'py>(
+    pub fn build_ham_complex<'py>(
         &self,
         py: Python<'py>,
-        tll: Complex<f64>,
-        tuu: Complex<f64>,
-        tlu: Complex<f64>,
-        tul: Complex<f64>,
-        tuself: Complex<f64>,
-        tlself: Complex<f64>,
+        tll: Input<Complex<f64>>,
+        tuu: Input<Complex<f64>>,
+        tlu: Input<Complex<f64>>,
+        tul: Input<Complex<f64>>,
+        tuself: Input<Complex<f64>>,
+        tlself: Input<Complex<f64>>,
     ) -> PyResult<(Bound<'py, PyArray1<Complex<f64>>>, Bound<'py, PyArray1<i32>>, Bound<'py, PyArray1<i32>>)> {
-        self.build_ham_from_scalars_internal(py, tll, tuu, tlu, tul, tuself, tlself)
+        self.build_ham_internal(py, tll, tuu, tlu, tul, tuself, tlself)
     }
+
+
 
     // --- Read-Only Getters for Python ---
     
@@ -292,34 +378,36 @@ impl BilayerMoire {
 
 impl BilayerMoire {
     fn calculate_total_nnz(&mut self) {
-        let k = self.orbitals;
+        let k_sq = (self.orbitals * self.orbitals) as usize; // k^2 entries per instruction
         let mut count = 0;
 
-        if let Some(ref h) = self.hop_l { count += h.site_i.len() * k; }
-        if let Some(ref h) = self.hop_u { count += h.site_i.len() * k; }
-        if let Some(ref h) = self.hop_ll { count += h.site_i.len() * k; }
-        if let Some(ref h) = self.hop_uu { count += h.site_i.len() * k; }
-        if let Some(ref h) = self.hop_lu { count += h.site_i.len() * k; }
-        if let Some(ref h) = self.hop_ul { count += h.site_i.len() * k; }
+        // We assume worst-case (all blocks are full) for safety and speed
+        if let Some(ref h) = self.hop_l { count += h.site_i.len() * k_sq; }
+        if let Some(ref h) = self.hop_u { count += h.site_i.len() * k_sq; }
+        if let Some(ref h) = self.hop_ll { count += h.site_i.len() * k_sq; }
+        if let Some(ref h) = self.hop_uu { count += h.site_i.len() * k_sq; }
+        if let Some(ref h) = self.hop_lu { count += h.site_i.len() * k_sq; }
+        if let Some(ref h) = self.hop_ul { count += h.site_i.len() * k_sq; }
 
         self.nnz = Some(count);
     }
 
-    fn build_ham_from_scalars_internal<'py, T>(
+
+    fn build_ham_internal<'py, T, S1, S2, S3, S4, S5, S6>(
         &self,
         py: Python<'py>,
-        tll: T,
-        tuu: T,
-        tlu: T,
-        tul: T,
-        tuself: T,
-        tlself: T,
+        tll: S1,
+        tuu: S2,
+        tlu: S3,
+        tul: S4,
+        tuself: S5,
+        tlself: S6,
     ) -> PyResult<(Bound<'py, PyArray1<T>>, Bound<'py, PyArray1<i32>>, Bound<'py, PyArray1<i32>>)>
-   // -> PyResult<(Bound<'py, PyArray1<T>>, Bound<'py, Bound<'py, PyArray1<i32>>, Bound<'py, PyArray1<i32>>)>
     where 
-        T: Copy + Element 
+        T: Copy + Element,
+        S1: Pushable<T>, S2: Pushable<T>, S3: Pushable<T>,
+        S4: Pushable<T>, S5: Pushable<T>, S6: Pushable<T>,
     {
-        // 1. Pre-flight check: Ensure all instructions exist before starting the work
         let h_l = self.hop_l.as_ref().ok_or_else(|| PyErr::new::<pyo3::exceptions::PyRuntimeError, _>("hop_l missing. Run generate_connections first"))?;
         let h_u = self.hop_u.as_ref().ok_or_else(|| PyErr::new::<pyo3::exceptions::PyRuntimeError, _>("hop_u missing. Run generate_connections first"))?;
         let h_ll = self.hop_ll.as_ref().ok_or_else(|| PyErr::new::<pyo3::exceptions::PyRuntimeError, _>("hop_ll missing. Run generate_connections first"))?;
@@ -335,14 +423,17 @@ impl BilayerMoire {
 
         let mut builder = COOBuilder::<T>::new(self.nnz.unwrap_or(64));
 
-        // 2. High-speed, un-checked pushes
-        Self::push_self_data(&mut builder, h_l, tlself, 0, k_orb);
-        Self::push_self_data(&mut builder, h_u, tuself, offset, k_orb);
-        Self::push_hop_data(&mut builder, h_ll, tll, 0, 0, k_orb);
-        Self::push_hop_data(&mut builder, h_uu, tuu, offset, offset, k_orb);
-        Self::push_hop_data(&mut builder, h_lu, tlu, 0, offset, k_orb);
-        Self::push_hop_data(&mut builder, h_ul, tul, offset, 0, k_orb);
-        // 4. Return zero-copy NumPy arrays
+        // The logic is now "attached" to the data. 
+        // This calls either the Scalar loop or the Vector loop automatically.
+        tlself.push_self(&mut builder, h_l, 0, k_orb);
+        tuself.push_self(&mut builder, h_u, offset, k_orb);
+        
+        tll.push_hop(&mut builder, h_ll, 0, 0, k_orb);
+        tuu.push_hop(&mut builder, h_uu, offset, offset, k_orb);
+        
+        tlu.push_hop(&mut builder, h_lu, 0, offset, k_orb);
+        tul.push_hop(&mut builder, h_ul, offset, 0, k_orb);
+
         Ok((
             builder.data.into_pyarray(py),
             builder.rows.into_pyarray(py),
@@ -351,37 +442,4 @@ impl BilayerMoire {
     }
 
 
-    
-
-
-    fn push_self_data<T>(
-        builder: &mut COOBuilder<T>, 
-        s: &SelfInstruction, // Changed from &Option<SelfInstruction>
-        val: T, 
-        off: i32, 
-        k: i32
-    ) where T: Copy {
-        // No 'if let Some' needed anymore. We know it exists.
-        for &i in &s.site_i {
-            for orb in 0..k {
-                let idx = i * k + orb + off;
-                builder.add(idx, idx, val);
-            }
-        }
-    }
-
-    fn push_hop_data<T>(
-        builder: &mut COOBuilder<T>, 
-        h: &HoppingInstruction, // Changed from &Option<HoppingInstruction>
-        val: T, 
-        row_off: i32, 
-        col_off: i32, 
-        k: i32
-    ) where T: Copy {
-        for (&i, &j) in h.site_i.iter().zip(h.site_j.iter()) {
-            for orb in 0..k {
-                builder.add(i * k + orb + row_off, j * k + orb + col_off, val);
-            }
-        }
-    }
 }

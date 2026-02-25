@@ -166,46 +166,148 @@ class BilayerMoireLattice:
 
 
 
+    # def generate_hamiltonian(
+    #     self,
+    #     tll: float = 0.0,
+    #     tuu: float = 0.0,
+    #     tlu: float = 0.0,
+    #     tul: float = 0.0,
+    #     tuself: float = 0.0,
+    #     tlself: float = 0.0,
+    #     inter_layer_radius: float = 3.0,
+    #     data_type=np.float64,
+    # ):
+    #     t = Timer()
+
+    #     # 1. Ensure all inputs are floats for the Rust backend
+    #     tll, tuu, tlu, tul, tuself, tlself = [
+    #         float(t) if t is not None else 0.0 
+    #         for t in (tll, tuu, tlu, tul, tuself, tlself)
+    #     ]
+        
+    #     data, rows, cols = self._rust_class.build_ham_from_scalars(
+    #         tll, tuu, tlu, tul, tuself, tlself
+    #     )
+        
+    #     t.lap()  # 1
+
+    #     n_lower = len(self.lower_lattice.points)
+    #     n_upper = len(self.upper_lattice.points)
+    #     total_dim = (n_lower + n_upper) * self.orbitals
+        
+    #     ham = coo_matrix(
+    #         (data, (rows, cols)),
+    #         shape=(total_dim, total_dim),
+    #         dtype=data_type
+    #     )
+        
+    #     t.lap()  # 2
+        
+    #     return ham, t.times
+
+
+    # def generate_hamiltonian(
+    #     self,
+    #     tll=0.0, tuu=0.0, tlu=0.0, tul=0.0, 
+    #     tuself=0.0, tlself=0.0,
+    #     data_type=np.float64,
+    # ):
+    #     t = Timer()
+        
+    #     if data_type == np.complex128:
+    #         data, rows, cols = self._rust_class.build_ham_complex(
+    #             tll, tuu, tlu, tul, tuself, tlself
+    #         )
+    #     else:
+    #         data, rows, cols = self._rust_class.build_ham(
+    #             tll, tuu, tlu, tul, tuself, tlself
+    #         )
+    #     t.lap()  # Time for Rust to build COO data
+        
+    #     total_dim = (len(self.lower_lattice.points) + len(self.upper_lattice.points)) * self.orbitals
+    #     ham = coo_matrix((data, (rows, cols)), shape=(total_dim, total_dim), dtype=data_type)
+        
+    #     t.lap()
+        
+    #     return ham, t.times
+
+
+    def _prepare_hopping_input(self, val, instruction, layer_i, layer_j):
+        """Prepares tll, tuu, tlu, tul. Handles scalars or (N, k, k) blocks."""
+        if not callable(val):
+            # If scalar, we still send a float. Rust will handle the 'Scalar' variant.
+            return float(val) if val is not None else 0.0
+
+        k = self.orbitals
+        # 1. Map IDs to string labels
+        basis_i = np.array(layer_i.basis_types)
+        basis_j = np.array(layer_j.basis_types)
+        labels_i = basis_i[np.array(instruction.type1)]
+        labels_j = basis_j[np.array(instruction.type2)]
+
+        # 2. Get coordinates
+        coo_i = layer_i.points[instruction.site_i]
+        coo_j = layer_j.points[instruction.site_j]
+
+        # 3. Call user function. Expected output shape: (N, k, k)
+        result = val(coo_i, coo_j, labels_i, labels_j)
+        
+        # 4. Flatten to 1D array for Rust
+        # Shape change: (N, k, k) -> (N * k * k,)
+        return np.ascontiguousarray(result, dtype=np.complex128 if np.iscomplexobj(result) else np.float64).flatten()
+
+    def _prepare_self_input(self, val, instruction, layer):
+        """Prepares tlself, tuself. Handles scalars or (N, k, k) blocks."""
+        if not callable(val):
+            return float(val) if val is not None else 0.0
+
+        k = self.orbitals
+        basis = np.array(layer.basis_types)
+        labels_i = basis[np.array(instruction.ptype)]
+        coo_i = layer.points[instruction.site_i]
+
+        # Call user function. Expected output shape: (N, k, k)
+        result = val(coo_i, labels_i)
+        
+        return np.ascontiguousarray(result, dtype=np.complex128 if np.iscomplexobj(result) else np.float64).flatten()
+
+
     def generate_hamiltonian(
         self,
-        tll: float = 0.0,
-        tuu: float = 0.0,
-        tlu: float = 0.0,
-        tul: float = 0.0,
-        tuself: float = 0.0,
-        tlself: float = 0.0,
-        inter_layer_radius: float = 3.0,
-        data_type=np.float64,
+        tll=0.0, tuu=0.0, tlu=0.0, tul=0.0,
+        tuself=0.0, tlself=0.0,
+        data_type=np.float64
     ):
-        t = Timer()
-        
-        # 1. Ensure all inputs are floats for the Rust backend
-        tll, tuu, tlu, tul, tuself, tlself = [
-            float(t) if t is not None else 0.0 
-            for t in (tll, tuu, tlu, tul, tuself, tlself)
-        ]
-        
-        data, rows, cols = self._rust_class.build_ham_from_scalars(
-            tll, tuu, tlu, tul, tuself, tlself
-        )
-        
-        t.lap()  # 1
+        # 1. Get instructions from Rust
+        instr = self.get_hopping_instructions()
+        l_lat, u_lat = self.lower_lattice, self.upper_lattice
 
-        n_lower = len(self.lower_lattice.points)
-        n_upper = len(self.upper_lattice.points)
-        total_dim = (n_lower + n_upper) * self.orbitals
+        # 2. Process all inputs into either floats or 1D arrays
+        v_tlself = self._prepare_self_input(tlself, instr["tlself"], l_lat)
+        v_tuself = self._prepare_self_input(tuself, instr["tuself"], u_lat)
         
-        ham = coo_matrix(
-            (data, (rows, cols)),
-            shape=(total_dim, total_dim),
-            dtype=data_type
-        )
-        
-        t.lap()  # 2
-        
-        return ham, t.times
+        v_tll = self._prepare_hopping_input(tll, instr["tll"], l_lat, l_lat)
+        v_tuu = self._prepare_hopping_input(tuu, instr["tuu"], u_lat, u_lat)
+        v_tlu = self._prepare_hopping_input(tlu, instr["tlu"], l_lat, u_lat)
+        v_tul = self._prepare_hopping_input(tul, instr["tul"], u_lat, l_lat)
 
+        # 3. Determine if we need the complex or real Rust gatekeeper
+        # If any prepared input is an array of complex numbers, we must use complex
+        is_complex = any(np.iscomplexobj(v) for v in (v_tll, v_tuu, v_tlu, v_tul, v_tuself, v_tlself))
+        is_complex = is_complex or (data_type == np.complex128)
 
+        if is_complex:
+            data, rows, cols = self._rust_class.build_ham_complex(
+                v_tll, v_tuu, v_tlu, v_tul, v_tuself, v_tlself
+            )
+        else:
+            data, rows, cols = self._rust_class.build_ham(
+                v_tll, v_tuu, v_tlu, v_tul, v_tuself, v_tlself
+            )
+
+        # 4. Construct the matrix
+        n_tot = (len(l_lat.points) + len(u_lat.points)) * self.orbitals
+        return coo_matrix((data, (rows, cols)), shape=(n_tot, n_tot), dtype=data_type)
 
 
 
