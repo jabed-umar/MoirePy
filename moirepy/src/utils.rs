@@ -1,3 +1,4 @@
+use std::ops::AddAssign;
 use ndarray::{array, Array2, Array1};
 use pyo3::prelude::*;
 
@@ -24,18 +25,13 @@ pub fn are_coeffs_integers(v1: Array1<f64>, v2: Array1<f64>, v3: Array1<f64>, to
     (a - a.round()).abs() < tol && (b - b.round()).abs() < tol
 }
 
-#[pyclass]
-#[derive(Clone)]
-pub struct COOBuilder {
-    #[pyo3(get)]
-    pub data: Vec<f64>,
-    #[pyo3(get)]
+pub struct COOBuilder<T> {
+    pub data: Vec<T>,
     pub rows: Vec<i32>,
-    #[pyo3(get)]
     pub cols: Vec<i32>,
 }
 
-impl COOBuilder {
+impl<T> COOBuilder<T> {
     pub fn new(capacity: usize) -> Self {
         COOBuilder {
             data: Vec::with_capacity(capacity),
@@ -44,7 +40,7 @@ impl COOBuilder {
         }
     }
 
-    pub fn add(&mut self, row: i32, col: i32, val: f64) {
+    pub fn add(&mut self, row: i32, col: i32, val: T) {
         self.data.push(val);
         self.rows.push(row);
         self.cols.push(col);
@@ -128,3 +124,69 @@ impl SelfInstruction {
         self.ptype.clear();
     }
 }
+
+
+
+// pub fn coo_to_csr<T>(
+//     rows: Vec<i32>,
+//     cols: Vec<i32>,
+//     data: Vec<T>,
+//     num_rows: usize,
+// ) -> (Vec<T>, Vec<i32>, Vec<i32>) 
+// where 
+//     T: Copy + AddAssign, 
+// {
+//     let m = rows.len();
+//     if m == 0 {
+//         return (Vec::new(), Vec::new(), vec![0; num_rows + 1]);
+//     }
+
+//     let mut indices: Vec<usize> = (0..m).collect();
+//     indices.sort_unstable_by(|&a, &b| {
+//         rows[a].cmp(&rows[b]).then(cols[a].cmp(&cols[b]))
+//     });
+
+//     let mut csr_data = Vec::with_capacity(m);
+//     let mut csr_indices = Vec::with_capacity(m);
+//     let mut csr_indptr = vec![0i32; num_rows + 1];
+
+//     let first_idx = indices[0];
+//     let mut last_row = rows[first_idx] as usize;
+//     let mut last_col = cols[first_idx] as usize;
+//     let mut current_sum = data[first_idx];
+
+//     // CRITICAL: Initialize indptr for any empty rows at the very beginning
+//     for j in 0..=last_row {
+//         csr_indptr[j] = 0;
+//     }
+
+//     for &idx in indices.iter().skip(1) {
+//         let r = rows[idx] as usize;
+//         let c = cols[idx] as usize;
+
+//         if r == last_row && c == last_col {
+//             current_sum += data[idx];
+//         } else {
+//             csr_data.push(current_sum);
+//             csr_indices.push(last_col as i32);
+            
+//             if r != last_row {
+//                 for j in (last_row + 1)..=r {
+//                     csr_indptr[j] = csr_indices.len() as i32;
+//                 }
+//             }
+//             current_sum = data[idx];
+//             last_row = r;
+//             last_col = c;
+//         }
+//     }
+    
+//     csr_data.push(current_sum);
+//     csr_indices.push(last_col as i32);
+
+//     for j in (last_row + 1)..=num_rows {
+//         csr_indptr[j] = csr_indices.len() as i32;
+//     }
+
+//     (csr_data, csr_indices, csr_indptr)
+// }

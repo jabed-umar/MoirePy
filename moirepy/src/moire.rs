@@ -1,6 +1,8 @@
+use std::ops::{Mul, AddAssign};
+use num_complex::Complex;
 use ndarray::{Array1, array};
 use pyo3::prelude::*;
-use numpy::{PyReadonlyArray1, ToPyArray, PyArrayMethods};
+use numpy::{PyReadonlyArray1, ToPyArray, PyArrayMethods, IntoPyArray, Element, PyArray1};
 use crate::layers::Layer;
 use crate::utils::{COOBuilder, HoppingInstruction, SelfInstruction};
 
@@ -51,9 +53,7 @@ pub struct BilayerMoire {
     pub hop_l: Option<SelfInstruction>,
     pub hop_u: Option<SelfInstruction>,
 
-    // --- 6. Hamiltonian Buffers ---
-    #[pyo3(get)]
-	pub ham_builder: Option<COOBuilder>,
+    pub nnz: Option<usize>,
 }
 
 
@@ -101,7 +101,7 @@ impl BilayerMoire {
             hop_ul: None,
             hop_l: None,
             hop_u: None,
-            ham_builder: None,
+            nnz: None,
         }
     }
 
@@ -181,47 +181,35 @@ impl BilayerMoire {
                 }
             }
         }
+        self.calculate_total_nnz();
     }
 
-    pub fn build_coo_from_scalars(
-        &mut self,
-        py: Python<'_>,
+    pub fn build_ham_from_scalars<'py>(
+        &self,
+        py: Python<'py>,
         tll: f64,
         tuu: f64,
         tlu: f64,
         tul: f64,
         tuself: f64,
         tlself: f64,
-    ) {
-        // 1. Initialize or clear the persistent COOBuilder
-        if self.ham_builder.is_none() {
-            self.ham_builder = Some(COOBuilder::new(1024));
-        } else {
-            self.ham_builder.as_mut().unwrap().clear();
-        }
-
-        // 2. Extract metadata in a separate block to release 'lower' borrow
-        let (n_l, k) = {
-            let lower = self.lower_lattice.bind(py).borrow();
-            let n = lower.points.as_ref().map_or(0, |p| p.nrows());
-            (n, self.orbitals as i32)
-        };
-        let offset = (n_l as i32) * k;
-
-        // 3. Obtain mutable reference to the builder
-        let builder = self.ham_builder.as_mut().unwrap();
-
-        // 4. Populate with data
-        Self::push_self_data(builder, &self.hop_l, tlself, 0, k);
-        Self::push_self_data(builder, &self.hop_u, tuself, offset, k);
-        
-        Self::push_hop_data(builder, &self.hop_ll, tll, 0, 0, k);
-        Self::push_hop_data(builder, &self.hop_uu, tuu, offset, offset, k);
-        
-        Self::push_hop_data(builder, &self.hop_lu, tlu, 0, offset, k);
-        Self::push_hop_data(builder, &self.hop_ul, tul, offset, 0, k);
+    ) -> PyResult<(Bound<'py, PyArray1<f64>>, Bound<'py, PyArray1<i32>>, Bound<'py, PyArray1<i32>>)> {
+        self.build_ham_from_scalars_internal(py, tll, tuu, tlu, tul, tuself, tlself)
     }
 
+    // Exposes the complex128 version to Python
+    pub fn build_ham_from_complex_scalars<'py>(
+        &self,
+        py: Python<'py>,
+        tll: Complex<f64>,
+        tuu: Complex<f64>,
+        tlu: Complex<f64>,
+        tul: Complex<f64>,
+        tuself: Complex<f64>,
+        tlself: Complex<f64>,
+    ) -> PyResult<(Bound<'py, PyArray1<Complex<f64>>>, Bound<'py, PyArray1<i32>>, Bound<'py, PyArray1<i32>>)> {
+        self.build_ham_from_scalars_internal(py, tll, tuu, tlu, tul, tuself, tlself)
+    }
 
     // --- Read-Only Getters for Python ---
     
@@ -303,36 +291,96 @@ impl BilayerMoire {
 
 
 impl BilayerMoire {
-    fn push_hop_data(
-        builder: &mut COOBuilder,
-        h_inst: &Option<HoppingInstruction>,
-        val: f64,
-        row_off: i32,
-        col_off: i32,
-        k: i32,
-    ) {
-        if let Some(ref h) = h_inst {
-            // Zip the site indices and iterate
-            for (&i, &j) in h.site_i.iter().zip(h.site_j.iter()) {
-                for orb in 0..k {
-                    builder.add(i * k + orb + row_off, j * k + orb + col_off, val);
-                }
+    fn calculate_total_nnz(&mut self) {
+        let k = self.orbitals;
+        let mut count = 0;
+
+        if let Some(ref h) = self.hop_l { count += h.site_i.len() * k; }
+        if let Some(ref h) = self.hop_u { count += h.site_i.len() * k; }
+        if let Some(ref h) = self.hop_ll { count += h.site_i.len() * k; }
+        if let Some(ref h) = self.hop_uu { count += h.site_i.len() * k; }
+        if let Some(ref h) = self.hop_lu { count += h.site_i.len() * k; }
+        if let Some(ref h) = self.hop_ul { count += h.site_i.len() * k; }
+
+        self.nnz = Some(count);
+    }
+
+    fn build_ham_from_scalars_internal<'py, T>(
+        &self,
+        py: Python<'py>,
+        tll: T,
+        tuu: T,
+        tlu: T,
+        tul: T,
+        tuself: T,
+        tlself: T,
+    ) -> PyResult<(Bound<'py, PyArray1<T>>, Bound<'py, PyArray1<i32>>, Bound<'py, PyArray1<i32>>)>
+   // -> PyResult<(Bound<'py, PyArray1<T>>, Bound<'py, Bound<'py, PyArray1<i32>>, Bound<'py, PyArray1<i32>>)>
+    where 
+        T: Copy + Element 
+    {
+        // 1. Pre-flight check: Ensure all instructions exist before starting the work
+        let h_l = self.hop_l.as_ref().ok_or_else(|| PyErr::new::<pyo3::exceptions::PyRuntimeError, _>("hop_l missing. Run generate_connections first"))?;
+        let h_u = self.hop_u.as_ref().ok_or_else(|| PyErr::new::<pyo3::exceptions::PyRuntimeError, _>("hop_u missing. Run generate_connections first"))?;
+        let h_ll = self.hop_ll.as_ref().ok_or_else(|| PyErr::new::<pyo3::exceptions::PyRuntimeError, _>("hop_ll missing. Run generate_connections first"))?;
+        let h_uu = self.hop_uu.as_ref().ok_or_else(|| PyErr::new::<pyo3::exceptions::PyRuntimeError, _>("hop_uu missing. Run generate_connections first"))?;
+        let h_lu = self.hop_lu.as_ref().ok_or_else(|| PyErr::new::<pyo3::exceptions::PyRuntimeError, _>("hop_lu missing. Run generate_connections first"))?;
+        let h_ul = self.hop_ul.as_ref().ok_or_else(|| PyErr::new::<pyo3::exceptions::PyRuntimeError, _>("hop_ul missing. Run generate_connections first"))?;
+
+        let offset = {
+            let lower = self.lower_lattice.bind(py).borrow();
+            (lower.points.as_ref().map_or(0, |p| p.nrows()) as i32) * (self.orbitals as i32)
+        };
+        let k_orb = self.orbitals as i32;
+
+        let mut builder = COOBuilder::<T>::new(self.nnz.unwrap_or(64));
+
+        // 2. High-speed, un-checked pushes
+        Self::push_self_data(&mut builder, h_l, tlself, 0, k_orb);
+        Self::push_self_data(&mut builder, h_u, tuself, offset, k_orb);
+        Self::push_hop_data(&mut builder, h_ll, tll, 0, 0, k_orb);
+        Self::push_hop_data(&mut builder, h_uu, tuu, offset, offset, k_orb);
+        Self::push_hop_data(&mut builder, h_lu, tlu, 0, offset, k_orb);
+        Self::push_hop_data(&mut builder, h_ul, tul, offset, 0, k_orb);
+        // 4. Return zero-copy NumPy arrays
+        Ok((
+            builder.data.into_pyarray(py),
+            builder.rows.into_pyarray(py),
+            builder.cols.into_pyarray(py),
+        ))
+    }
+
+
+    
+
+
+    fn push_self_data<T>(
+        builder: &mut COOBuilder<T>, 
+        s: &SelfInstruction, // Changed from &Option<SelfInstruction>
+        val: T, 
+        off: i32, 
+        k: i32
+    ) where T: Copy {
+        // No 'if let Some' needed anymore. We know it exists.
+        for &i in &s.site_i {
+            for orb in 0..k {
+                let idx = i * k + orb + off;
+                builder.add(idx, idx, val);
             }
         }
     }
 
-    fn push_self_data(
-        builder: &mut COOBuilder,
-        s_inst: &Option<SelfInstruction>,
-        val: f64,
-        off: i32,
-        k: i32,
-    ) {
-        if let Some(ref s) = s_inst {
-            for &i in &s.site_i {
-                for orb in 0..k {
-                    builder.add(i * k + orb + off, i * k + orb + off, val);
-                }
+    fn push_hop_data<T>(
+        builder: &mut COOBuilder<T>, 
+        h: &HoppingInstruction, // Changed from &Option<HoppingInstruction>
+        val: T, 
+        row_off: i32, 
+        col_off: i32, 
+        k: i32
+    ) where T: Copy {
+        for (&i, &j) in h.site_i.iter().zip(h.site_j.iter()) {
+            for orb in 0..k {
+                builder.add(i * k + orb + row_off, j * k + orb + col_off, val);
             }
         }
     }

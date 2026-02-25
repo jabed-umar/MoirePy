@@ -11,13 +11,8 @@ crate-type = ["cdylib"]
 path = "moirepy/src/lib.rs"
 
 [dependencies]
-# extension-module: required for building a python extension
-# abi3-py312: allows the binary to work on future python versions without recompiling
-pyo3 = { version = "0.23.4", features = ["extension-module", "abi3-py312"] }
-
-# numpy: allows zero-copy sharing of arrays between Rust and Python
+pyo3 = { version = "0.23.4", features = ["extension-module", "abi3-py312", "num-complex"] }
 numpy = "0.23.0"
-
-# kiddo: high-performance KD-Tree for neighbor searching
 kiddo = "5.2.0"
 ndarray = "0.16.0"
+num-complex = "0.4"

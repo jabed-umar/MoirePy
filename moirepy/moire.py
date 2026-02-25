@@ -18,6 +18,23 @@ class COOBuilder:
         self.rows.append(r)
         self.cols.append(c)
         self.data.append(val)
+        
+
+
+
+from time import perf_counter_ns
+
+class Timer:
+    def __init__(self):
+        self.last = perf_counter_ns()
+        self.times = []
+    def lap(self):
+        now = perf_counter_ns()
+        d = now - self.last
+        self.times.append(d/1e6)
+        self.last = now
+
+
 
 class BilayerMoireLattice:
     def __init__(
@@ -160,33 +177,34 @@ class BilayerMoireLattice:
         inter_layer_radius: float = 3.0,
         data_type=np.float64,
     ):
+        t = Timer()
+        
         # 1. Ensure all inputs are floats for the Rust backend
         tll, tuu, tlu, tul, tuself, tlself = [
             float(t) if t is not None else 0.0 
             for t in (tll, tuu, tlu, tul, tuself, tlself)
         ]
-
-        self._rust_class.build_coo_from_scalars(
+        
+        data, rows, cols = self._rust_class.build_ham_from_scalars(
             tll, tuu, tlu, tul, tuself, tlself
         )
         
-        data = self._rust_class.ham_builder.data
-        rows = self._rust_class.ham_builder.rows
-        cols = self._rust_class.ham_builder.cols
-        
-        return data, rows, cols
+        t.lap()  # 1
 
         n_lower = len(self.lower_lattice.points)
         n_upper = len(self.upper_lattice.points)
         total_dim = (n_lower + n_upper) * self.orbitals
-
-        self.ham = coo_matrix(
+        
+        ham = coo_matrix(
             (data, (rows, cols)),
             shape=(total_dim, total_dim),
             dtype=data_type
         )
         
-        return self.ham#.tocsc()
+        t.lap()  # 2
+        
+        return ham, t.times
+
 
 
 
