@@ -1,10 +1,11 @@
-from typing import Union, Callable, Sequence
+from typing import Union, Callable
 import numpy as np
-from .layers import Layer
+from scipy.sparse import coo_matrix, csr_matrix
 import matplotlib.pyplot as plt
+
+from .layers import Layer
 from .utils import get_rotation_matrix, are_coeffs_integers
-from . import moirepy_rust as rbck  # import rust backend
-from scipy.sparse import coo_matrix
+from . import moirepy_rust as rbck
 from .utils import get_rotation_matrix, LatticeAlreadyFinalisedError
 
 class COOBuilder:
@@ -18,7 +19,7 @@ class COOBuilder:
         self.rows.append(r)
         self.cols.append(c)
         self.data.append(val)
-        
+
 
 
 
@@ -51,7 +52,7 @@ class BilayerMoireLattice:
         # make sure latticetype is a class, not an instance and class which inherits from Layer
         if not isinstance(latticetype, type) or not issubclass(latticetype, Layer):
             raise ValueError("latticetype must be a class that inherits from Layer.")
-        
+
         # 1. Instantiate the Python-level Layers
         self.lower_lattice = latticetype(pbc=pbc)
         self.upper_lattice = latticetype(pbc=pbc)
@@ -60,23 +61,23 @@ class BilayerMoireLattice:
         lv1, lv2 = self.lower_lattice.lv1, self.lower_lattice.lv2
         c = np.dot(lv1, lv2) / (np.linalg.norm(lv1) * np.linalg.norm(lv2))
         beta = np.arccos(c)
-        
+
         mlv1 = ll1 * lv1 + ll2 * lv2
         mlv2 = get_rotation_matrix(beta).dot(mlv1)
 
         one = ll1 * lv1 + ll2 * lv2
         two = ul1 * lv1 + ul2 * lv2
-        
+
         # Calculate twist angle
         c_theta = np.dot(one, two) / (np.linalg.norm(one) * np.linalg.norm(two))
         theta = np.arccos(np.clip(c_theta, -1.0, 1.0))
-        
-        if verbose: 
+
+        if verbose:
             print(f"twist angle = {theta:.4f} rad ({np.rad2deg(theta):.4f} deg)")
 
         # 3. Synchronize Layer state
         self.upper_lattice.perform_rotation_translation(theta, translate_upper)
-        
+
         # Validation
         if not (are_coeffs_integers(self.lower_lattice.lv1, self.lower_lattice.lv2, mlv1) and
                 are_coeffs_integers(self.upper_lattice.lv1, self.upper_lattice.lv2, mlv1)):
@@ -113,8 +114,8 @@ class BilayerMoireLattice:
 
         plt.plot(*zip(*self.lower_lattice.points), 'r.', markersize=2)
         plt.plot(*zip(*self.upper_lattice.points), 'b.', markersize=2)
-        self.lower_lattice.plot_lattice(colours=["b"], plot_connections=True)
-        self.upper_lattice.plot_lattice(colours=["r"], plot_connections=True)
+        # self.lower_lattice.plot_lattice(colours=["b"], plot_connections=True)
+        # self.upper_lattice.plot_lattice(colours=["r"], plot_connections=True)
 
         # parallellogram around the whole lattice
         plt.plot([0, n1*mlv1[0]], [0, n1*mlv1[1]], 'k', linewidth=1)
@@ -137,7 +138,7 @@ class BilayerMoireLattice:
     def generate_connections(self, inter_layer_radius: float = 3.0):
         """
         Populates the internal Rust hopping buffers for intra- and inter-layer connections.
-        
+
         Args:
             inter_layer_radius (float): The cutoff distance for hopping between layers.
         """
@@ -164,74 +165,6 @@ class BilayerMoireLattice:
             "tuself": self._rust_class.hop_u,
         }
 
-
-
-    # def generate_hamiltonian(
-    #     self,
-    #     tll: float = 0.0,
-    #     tuu: float = 0.0,
-    #     tlu: float = 0.0,
-    #     tul: float = 0.0,
-    #     tuself: float = 0.0,
-    #     tlself: float = 0.0,
-    #     inter_layer_radius: float = 3.0,
-    #     data_type=np.float64,
-    # ):
-    #     t = Timer()
-
-    #     # 1. Ensure all inputs are floats for the Rust backend
-    #     tll, tuu, tlu, tul, tuself, tlself = [
-    #         float(t) if t is not None else 0.0 
-    #         for t in (tll, tuu, tlu, tul, tuself, tlself)
-    #     ]
-        
-    #     data, rows, cols = self._rust_class.build_ham_from_scalars(
-    #         tll, tuu, tlu, tul, tuself, tlself
-    #     )
-        
-    #     t.lap()  # 1
-
-    #     n_lower = len(self.lower_lattice.points)
-    #     n_upper = len(self.upper_lattice.points)
-    #     total_dim = (n_lower + n_upper) * self.orbitals
-        
-    #     ham = coo_matrix(
-    #         (data, (rows, cols)),
-    #         shape=(total_dim, total_dim),
-    #         dtype=data_type
-    #     )
-        
-    #     t.lap()  # 2
-        
-    #     return ham, t.times
-
-
-    # def generate_hamiltonian(
-    #     self,
-    #     tll=0.0, tuu=0.0, tlu=0.0, tul=0.0, 
-    #     tuself=0.0, tlself=0.0,
-    #     data_type=np.float64,
-    # ):
-    #     t = Timer()
-        
-    #     if data_type == np.complex128:
-    #         data, rows, cols = self._rust_class.build_ham_complex(
-    #             tll, tuu, tlu, tul, tuself, tlself
-    #         )
-    #     else:
-    #         data, rows, cols = self._rust_class.build_ham(
-    #             tll, tuu, tlu, tul, tuself, tlself
-    #         )
-    #     t.lap()  # Time for Rust to build COO data
-        
-    #     total_dim = (len(self.lower_lattice.points) + len(self.upper_lattice.points)) * self.orbitals
-    #     ham = coo_matrix((data, (rows, cols)), shape=(total_dim, total_dim), dtype=data_type)
-        
-    #     t.lap()
-        
-    #     return ham, t.times
-
-
     def _prepare_hopping_input(self, val, instruction, layer_i, layer_j):
         """Prepares tll, tuu, tlu, tul. Handles scalars or (N, k, k) blocks."""
         if not callable(val):
@@ -250,8 +183,11 @@ class BilayerMoireLattice:
         coo_j = layer_j.points[instruction.site_j]
 
         # 3. Call user function. Expected output shape: (N, k, k)
-        result = val(coo_i, coo_j, labels_i, labels_j)
-        
+        # result = val(coo_i, coo_j, labels_i, labels_j)
+        result = np.array([
+            val(ci, cj, li, lj) for ci, cj, li, lj in zip(coo_i, coo_j, labels_i, labels_j)
+        ])
+
         # 4. Flatten to 1D array for Rust
         # Shape change: (N, k, k) -> (N * k * k,)
         return np.ascontiguousarray(result, dtype=np.complex128 if np.iscomplexobj(result) else np.float64).flatten()
@@ -265,12 +201,14 @@ class BilayerMoireLattice:
         basis = np.array(layer.basis_types)
         labels_i = basis[np.array(instruction.ptype)]
         coo_i = layer.points[instruction.site_i]
-
-        # Call user function. Expected output shape: (N, k, k)
-        result = val(coo_i, labels_i)
         
-        return np.ascontiguousarray(result, dtype=np.complex128 if np.iscomplexobj(result) else np.float64).flatten()
+        # Call user function. Expected output shape: (N, k, k)
+        # result = val(coo_i, labels_i)
+        result = np.array([
+            val(c, l) for c, l in zip(coo_i, labels_i)
+        ])
 
+        return np.ascontiguousarray(result, dtype=np.complex128 if np.iscomplexobj(result) else np.float64).flatten()
 
     def generate_hamiltonian(
         self,
@@ -285,7 +223,7 @@ class BilayerMoireLattice:
         # 2. Process all inputs into either floats or 1D arrays
         v_tlself = self._prepare_self_input(tlself, instr["tlself"], l_lat)
         v_tuself = self._prepare_self_input(tuself, instr["tuself"], u_lat)
-        
+
         v_tll = self._prepare_hopping_input(tll, instr["tll"], l_lat, l_lat)
         v_tuu = self._prepare_hopping_input(tuu, instr["tuu"], u_lat, u_lat)
         v_tlu = self._prepare_hopping_input(tlu, instr["tlu"], l_lat, u_lat)
@@ -311,100 +249,25 @@ class BilayerMoireLattice:
 
 
 
-    # def _as_callable(self, val, n_args=4):
-    #     if callable(val):
-    #         return val
-    #     if n_args == 4:
-    #         return lambda c1, c2, t1, t2: val if val is not None else 0
-    #     return lambda c, t: val if val is not None else 0
+
+    def _as_callable(self, val, n_args=4):
+        if callable(val):
+            return val
+        if n_args == 4:
+            return lambda c1, c2, t1, t2: val if val is not None else 0
+        return lambda c, t: val if val is not None else 0
     
-    # def _validate_hamiltonian_inputs(self, tll, tuu, tlu, tul, tlself, tuself):
-    #     """Helper to ensure all hopping terms are callable."""
-    #     tll, tuu, tlu, tul = [self._as_callable(t, 4) for t in (tll, tuu, tlu, tul)]
-    #     tlself, tuself = [self._as_callable(t, 2) for t in (tlself, tuself)]
-    #     assert all(
-    #         callable(fn)
-    #         for fn in (tll, tuu, tlu, tul, tlself, tuself)
-    #     ), "Hopping parameters must be floats, ints, or callable functions."
-    #     return tll, tuu, tlu, tul, tlself, tuself
+    def _validate_hamiltonian_inputs(self, tll, tuu, tlu, tul, tuself, tlself):
+        """Helper to ensure all hopping terms are callable."""
+        tll, tuu, tlu, tul = [self._as_callable(t, 4) for t in (tll, tuu, tlu, tul)]
+        tuself, tlself = [self._as_callable(t, 2) for t in (tuself, tlself)]
+        assert all(
+            callable(fn)
+            for fn in (tll, tuu, tlu, tul, tuself, tlself)
+        ), "Hopping parameters must be floats, ints, or callable functions."
+        return tll, tuu, tlu, tul, tuself, tlself
 
-    # def generate_hamiltonian(
-    #     self,
-    #     tll: Union[float, int, Callable] = None,
-    #     tuu: Union[float, int, Callable] = None,
-    #     tlu: Union[float, int, Callable] = None,
-    #     tul: Union[float, int, Callable] = None,
-    #     tlself: Union[float, int, Callable] = None,
-    #     tuself: Union[float, int, Callable] = None,
-    #     inter_layer_radius: float = 3.0,
-    #     data_type: np.dtype = np.float64,
-    # ):
-    #     k = self.orbitals
-    #     n_lower = len(self.lower_lattice.points)
-    #     n_upper = len(self.upper_lattice.points)
-    #     total_dim = (n_lower + n_upper) * k
-        
-    #     tll, tuu, tlu, tul, tlself, tuself = self._validate_hamiltonian_inputs(tll, tuu, tlu, tul, tlself, tuself)
-    #     builder = COOBuilder()
 
-    #     # 1. Lower Lattice Intra-layer (Indices: 0 to n_lower*k - 1)
-    #     for i in range(n_lower):
-    #         val = tlself(self.lower_lattice.points[i], self.lower_lattice.point_types[i])
-    #         for o in range(k):
-    #             builder.add(i*k + o, i*k + o, val)
-
-    #     bigger_indices, indices, _ = self.lower_lattice.first_nearest_neighbours(self.lower_lattice.points, self.lower_lattice.point_types)
-    #     for this_i in range(n_lower):
-    #         this_coo, this_type = self.lower_lattice.points[this_i], self.lower_lattice.point_types[this_i]
-    #         for phantom_neigh_i, neigh_i in zip(bigger_indices[this_i], indices[this_i]):
-    #             neigh_coo = self.lower_lattice.bigger_points[phantom_neigh_i] if self.pbc else self.lower_lattice.points[neigh_i]
-    #             neigh_type = self.lower_lattice.point_types[neigh_i]
-    #             val = tll(this_coo, neigh_coo, this_type, neigh_type)
-    #             for o1 in range(k):
-    #                 for o2 in range(k):
-    #                     builder.add(this_i*k + o1, neigh_i*k + o2, val)
-
-    #     # 2. Upper Lattice Intra-layer (Indices: n_lower*k to total_dim - 1)
-    #     offset = n_lower * k
-    #     for i in range(n_upper):
-    #         val = tuself(self.upper_lattice.points[i], self.upper_lattice.point_types[i])
-    #         for o in range(k):
-    #             builder.add(offset + i*k + o, offset + i*k + o, val)
-            
-    #     bigger_indices, indices, _ = self.upper_lattice.first_nearest_neighbours(self.upper_lattice.points, self.upper_lattice.point_types)
-    #     for this_i in range(n_upper):
-    #         this_coo, this_type = self.upper_lattice.points[this_i], self.upper_lattice.point_types[this_i]
-    #         for phantom_neigh_i, neigh_i in zip(bigger_indices[this_i], indices[this_i]):
-    #             neigh_coo = self.upper_lattice.bigger_points[phantom_neigh_i] if self.pbc else self.upper_lattice.points[neigh_i]
-    #             neigh_type = self.upper_lattice.point_types[neigh_i]
-    #             val = tuu(this_coo, neigh_coo, this_type, neigh_type)
-    #             for o1 in range(k):
-    #                 for o2 in range(k):
-    #                     builder.add(offset + this_i*k + o1, offset + neigh_i*k + o2, val)
-
-    #     # 3. Inter-layer (Radius Search)
-    #     u_indices, l_indices, l_coords = self.lower_lattice.get_neighbors_within_radius(self.upper_lattice.points, inter_layer_radius)
-        
-    #     for i in range(len(u_indices)):
-    #         u_idx, l_idx = u_indices[i], l_indices[i]
-    #         u_pos, l_pos = self.upper_lattice.points[u_idx], l_coords[i]
-    #         u_type, l_type = self.upper_lattice.point_types[u_idx], self.lower_lattice.point_types[l_idx]
-            
-    #         # tul: Upper -> Lower hopping
-    #         val_ul = tul(u_pos, l_pos, u_type, l_type)
-    #         # tlu: Lower -> Upper hopping (assuming Hermiticity if not provided)
-    #         val_lu = tlu(l_pos, u_pos, l_type, u_type)
-
-    #         for o1 in range(k):
-    #             for o2 in range(k):
-    #                 # Upper row, Lower col (H_ul block)
-    #                 builder.add(offset + u_idx*k + o1, l_idx*k + o2, val_ul)
-    #                 # Lower row, Upper col (H_lu block)
-    #                 builder.add(l_idx*k + o1, offset + u_idx*k + o2, val_lu)
-
-        # from scipy.sparse import coo_matrix
-        # self.ham = coo_matrix((builder.data, (builder.rows, builder.cols)), shape=(total_dim, total_dim), dtype=data_type)
-        # return self.ham.tocsc()
 
     def generate_k_space_hamiltonian(
         self,
@@ -417,15 +280,18 @@ class BilayerMoireLattice:
         tuself: Union[float, int, Callable] = None,
         inter_layer_radius: float = 3.0,
         suppress_nxny_warning: bool = False,
-        suppress_pbc_warning: bool = False,
+        suppress_obc_warning: bool = False,
     ):
         if not suppress_nxny_warning and (self.n1 != 1 or self.n2 != 1):
-            print("WARNING: n1 or n2 != 1. Momentum space is usually for n1=n2=1. Aborting mission. set suppress_nxny_warning=True to override this check.")
-            return
+            raise ValueError("WARNING: n1 or n2 != 1. Momentum space is usually for n1=n2=1."
+                "Aborting mission. set suppress_nxny_warning=True to override this check.")
 
-        if not suppress_pbc_warning and not self.pbc:
-            print("WARNING: k-space generation is only physically meaningful with pbc=True. Aborting mission. set suppress_pbc_warning=True to override this check.")
-            return
+        if not suppress_obc_warning and not self.pbc:
+            raise ValueError(
+                "k-space Hamiltonian requested for an OBC system. "
+                "Since all lattice shifts R=0, the result is identical to the real-space matrix and k-independent. "
+                "Set suppress_obc_warning=True to proceed anyway."
+            )
 
         # Validate and convert inputs to callables
         tll, tuu, tlu, tul, tuself, tlself = self._validate_hamiltonian_inputs(
@@ -443,7 +309,6 @@ class BilayerMoireLattice:
             tul=lambda c1, c2, t1, t2: tul(c1, c2, t1, t2) * part(c1, c2),
             tuself=tuself,
             tlself=tlself,
-            inter_layer_radius=inter_layer_radius,
             data_type=np.complex128
         )
 

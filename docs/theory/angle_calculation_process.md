@@ -172,7 +172,7 @@ This procedure ensures we collect unique, minimal-angle configurations that coul
 
 ### Time Complexity
 
-If the number points is of the order $O(n^2)$ and they are sorted by distance, the time complexity of this part becomes $O(n^2 \log n^2)$. Apart from this all other steps are multiple order smaller than this cost, hence can be ignored. That makes this algorithm much less than the $O(n^3)$ of the Diophantine approach and arguably more intuitive.
+If the number points is of the order $O(n^2)$ and they are sorted by distance, the time complexity of this part becomes $O(n^2 \log n^2) =  O(n^2 \log n)$ (because $\log n^2 = 2 \log n$). Apart from this all other steps are multiple order smaller than this cost, hence can be ignored. That makes this algorithm much less than the $O(n^3)$ of the Diophantine approach and arguably more intuitive.
 
 ### Calculating the lattice vectors given the overlapping points
 

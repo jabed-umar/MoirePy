@@ -45,10 +45,9 @@ pub struct Layer {
     // --- 3. Generated Real-Space Points ---
     // #[getter]
     pub points: Option<Array2<f64>>, // Final (N, 2) array of coordinates for primary lattice
-
     #[pyo3(get)]
     pub point_types: Option<Vec<usize>>, // Atom type ID for every point in 'points'
-
+    // #[getter]
     pub bigger_points: Option<Array2<f64>>, // Padded set of points for PBC search logic (Internal)
     pub mappings: Option<Vec<usize>>, // Map from 'bigger_points' indices back to primary 'points' (Internal)
 
@@ -393,6 +392,11 @@ impl Layer {
     #[getter]
     pub fn points<'py>(&self, py: Python<'py>) -> Option<Bound<'py, PyArray2<f64>>> {
         self.points.as_ref().map(|p| p.to_pyarray(py)) //
+    }
+
+    #[getter]
+    pub fn bigger_points<'py>(&self, py: Python<'py>) -> Option<Bound<'py, PyArray2<f64>>> {
+        self.bigger_points.as_ref().map(|p| p.to_pyarray(py)) //
     }
 
     #[getter]

@@ -193,10 +193,10 @@ impl BilayerMoire {
     pub fn generate_connections(&mut self, py: Python<'_>, inter_layer_radius: f64) {
         let lower = self.lower_lattice.bind(py).borrow();
         let upper = self.upper_lattice.bind(py).borrow();
-        
+
         let points_l = lower.points.as_ref().expect("Lower points missing");
         let points_u = upper.points.as_ref().expect("Upper points missing");
-        
+
         // Use internal usize type IDs directly
         let internal_types_l = lower.point_types.as_ref().expect("Lower types missing");
         let internal_types_u = upper.point_types.as_ref().expect("Upper types missing");
@@ -225,7 +225,7 @@ impl BilayerMoire {
 
         // 2. Intra-layer (Lower) - Direct Internal Call
         let (_, small_idx_l, _) = lower.first_nearest_neighbours_internal(
-            &points_l.view(), 
+            &points_l.view(),
             internal_types_l
         ).expect("Lower neighbors failed");
 
@@ -239,7 +239,7 @@ impl BilayerMoire {
 
         // 3. Intra-layer (Upper) - Direct Internal Call
         let (_, small_idx_u, _) = upper.first_nearest_neighbours_internal(
-            &points_u.view(), 
+            &points_u.view(),
             internal_types_u
         ).expect("Upper neighbors failed");
 
@@ -260,7 +260,7 @@ impl BilayerMoire {
                 for res in results {
                     let j_big = res.item as usize;
                     let j_small = if lower.pbc { lower.mappings.as_ref().unwrap()[j_big] } else { j_big };
-                    
+            
                     h_ul.add(i as i32, j_small as i32, internal_types_u[i] as i32, internal_types_l[j_small] as i32);
                     h_lu.add(j_small as i32, i as i32, internal_types_l[j_small] as i32, internal_types_u[i] as i32);
                 }
@@ -298,7 +298,7 @@ impl BilayerMoire {
 
 
     // --- Read-Only Getters for Python ---
-    
+
     #[getter]
     fn mlv1<'py>(&self, py: Python<'py>) -> Bound<'py, numpy::PyArray1<f64>> {
         use numpy::ToPyArray;
@@ -403,7 +403,7 @@ impl BilayerMoire {
         tuself: S5,
         tlself: S6,
     ) -> PyResult<(Bound<'py, PyArray1<T>>, Bound<'py, PyArray1<i32>>, Bound<'py, PyArray1<i32>>)>
-    where 
+    where
         T: Copy + Element,
         S1: Pushable<T>, S2: Pushable<T>, S3: Pushable<T>,
         S4: Pushable<T>, S5: Pushable<T>, S6: Pushable<T>,
@@ -423,14 +423,14 @@ impl BilayerMoire {
 
         let mut builder = COOBuilder::<T>::new(self.nnz.unwrap_or(64));
 
-        // The logic is now "attached" to the data. 
+        // The logic is now "attached" to the data.
         // This calls either the Scalar loop or the Vector loop automatically.
         tlself.push_self(&mut builder, h_l, 0, k_orb);
         tuself.push_self(&mut builder, h_u, offset, k_orb);
-        
+
         tll.push_hop(&mut builder, h_ll, 0, 0, k_orb);
         tuu.push_hop(&mut builder, h_uu, offset, offset, k_orb);
-        
+
         tlu.push_hop(&mut builder, h_lu, 0, offset, k_orb);
         tul.push_hop(&mut builder, h_ul, offset, 0, k_orb);
 

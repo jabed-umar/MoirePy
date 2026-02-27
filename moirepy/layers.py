@@ -1,11 +1,7 @@
 import numpy as np
-from typing import Tuple  # , List
 import matplotlib.pyplot as plt
-import math
-from scipy.spatial import KDTree
-import json
 
-from .utils import get_rotation_matrix, LatticeAlreadyFinalisedError
+from .utils import LatticeAlreadyFinalisedError
 from . import moirepy_rust as rbck  # import rust backend
 
 
@@ -19,7 +15,7 @@ class Layer:  # parent class
         pbc: bool = False,
         study_proximity: int = 1
     ) -> None:
-        
+
         if lv1[1] != 0 or lv2[1] < 0:
             raise ValueError(
                 """lv1 was expected to be along the x-axis,
@@ -27,7 +23,7 @@ class Layer:  # parent class
                 Please refer to the documentation for more information: https://jabed-umar.github.io/MoirePy/find_theta/
                 """
             )
-        
+
         self._rust_lattice = rbck.Layer(
             lv1=lv1.tolist(),
             lv2=lv2.tolist(),
@@ -62,11 +58,11 @@ class Layer:  # parent class
     ) -> None:
         assert isinstance(mln1, int) and mln1 > 0, "mln1 must be a positive integer."
         assert isinstance(mln2, int) and mln2 > 0, "mln2 must be a positive integer."
-        
+
         # Ensure inputs are numpy arrays with float type
         mlv1 = np.asarray(mlv1, dtype=float)
         mlv2 = np.asarray(mlv2, dtype=float)
-        
+
         self._rust_lattice.generate_points(mlv1, mlv2, mln1, mln2)
 
 
@@ -79,7 +75,7 @@ class Layer:  # parent class
         points = np.asarray(points, dtype=float)
         if points.ndim != 2 or points.shape[1] != 2:
             raise ValueError(f"points must be (N, 2), got {points.shape}")
-        
+
         # If types are passed as names, Rust handles the string-to-ID mapping
         return self._rust_lattice.first_nearest_neighbours(points, types)
 
@@ -87,7 +83,7 @@ class Layer:  # parent class
         query_points = np.asarray(query_points, dtype=float)
         if query_points.ndim != 2 or query_points.shape[1] != 2:
             raise ValueError(f"query_points must be (N, 2), got {query_points.shape}")
-        
+
         return self._rust_lattice.get_neighbors_within_radius(query_points, float(radius))
 
     def plot_lattice(self, plot_connections: bool = True, colours: list = ["r", "g", "b", "c", "m", "y", "k"]) -> None:
@@ -207,6 +203,13 @@ class Layer:  # parent class
     @points.setter
     def points(self, value):
         raise LatticeAlreadyFinalisedError("points", self.__class__.__name__)
+
+    @property
+    def bigger_points(self):
+        return self._rust_lattice.bigger_points
+    @bigger_points.setter
+    def bigger_points(self, value):
+        raise LatticeAlreadyFinalisedError("bigger_points", self.__class__.__name__)
 
     @property
     def point_types(self):

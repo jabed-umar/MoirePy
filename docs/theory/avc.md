@@ -132,7 +132,7 @@ The **Moiré Angle Calculator** finds all possible commensurate angles between t
     </div>
 
     <div style="display: flex; gap: 10px; align-items: center;">
-        <label for="precision">Precision:</label>
+        <label for="precision">Precision (10^-x):</label>
         <input type="range" id="precision" min="2" max="12" value="6" step="1" style="width: 30vw;">
         <span id="precision-value">6</span>
     </div>   
@@ -165,12 +165,6 @@ The **Moiré Angle Calculator** finds all possible commensurate angles between t
 </div>
 
 <!-- <script src="assets/script_find_theta.js"></script> -->
-
-
-
-
-
-
 
 
 
@@ -262,10 +256,12 @@ The **Moiré Angle Calculator** finds all possible commensurate angles between t
 
         // console.log(radius, layer1Vectors, layer2Vectors);
 
+        const t0 = performance.now();
         const results = find_values(radius, layer1Vectors, layer2Vectors, tol=precision);
+        const t1 = performance.now();
 
         console.log(results);
-        console.log("Number of results:", results.length);
+        console.log(`Found ${results.length} results in ${(t1 - t0).toFixed(2)} milliseconds.`);
         displayResults_(results);
     }
 
