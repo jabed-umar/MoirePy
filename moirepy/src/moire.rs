@@ -5,11 +5,44 @@ use numpy::{PyReadonlyArray1,  IntoPyArray, Element, PyArray1};
 use crate::layers::Layer;
 use crate::utils::{COOBuilder, HoppingInstruction, SelfInstruction};
 
+/// A trait that abstracts over scalar and vector hopping amplitudes.
+///
+/// When assembling the Hamiltonian it is common to have either:
+/// - A single number (e.g. `-2.7 eV`) that is the same for every bond, or
+/// - A per-bond list of numbers (one entry per hopping pair).
+///
+/// Rather than branching on this distinction everywhere, this trait is
+/// implemented for both `T` (scalar) and `Vec<T>` (vector) and Rust dispatches
+/// automatically. The `Input<T>` enum delegates to whichever branch
+/// matches the Python argument.
+///
+/// # Type parameters
+/// * `T`: the numeric type of the amplitude (e.g. `f64` or `Complex<f64>`).
 trait Pushable<T> {
+    /// Fills the COO builder with on-site (self-energy) entries.
+    ///
+    /// # Arguments
+    /// * `builder`: the COO triplet accumulator to write into.
+    /// * `inst`: the `SelfInstruction` describing which sites to fill and their types.
+    /// * `off`: row/column offset for this layer block (0 for lower, `n_lower * orbitals` for upper).
+    /// * `k`: number of orbitals per site (block size).
     fn push_self(&self, builder: &mut COOBuilder<T>, inst: &SelfInstruction, off: i32, k: i32);
+
+    /// Fills the COO builder with hopping (off-diagonal) entries.
+    ///
+    /// # Arguments
+    /// * `builder`: the COO triplet accumulator to write into.
+    /// * `inst`: the `HoppingInstruction` listing `(i, j)` site pairs and their basis types.
+    /// * `r_off`: row-block offset for the source layer.
+    /// * `c_off`: column-block offset for the target layer.
+    /// * `k`: number of orbitals per site (block size).
     fn push_hop(&self, builder: &mut COOBuilder<T>, inst: &HoppingInstruction, r_off: i32, c_off: i32, k: i32);
 }
 
+/// Pushable impl for a scalar amplitude `T`.
+///
+/// Each hopping/self-energy entry gets the same value (`*self`) regardless of
+/// which site pair it belongs to. Fills an entire `k x k` orbital block uniformly.
 impl<T: Copy> Pushable<T> for T {
     fn push_self(&self, builder: &mut COOBuilder<T>, inst: &SelfInstruction, off: i32, k: i32) {
         for &i in &inst.site_i {
@@ -34,6 +67,12 @@ impl<T: Copy> Pushable<T> for T {
     }
 }
 
+/// Pushable impl for a vector of amplitudes `Vec<T>`.
+///
+/// The vector must be a flat concatenation of `k x k` blocks, one block per
+/// hopping/self-energy pair: `self[pair_idx * k^2 .. (pair_idx+1) * k^2]` is
+/// the orbital block for pair `pair_idx`.
+/// This is the path taken when the caller passes a Python list/array of per-bond amplitudes.
 impl<T: Copy> Pushable<T> for Vec<T> {
     fn push_self(&self, builder: &mut COOBuilder<T>, inst: &SelfInstruction, off: i32, k: i32) {
         let k_sq = (k * k) as usize;
@@ -64,14 +103,28 @@ impl<T: Copy> Pushable<T> for Vec<T> {
 }
 
 
+/// Represents a hopping amplitude that is either a single value or per-bond.
+///
+/// When calling [`BilayerMoire::build_ham`] from Python you can pass:
+/// - A scalar `float` or `complex`: the same amplitude for all bonds.
+/// - A list/NumPy array: one amplitude per bond, in the order produced
+///   by [`BilayerMoire::generate_connections`].
+///
+/// PyO3's `FromPyObject` derive handles the conversion automatically.
 #[derive(FromPyObject)]
 pub enum Input<T> {
-    Scalar(T),      // This variant catches a single value (f64 or Complex)
-    Vector(Vec<T>), // This variant catches a Python list or NumPy array
+    /// A single amplitude applied uniformly to every entry.
+    Scalar(T),
+    /// Per-bond amplitudes; must have as many elements as hopping pairs times `orbitals^2`.
+    Vector(Vec<T>),
 }
 
 // Now we implement the Pushable trait FOR the Input enum itself.
 // This is where the routing happens.
+/// Pushable impl for the `Input<T>` enum.
+///
+/// Matches on whether the Python caller passed a scalar or a list and forwards
+/// to the correct concrete impl. All methods on `BilayerMoire` accept `Input<T>`.
 impl<T: Copy> Pushable<T> for Input<T> {
     fn push_self(&self, builder: &mut COOBuilder<T>, inst: &SelfInstruction, off: i32, k: i32) {
         match self {
@@ -92,59 +145,150 @@ impl<T: Copy> Pushable<T> for Input<T> {
 
 
 
+/// Represents a twisted bilayer Moiré system built from two [`Layer`]s.
+///
+/// Owns references to two pre-initialised `Layer` objects (lower + upper), stores
+/// the geometric parameters of the Moiré supercell, and caches the hopping
+/// instructions computed in [`BilayerMoire::generate_connections`]. The
+/// Hamiltonian is assembled on demand in [`BilayerMoire::build_ham`] or
+/// [`BilayerMoire::build_ham_complex`].
 #[pyclass]
 pub struct BilayerMoire {
-    // --- 1. Layer Ownership (Shared with Python) ---
-    // Using Py<Layer> allows Rust to point to the same memory Python uses.
-    pub lower_lattice: Py<Layer>,
-    pub upper_lattice: Py<Layer>,
+    // -------------------------------------------------------------------------
+    // 1. Layer Ownership
+    // -------------------------------------------------------------------------
 
-    // --- 2. Geometric Coefficients (AVC Tool) ---
+    /// Reference to the lower crystal layer.
+    ///
+    /// Stored as `Py<Layer>` (a Python-owned smart pointer) so the same `Layer`
+    /// object is shared between Rust and Python without copying.
+    /// Use `.bind(py).borrow()` to get an immutable Rust reference inside a method.
+    pub lower_lattice: Py<Layer>,                   // private
+
+    /// Reference to the upper crystal layer.
+    pub upper_lattice: Py<Layer>,                   // private
+
+    // -------------------------------------------------------------------------
+    // 2. Geometric (AVC) Coefficients
+    // These integers parameterise the commensurate twist angle and come from
+    // the AVC (Angle-Vector-Commensurate) construction.
+    // -------------------------------------------------------------------------
+
+    /// Integer coefficient `l1` for the lower lattice supercell vector.
     #[pyo3(get)]
     pub ll1: i32,
+
+    /// Integer coefficient `l2` for the lower lattice supercell vector.
     #[pyo3(get)]
     pub ll2: i32,
+
+    /// Integer coefficient `u1` for the upper lattice supercell vector.
     #[pyo3(get)]
     pub ul1: i32,
+
+    /// Integer coefficient `u2` for the upper lattice supercell vector.
     #[pyo3(get)]
     pub ul2: i32,
 
-    // --- 3. Supercell Parameters ---
+    // -------------------------------------------------------------------------
+    // 3. Supercell Parameters
+    // -------------------------------------------------------------------------
+
+    /// Number of Moiré super-cells tiled along the first Moiré vector.
     #[pyo3(get)]
     pub n1: usize,
+
+    /// Number of Moiré super-cells tiled along the second Moiré vector.
     #[pyo3(get)]
     pub n2: usize,
+
+    /// Twist angle in **radians** (the physical parameter of interest).
     #[pyo3(get)]
     pub theta: f64,
-    // #[getter]
-    pub mlv1: Array1<f64>,
-    // #[getter]
-    pub mlv2: Array1<f64>,
-    // #[getter]
-    pub translate_upper: Array1<f64>,
 
-    // --- 4. Global Simulation State ---
+    /// First Moiré supercell vector M1, shape `(2,)`.
+    ///
+    /// Kept as an owned `Array1<f64>`; exposed to Python via the hand-written `#[getter]`.
+    pub mlv1: Array1<f64>,  // #[getter]
+
+    /// Second Moiré supercell vector M2, shape `(2,)`.
+    pub mlv2: Array1<f64>,  // #[getter]
+
+    /// Translation vector `[dx, dy]` applied to the upper layer basis.
+    ///
+    /// Needed when the two layers are not on the same origin (AA vs AB stacking).
+    /// Exposed to Python via `#[getter]`.
+    pub translate_upper: Array1<f64>,  // #[getter]
+
+    // -------------------------------------------------------------------------
+    // 4. Global Simulation State
+    // -------------------------------------------------------------------------
+
+    /// Whether Periodic Boundary Conditions are active for both layers.
     #[pyo3(get)]
     pub pbc: bool,
+
+    /// Number of orbitals per lattice site (block size of the Hamiltonian).
+    ///
+    /// `orbitals = 1` produces a scalar tight-binding model; `orbitals = 2`
+    /// produces a 2x2 block Hamiltonian (e.g. two sublattice orbitals per site).
     #[pyo3(get)]
     pub orbitals: usize,
 
-    // --- 5. Hopping Instructions ---
-    // #[getter] for all the 6 below
-    pub hop_ll: Option<HoppingInstruction>,
-    pub hop_uu: Option<HoppingInstruction>,
-    pub hop_lu: Option<HoppingInstruction>,
-    pub hop_ul: Option<HoppingInstruction>,
-    pub hop_l: Option<SelfInstruction>,
-    pub hop_u: Option<SelfInstruction>,
+    // -------------------------------------------------------------------------
+    // 5. Hopping Instructions (cached after generate_connections)
+    // Each Option is None before generate_connections is called.
+    // -------------------------------------------------------------------------
 
-    pub nnz: Option<usize>,
+    /// Intra-layer hopping pairs for the lower layer.
+    ///
+    /// Each entry is a `(site_i, site_j, type_i, type_j)` tuple describing one directed
+    /// hopping. Built from the nearest-neighbour search in [`BilayerMoire::generate_connections`].
+    pub hop_ll: Option<HoppingInstruction>,  // #[getter]
+
+    /// Intra-layer hopping pairs for the upper layer.
+    pub hop_uu: Option<HoppingInstruction>,  // #[getter]
+
+    /// Inter-layer hopping from lower to upper (H_lu block).
+    pub hop_lu: Option<HoppingInstruction>,  // #[getter]
+
+    /// Inter-layer hopping from upper to lower (H_ul block).
+    pub hop_ul: Option<HoppingInstruction>,  // #[getter]
+
+    /// On-site (self-energy) entries for the lower layer sites.
+    pub hop_l: Option<SelfInstruction>,  // #[getter]
+
+    /// On-site (self-energy) entries for the upper layer sites.
+    pub hop_u: Option<SelfInstruction>,  // #[getter]
+
+    /// Cached count of non-zero entries for pre-allocating the COO builder.
+    ///
+    /// Computed at the end of `generate_connections` via `calculate_total_nnz`.
+    /// `None` before that call.
+    pub nnz: Option<usize>,                         // private
 }
 
 
 
+/// PyO3-exported methods, callable from Python.
 #[pymethods]
 impl BilayerMoire {
+    /// Constructs a new `BilayerMoire` system from two pre-initialised layers.
+    ///
+    /// The caller must generate points on both layers (`layer.generate_points(...)`) before
+    /// creating the `BilayerMoire`; this constructor only stores references and geometry.
+    ///
+    /// # Arguments
+    /// * `lower`: the lower crystal layer (Python `Layer` object).
+    /// * `upper`: the upper crystal layer (rotated by `theta`).
+    /// * `ll1`, `ll2`: AVC integer coefficients for the lower lattice.
+    /// * `ul1`, `ul2`: AVC integer coefficients for the upper lattice.
+    /// * `n1`, `n2`: tiling counts for the Moiré supercell.
+    /// * `theta`: twist angle in radians.
+    /// * `mlv1`, `mlv2`: Moiré supercell vectors as 1-D NumPy arrays.
+    /// * `translate_upper`: `[dx, dy]` stacking offset for the upper layer.
+    /// * `pbc`: whether to use periodic boundary conditions.
+    /// * `orbitals`: number of orbitals per site (Hamiltonian block size).
     #[new]
     #[pyo3(signature = (lower, upper, ll1, ll2, ul1, ul2, n1, n2, theta, mlv1, mlv2, translate_upper, pbc, orbitals))]
     pub fn new(
@@ -190,6 +334,26 @@ impl BilayerMoire {
         }
     }
 
+    /// Computes and caches all hopping and self-energy instructions.
+    ///
+    /// Must be called once before [`BilayerMoire::build_ham`]. Calling again is
+    /// safe: it clears and rebuilds all instructions.
+    ///
+    /// Steps:
+    /// 1. Self-energies (`hop_l`, `hop_u`): records every site index and its type.
+    /// 2. Intra-layer LL (`hop_ll`): calls [`Layer::first_nearest_neighbours_internal`]
+    ///    on the lower layer; stores all `(i, j)` pairs where `j >= 0`.
+    /// 3. Intra-layer UU (`hop_uu`): same for the upper layer.
+    /// 4. Inter-layer LU/UL (`hop_lu`, `hop_ul`): radius search on the lower KD-tree
+    ///    using each upper-layer site as the query point. For PBC, raw indices are
+    ///    remapped via `lower.mappings`.
+    ///
+    /// Also updates `self.nnz` for memory pre-allocation.
+    ///
+    /// # Arguments
+    /// * `py`: Python interpreter token.
+    /// * `inter_layer_radius`: maximum Euclidean distance for an inter-layer bond
+    ///   to be included (e.g. ~3.35 A for graphene interlayer distance).
     pub fn generate_connections(&mut self, py: Python<'_>, inter_layer_radius: f64) {
         let lower = self.lower_lattice.bind(py).borrow();
         let upper = self.upper_lattice.bind(py).borrow();
@@ -269,6 +433,25 @@ impl BilayerMoire {
         self.calculate_total_nnz();
     }
 
+    /// Assembles the real-valued tight-binding Hamiltonian in COO format.
+    ///
+    /// Thin wrapper around [`BilayerMoire::build_ham_internal`] accepting `f64` amplitudes.
+    ///
+    /// # Arguments
+    /// * `tll`: intra-layer hopping amplitude(s) for the lower layer.
+    /// * `tuu`: intra-layer hopping amplitude(s) for the upper layer.
+    /// * `tlu`: inter-layer hopping amplitude(s) from lower to upper.
+    /// * `tul`: inter-layer hopping amplitude(s) from upper to lower.
+    /// * `tuself`: on-site energy for upper-layer sites.
+    /// * `tlself`: on-site energy for lower-layer sites.
+    ///
+    /// Each argument can be a scalar `float` or a list/array of per-bond values.
+    ///
+    /// # Returns
+    /// `(data, rows, cols)` as 1-D NumPy arrays, ready for `scipy.sparse.coo_matrix`.
+    ///
+    /// # Errors
+    /// Returns `PyRuntimeError` if `generate_connections` was not called first.
     pub fn build_ham<'py>(
         &self,
         py: Python<'py>,
@@ -282,6 +465,17 @@ impl BilayerMoire {
         self.build_ham_internal(py, tll, tuu, tlu, tul, tuself, tlself)
     }
 
+    /// Assembles the complex-valued tight-binding Hamiltonian in COO format.
+    ///
+    /// Same as [`BilayerMoire::build_ham`] but accepts `Complex<f64>` amplitudes,
+    /// enabling Hamiltonians with complex hopping phases (e.g. Haldane model,
+    /// magnetic flux, spin-orbit coupling).
+    ///
+    /// # Returns
+    /// `(data, rows, cols)` where `data` is a `Complex<f64>` array.
+    ///
+    /// # Errors
+    /// Same as [`BilayerMoire::build_ham`].
     pub fn build_ham_complex<'py>(
         &self,
         py: Python<'py>,
@@ -297,20 +491,25 @@ impl BilayerMoire {
 
 
 
-    // --- Read-Only Getters for Python ---
+    // -------------------------------------------------------------------------
+    // Read-only getters for the ndarray fields that can't use #[pyo3(get)].
+    // -------------------------------------------------------------------------
 
+    /// Returns the first Moiré supercell vector `mlv1` as a 1-D NumPy array `(2,)`.
     #[getter]
     fn mlv1<'py>(&self, py: Python<'py>) -> Bound<'py, numpy::PyArray1<f64>> {
         use numpy::ToPyArray;
         self.mlv1.to_pyarray(py)
     }
 
+    /// Returns the second Moiré supercell vector `mlv2` as a 1-D NumPy array `(2,)`.
     #[getter]
     fn mlv2<'py>(&self, py: Python<'py>) -> Bound<'py, numpy::PyArray1<f64>> {
         use numpy::ToPyArray;
         self.mlv2.to_pyarray(py)
     }
 
+    /// Returns the stacking translation vector `[dx, dy]` as a 1-D NumPy array `(2,)`.
     #[getter]
     fn translate_upper<'py>(&self, py: Python<'py>) -> Bound<'py, numpy::PyArray1<f64>> {
         use numpy::ToPyArray;
@@ -318,6 +517,8 @@ impl BilayerMoire {
     }
 
 
+    /// Returns the cached intra-layer lower hopping instruction, or `None`
+    /// if `generate_connections` has not been called yet.
     #[getter]
     fn hop_ll(&self) -> Option<HoppingInstruction> {
         self.hop_ll.as_ref().map(|h| HoppingInstruction {
@@ -328,6 +529,7 @@ impl BilayerMoire {
         }) //
     }
 
+    /// Returns the cached intra-layer upper hopping instruction, or `None`.
     #[getter]
     fn hop_uu(&self) -> Option<HoppingInstruction> {
         self.hop_uu.as_ref().map(|h| HoppingInstruction {
@@ -338,6 +540,7 @@ impl BilayerMoire {
         }) //
     }
 
+    /// Returns the cached inter-layer upper -> lower hopping instruction, or `None`.
     #[getter]
     fn hop_ul(&self) -> Option<HoppingInstruction> {
         self.hop_ul.as_ref().map(|h| HoppingInstruction {
@@ -348,6 +551,7 @@ impl BilayerMoire {
         }) //
     }
 
+    /// Returns the cached inter-layer lower -> upper hopping instruction, or `None`.
     #[getter]
     fn hop_lu(&self) -> Option<HoppingInstruction> {
         self.hop_lu.as_ref().map(|h| HoppingInstruction {
@@ -358,6 +562,7 @@ impl BilayerMoire {
         }) //
     }
 
+    /// Returns the cached self-energy instruction for lower-layer sites, or `None`.
     #[getter]
     fn hop_l(&self) -> Option<SelfInstruction> {
         self.hop_l.as_ref().map(|h| SelfInstruction {
@@ -366,6 +571,7 @@ impl BilayerMoire {
         }) //
     }
 
+    /// Returns the cached self-energy instruction for upper-layer sites, or `None`.
     #[getter]
     fn hop_u(&self) -> Option<SelfInstruction> {
         self.hop_u.as_ref().map(|h| SelfInstruction {
@@ -376,7 +582,18 @@ impl BilayerMoire {
 }
 
 
+/// Private Rust-only helpers, not exported to Python.
 impl BilayerMoire {
+    /// Computes and caches the **total number of non-zero** Hamiltonian entries.
+    ///
+    /// Called automatically at the end of [`BilayerMoire::generate_connections`].
+    /// The count is a conservative upper bound: every instruction entry is
+    /// assumed to contribute a full `k^2 = orbitals^2` block regardless of
+    /// whether the amplitude is zero.  This avoids reallocation during the
+    /// COO assembly loop.
+    ///
+    /// The result is stored in `self.nnz` and used to pre-allocate the
+    /// `COOBuilder` inside [`BilayerMoire::build_ham_internal`].
     fn calculate_total_nnz(&mut self) {
         let k_sq = (self.orbitals * self.orbitals) as usize; // k^2 entries per instruction
         let mut count = 0;
@@ -393,6 +610,37 @@ impl BilayerMoire {
     }
 
 
+    /// Generic Hamiltonian assembly in COO (coordinate) sparse format.
+    ///
+    /// This is the single implementation behind both [`BilayerMoire::build_ham`]
+    /// (real `f64`) and [`BilayerMoire::build_ham_complex`] (`Complex<f64>`).
+    /// Generics let us avoid code duplication while keeping Rust's type safety.
+    ///
+    /// ## Assembly order
+    /// The COO triplets are added in this order (important for understanding
+    /// the row/column layout of the sparse matrix):
+    /// 1. Lower self-energies (rows/cols in `[0, n_lower * k)`).
+    /// 2. Upper self-energies (rows/cols in `[n_lower * k, (n_lower + n_upper) * k)`).
+    /// 3. Lower intra-layer hoppings (LL block, top-left quadrant).
+    /// 4. Upper intra-layer hoppings (UU block, bottom-right quadrant).
+    /// 5. Lower -> Upper inter-layer hoppings (LU block, top-right quadrant).
+    /// 6. Upper -> Lower inter-layer hoppings (UL block, bottom-left quadrant).
+    ///
+    /// ## Orbital blocking
+    /// If `orbitals = k > 1`, each site expands into a `k x k` sub-block.
+    /// Scalar amplitudes fill the full block uniformly; vector amplitudes
+    /// must provide `k^2` values per pair.
+    ///
+    /// # Type parameters
+    /// * `T`: numeric type of the amplitude (`f64` or `Complex<f64>`).
+    /// * `S1..S6`: concrete `Pushable<T>` types inferred from arguments.
+    ///
+    /// # Returns
+    /// `(data, rows, cols)` as 1-D PyO3-bound NumPy arrays.
+    ///
+    /// # Errors
+    /// Returns `PyRuntimeError` if any of the six hopping instructions is `None`
+    /// (meaning `generate_connections` was not called first).
     fn build_ham_internal<'py, T, S1, S2, S3, S4, S5, S6>(
         &self,
         py: Python<'py>,

@@ -84,7 +84,21 @@ class Layer:  # parent class
         if query_points.ndim != 2 or query_points.shape[1] != 2:
             raise ValueError(f"query_points must be (N, 2), got {query_points.shape}")
 
-        return self._rust_lattice.get_neighbors_within_radius(query_points, float(radius))
+        n_query = len(query_points)
+        q_indices, bigger_indices, smaller_indices, distances = \
+            self._rust_lattice.get_neighbors_within_radius(query_points, float(radius))
+
+        # Group flat arrays into per-query-point lists of lists.
+        # q_indices is like [0, 0, 0, 1, 1, 2, 2, 2, ...] — one entry per match.
+        bigger_list  = [[] for _ in range(n_query)]
+        smaller_list = [[] for _ in range(n_query)]
+        dist_list    = [[] for _ in range(n_query)]
+        for qi, bi, si, d in zip(q_indices, bigger_indices, smaller_indices, distances):
+            bigger_list[qi].append(int(bi))
+            smaller_list[qi].append(int(si))
+            dist_list[qi].append(float(d))
+
+        return bigger_list, smaller_list, dist_list
 
     def plot_lattice(self, plot_connections: bool = True, colours: list = ["r", "g", "b", "c", "m", "y", "k"]) -> None:
         # Create a color map: index -> color

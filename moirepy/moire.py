@@ -2,6 +2,7 @@ from typing import Union, Callable
 import numpy as np
 from scipy.sparse import coo_matrix, csr_matrix
 import matplotlib.pyplot as plt
+import warnings
 
 from .layers import Layer
 from .utils import get_rotation_matrix, are_coeffs_integers
@@ -46,6 +47,7 @@ class BilayerMoireLattice:
         n1: int = 1, n2: int = 1,
         translate_upper=(0, 0),
         pbc: bool = True,
+        study_proximity: int=1,
         k: int = 1,
         verbose=True,
     ):
@@ -54,8 +56,8 @@ class BilayerMoireLattice:
             raise ValueError("latticetype must be a class that inherits from Layer.")
 
         # 1. Instantiate the Python-level Layers
-        self.lower_lattice = latticetype(pbc=pbc)
-        self.upper_lattice = latticetype(pbc=pbc)
+        self.lower_lattice = latticetype(pbc=pbc, study_proximity=study_proximity)
+        self.upper_lattice = latticetype(pbc=pbc, study_proximity=study_proximity)
 
         # 2. Local variables for geometric setup
         lv1, lv2 = self.lower_lattice.lv1, self.lower_lattice.lv2
@@ -114,8 +116,8 @@ class BilayerMoireLattice:
 
         plt.plot(*zip(*self.lower_lattice.points), 'r.', markersize=2)
         plt.plot(*zip(*self.upper_lattice.points), 'b.', markersize=2)
-        # self.lower_lattice.plot_lattice(colours=["b"], plot_connections=True)
-        # self.upper_lattice.plot_lattice(colours=["r"], plot_connections=True)
+        self.lower_lattice.plot_lattice(colours=["b"], plot_connections=True)
+        self.upper_lattice.plot_lattice(colours=["r"], plot_connections=True)
 
         # parallellogram around the whole lattice
         plt.plot([0, n1*mlv1[0]], [0, n1*mlv1[1]], 'k', linewidth=1)
@@ -165,7 +167,7 @@ class BilayerMoireLattice:
             "tuself": self._rust_class.hop_u,
         }
 
-    def _prepare_hopping_input(self, val, instruction, layer_i, layer_j):
+    def _prepare_hopping_input(self, val, instruction, layer_i, layer_j, extra_inputs=None):
         """Prepares tll, tuu, tlu, tul. Handles scalars or (N, k, k) blocks."""
         if not callable(val):
             # If scalar, we still send a float. Rust will handle the 'Scalar' variant.
@@ -183,16 +185,16 @@ class BilayerMoireLattice:
         coo_j = layer_j.points[instruction.site_j]
 
         # 3. Call user function. Expected output shape: (N, k, k)
-        # result = val(coo_i, coo_j, labels_i, labels_j)
-        result = np.array([
-            val(ci, cj, li, lj) for ci, cj, li, lj in zip(coo_i, coo_j, labels_i, labels_j)
-        ])
+        result = val(coo_i, coo_j, labels_i, labels_j, self, **extra_inputs if extra_inputs is not None else {})
+        # result = np.array([
+        #     val(ci, cj, li, lj) for ci, cj, li, lj in zip(coo_i, coo_j, labels_i, labels_j)
+        # ])
 
         # 4. Flatten to 1D array for Rust
         # Shape change: (N, k, k) -> (N * k * k,)
         return np.ascontiguousarray(result, dtype=np.complex128 if np.iscomplexobj(result) else np.float64).flatten()
 
-    def _prepare_self_input(self, val, instruction, layer):
+    def _prepare_self_input(self, val, instruction, layer, extra_inputs=None):
         """Prepares tlself, tuself. Handles scalars or (N, k, k) blocks."""
         if not callable(val):
             return float(val) if val is not None else 0.0
@@ -203,10 +205,10 @@ class BilayerMoireLattice:
         coo_i = layer.points[instruction.site_i]
         
         # Call user function. Expected output shape: (N, k, k)
-        # result = val(coo_i, labels_i)
-        result = np.array([
-            val(c, l) for c, l in zip(coo_i, labels_i)
-        ])
+        result = val(coo_i, labels_i, self, **extra_inputs if extra_inputs is not None else {})
+        # result = np.array([
+        #     val(c, l) for c, l in zip(coo_i, labels_i)
+        # ])
 
         return np.ascontiguousarray(result, dtype=np.complex128 if np.iscomplexobj(result) else np.float64).flatten()
 
@@ -214,20 +216,21 @@ class BilayerMoireLattice:
         self,
         tll=0.0, tuu=0.0, tlu=0.0, tul=0.0,
         tuself=0.0, tlself=0.0,
-        data_type=np.float64
+        data_type=np.float64,
+        extra_inputs=None
     ):
         # 1. Get instructions from Rust
         instr = self.get_hopping_instructions()
         l_lat, u_lat = self.lower_lattice, self.upper_lattice
 
         # 2. Process all inputs into either floats or 1D arrays
-        v_tlself = self._prepare_self_input(tlself, instr["tlself"], l_lat)
-        v_tuself = self._prepare_self_input(tuself, instr["tuself"], u_lat)
+        v_tlself = self._prepare_self_input(tlself, instr["tlself"], l_lat, extra_inputs)
+        v_tuself = self._prepare_self_input(tuself, instr["tuself"], u_lat, extra_inputs)
 
-        v_tll = self._prepare_hopping_input(tll, instr["tll"], l_lat, l_lat)
-        v_tuu = self._prepare_hopping_input(tuu, instr["tuu"], u_lat, u_lat)
-        v_tlu = self._prepare_hopping_input(tlu, instr["tlu"], l_lat, u_lat)
-        v_tul = self._prepare_hopping_input(tul, instr["tul"], u_lat, l_lat)
+        v_tll = self._prepare_hopping_input(tll, instr["tll"], l_lat, l_lat, extra_inputs)
+        v_tuu = self._prepare_hopping_input(tuu, instr["tuu"], u_lat, u_lat, extra_inputs)
+        v_tlu = self._prepare_hopping_input(tlu, instr["tlu"], l_lat, u_lat, extra_inputs)
+        v_tul = self._prepare_hopping_input(tul, instr["tul"], u_lat, l_lat, extra_inputs)
 
         # 3. Determine if we need the complex or real Rust gatekeeper
         # If any prepared input is an array of complex numbers, we must use complex
@@ -246,8 +249,9 @@ class BilayerMoireLattice:
         # 4. Construct the matrix
         n_tot = (len(l_lat.points) + len(u_lat.points)) * self.orbitals
         return coo_matrix((data, (rows, cols)), shape=(n_tot, n_tot), dtype=data_type)
-
-
+    
+    
+    
 
 
     def _as_callable(self, val, n_args=4):
@@ -278,19 +282,17 @@ class BilayerMoireLattice:
         tul: Union[float, int, Callable] = None,
         tlself: Union[float, int, Callable] = None,
         tuself: Union[float, int, Callable] = None,
-        inter_layer_radius: float = 3.0,
-        suppress_nxny_warning: bool = False,
-        suppress_obc_warning: bool = False,
     ):
-        if not suppress_nxny_warning and (self.n1 != 1 or self.n2 != 1):
-            raise ValueError("WARNING: n1 or n2 != 1. Momentum space is usually for n1=n2=1."
-                "Aborting mission. set suppress_nxny_warning=True to override this check.")
+        if self.n1 != 1 or self.n2 != 1:
+            warnings.warn(
+                "k-space formulation typically assumes n1 = n2 = 1; results may not be physically meaningful.",
+                RuntimeWarning,
+            )
 
-        if not suppress_obc_warning and not self.pbc:
-            raise ValueError(
-                "k-space Hamiltonian requested for an OBC system. "
-                "Since all lattice shifts R=0, the result is identical to the real-space matrix and k-independent. "
-                "Set suppress_obc_warning=True to proceed anyway."
+        if not self.pbc:
+            warnings.warn(
+                "k-space Hamiltonian with open boundary conditions is k-independent and equivalent to the real-space matrix.",
+                RuntimeWarning,
             )
 
         # Validate and convert inputs to callables
@@ -300,7 +302,8 @@ class BilayerMoireLattice:
 
         # Bloch phase factor helper
         def part(this_coo, neigh_coo):
-            return np.exp(1j * (k @ (this_coo.squeeze() - neigh_coo.squeeze())))
+            return np.exp(-1j * ((this_coo.squeeze() - neigh_coo.squeeze()) @ k))
+            # print(f"{this_coo.shape = }, {neigh_coo.shape = }, {k.shape = }")
 
         return self.generate_hamiltonian(
             tll=lambda c1, c2, t1, t2: tll(c1, c2, t1, t2) * part(c1, c2),

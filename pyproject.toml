@@ -24,6 +24,7 @@ classifiers = [
     "Operating System :: OS Independent",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
     "Topic :: Education",
@@ -32,7 +33,7 @@ classifiers = [
     "Topic :: Scientific/Engineering :: Mathematics",
     "Topic :: Scientific/Engineering :: Physics",
 ]
-requires-python = ">=3.12"
+requires-python = ">=3.11"
 dynamic = ["version"]
 dependencies = [
     "numpy",
@@ -49,10 +50,3 @@ dependencies = [
 [tool.maturin]
 module-name = "moirepy.moirepy_rust"
 features = ["pyo3/extension-module"]
-
-dependencies = [
-    "numpy",
-    "scipy",
-    "matplotlib",
-    "tqdm",
-]
