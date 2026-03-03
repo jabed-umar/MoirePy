@@ -3,7 +3,7 @@ use ndarray::{Array1};
 use pyo3::prelude::*;
 use numpy::{PyReadonlyArray1,  IntoPyArray, Element, PyArray1};
 use crate::layers::Layer;
-use crate::utils::{COOBuilder, HoppingInstruction, SelfInstruction};
+use crate::utils::{COOBuilder, HoppingInstruction, SelfInstruction, ShiftInstruction};
 
 /// A trait that abstracts over scalar and vector hopping amplitudes.
 ///
@@ -266,6 +266,12 @@ pub struct BilayerMoire {
     /// Computed at the end of `generate_connections` via `calculate_total_nnz`.
     /// `None` before that call.
     pub nnz: Option<usize>,                         // private
+
+    /// Cached COO shift entries used for k-space phase factors.
+    ///
+    /// Each COO entry stores a row, column, and 2D shift vector `(dx, dy)`.
+    /// `None` until `generate_connections` is called.
+    shifts: Option<ShiftInstruction>,               // private
 }
 
 
@@ -331,6 +337,7 @@ impl BilayerMoire {
             hop_l: None,
             hop_u: None,
             nnz: None,
+            shifts: None,
         }
     }
 
@@ -348,7 +355,8 @@ impl BilayerMoire {
     ///    using each upper-layer site as the query point. For PBC, raw indices are
     ///    remapped via `lower.mappings`.
     ///
-    /// Also updates `self.nnz` for memory pre-allocation.
+    /// Also updates `self.nnz` for memory pre-allocation and refreshes the cached
+    /// shift COO entries used by `get_phase`.
     ///
     /// # Arguments
     /// * `py`: Python interpreter token.
@@ -375,6 +383,7 @@ impl BilayerMoire {
         if let Some(ref mut h) = self.hop_lu { h.clear(); } else { self.hop_lu = Some(HoppingInstruction::new(n_l)); }
         if let Some(ref mut h) = self.hop_l { h.clear(); } else { self.hop_l = Some(SelfInstruction::new(n_l)); }
         if let Some(ref mut h) = self.hop_u { h.clear(); } else { self.hop_u = Some(SelfInstruction::new(n_u)); }
+        if let Some(ref mut s) = self.shifts { s.clear(); } else { self.shifts = Some(ShiftInstruction::new((n_l + n_u) * 8)); }
 
         let h_ll = self.hop_ll.as_mut().unwrap();
         let h_uu = self.hop_uu.as_mut().unwrap();
@@ -382,35 +391,64 @@ impl BilayerMoire {
         let h_lu = self.hop_lu.as_mut().unwrap();
         let h_l = self.hop_l.as_mut().unwrap();
         let h_u = self.hop_u.as_mut().unwrap();
+        let shifts = self.shifts.as_mut().unwrap();
+        let offset = n_l as i32;
+
+        let lower_big = if lower.pbc {
+            lower.bigger_points.as_ref().expect("Lower bigger_points missing under PBC")
+        } else {
+            points_l
+        };
+        let upper_big = if upper.pbc {
+            upper.bigger_points.as_ref().expect("Upper bigger_points missing under PBC")
+        } else {
+            points_u
+        };
 
         // 1. Self-Energies
-        for i in 0..n_l { h_l.add(i as i32, internal_types_l[i] as i32); }
-        for i in 0..n_u { h_u.add(i as i32, internal_types_u[i] as i32); }
+        for i in 0..n_l {
+            h_l.add(i as i32, internal_types_l[i] as i32);
+            shifts.add(i as i32, i as i32, 0.0, 0.0);
+        }
+        for i in 0..n_u {
+            h_u.add(i as i32, internal_types_u[i] as i32);
+            shifts.add(i as i32 + offset, i as i32 + offset, 0.0, 0.0);
+        }
 
         // 2. Intra-layer (Lower) - Direct Internal Call
-        let (_, small_idx_l, _) = lower.first_nearest_neighbours_internal(
+        let (big_idx_l, small_idx_l, _) = lower.first_nearest_neighbours_internal(
             &points_l.view(),
             internal_types_l
         ).expect("Lower neighbors failed");
 
         for i in 0..n_l {
-            for &j in small_idx_l.row(i) {
-                if j >= 0 {
-                    h_ll.add(i as i32, j as i32, internal_types_l[i] as i32, internal_types_l[j as usize] as i32);
+            for (&j, &b) in small_idx_l.row(i).iter().zip(big_idx_l.row(i).iter()) {
+                if j >= 0 && b >= 0 {
+                    let j_us = j as usize;
+                    let b_us = b as usize;
+                    h_ll.add(i as i32, j as i32, internal_types_l[i] as i32, internal_types_l[j_us] as i32);
+                    let dx = lower_big[[b_us, 0]] - points_l[[j_us, 0]];
+                    let dy = lower_big[[b_us, 1]] - points_l[[j_us, 1]];
+                    shifts.add(i as i32, j as i32, dx, dy);
                 }
             }
         }
 
         // 3. Intra-layer (Upper) - Direct Internal Call
-        let (_, small_idx_u, _) = upper.first_nearest_neighbours_internal(
+        let (big_idx_u, small_idx_u, _) = upper.first_nearest_neighbours_internal(
             &points_u.view(),
             internal_types_u
         ).expect("Upper neighbors failed");
 
         for i in 0..n_u {
-            for &j in small_idx_u.row(i) {
-                if j >= 0 {
-                    h_uu.add(i as i32, j as i32, internal_types_u[i] as i32, internal_types_u[j as usize] as i32);
+            for (&j, &b) in small_idx_u.row(i).iter().zip(big_idx_u.row(i).iter()) {
+                if j >= 0 && b >= 0 {
+                    let j_us = j as usize;
+                    let b_us = b as usize;
+                    h_uu.add(i as i32, j as i32, internal_types_u[i] as i32, internal_types_u[j_us] as i32);
+                    let dx = upper_big[[b_us, 0]] - points_u[[j_us, 0]];
+                    let dy = upper_big[[b_us, 1]] - points_u[[j_us, 1]];
+                    shifts.add(i as i32 + offset, j as i32 + offset, dx, dy);
                 }
             }
         }
@@ -427,6 +465,10 @@ impl BilayerMoire {
             
                     h_ul.add(i as i32, j_small as i32, internal_types_u[i] as i32, internal_types_l[j_small] as i32);
                     h_lu.add(j_small as i32, i as i32, internal_types_l[j_small] as i32, internal_types_u[i] as i32);
+                    let dx = lower_big[[j_big, 0]] - points_l[[j_small, 0]];
+                    let dy = lower_big[[j_big, 1]] - points_l[[j_small, 1]];
+                    shifts.add(i as i32 + offset, j_small as i32, dx, dy);
+                    shifts.add(j_small as i32, i as i32 + offset, -dx, -dy);
                 }
             }
         }
@@ -487,6 +529,49 @@ impl BilayerMoire {
         tlself: Input<Complex<f64>>,
     ) -> PyResult<(Bound<'py, PyArray1<Complex<f64>>>, Bound<'py, PyArray1<i32>>, Bound<'py, PyArray1<i32>>)> {
         self.build_ham_internal(py, tll, tuu, tlu, tul, tuself, tlself)
+    }
+
+    /// Builds COO phase data from cached shifts for a given k-vector.
+    ///
+    /// For each cached entry `(row, col, dx, dy)`, writes
+    /// `data = exp(-i * (dx * kx + dy * ky))` into the COO output.
+    ///
+    /// # Errors
+    /// Returns `PyRuntimeError` if `generate_connections` has not been called.
+    pub fn get_phase<'py>(
+        &self,
+        py: Python<'py>,
+        kx: f64,
+        ky: f64,
+    ) -> PyResult<(Bound<'py, PyArray1<Complex<f64>>>, Bound<'py, PyArray1<i32>>, Bound<'py, PyArray1<i32>>)> {
+        let shifts = self
+            .shifts
+            .as_ref()
+            .ok_or_else(|| PyErr::new::<pyo3::exceptions::PyRuntimeError, _>("shifts missing. Run generate_connections first"))?;
+
+        let k_orb = self.orbitals as i32;
+        let mut phase = COOBuilder::<Complex<f64>>::new(shifts.rows.len() * (k_orb * k_orb) as usize);
+        for (((&row, &col), &dx), &dy) in shifts
+            .rows
+            .iter()
+            .zip(shifts.cols.iter())
+            .zip(shifts.dx.iter())
+            .zip(shifts.dy.iter())
+        {
+            let theta = dx * kx + dy * ky;
+            let val = Complex::new(theta.cos(), -theta.sin());
+            for r_orb in 0..k_orb {
+                for c_orb in 0..k_orb {
+                    phase.add(row * k_orb + r_orb, col * k_orb + c_orb, val);
+                }
+            }
+        }
+
+        Ok((
+            phase.data.into_pyarray(py),
+            phase.rows.into_pyarray(py),
+            phase.cols.into_pyarray(py),
+        ))
     }
 
 
@@ -579,6 +664,7 @@ impl BilayerMoire {
             ptype: h.ptype.clone(),
         }) //
     }
+
 }
 
 

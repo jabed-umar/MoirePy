@@ -1,8 +1,6 @@
-from typing import Union, Callable
 import numpy as np
 from scipy.sparse import coo_matrix, csr_matrix
 import matplotlib.pyplot as plt
-import warnings
 
 from .layers import Layer
 from .utils import get_rotation_matrix, are_coeffs_integers
@@ -152,6 +150,39 @@ class BilayerMoireLattice:
         # This fills hop_ll, hop_uu, hop_ul, etc. in one high-speed pass.
         self._rust_class.generate_connections(float(inter_layer_radius))
 
+    def get_phase(self, k):
+        """
+        Returns phase as COO matrix/matrices for one or many k-vectors.
+
+        Args:
+            k: array-like with shape (2,) or (N, 2)
+
+        Returns:
+            If k.shape == (2,): scipy.sparse.coo_matrix
+            If k.shape == (N, 2): list[scipy.sparse.coo_matrix]
+        """
+        k = np.asarray(k, dtype=float)
+        n_tot = (len(self.lower_lattice.points) + len(self.upper_lattice.points)) * self.orbitals
+
+        if k.ndim == 1:
+            if k.shape[0] != 2:
+                raise ValueError(f"k must have shape (2,), got {k.shape}")
+            data, rows, cols = self._rust_class.get_phase(float(k[0]), float(k[1]))
+            return coo_matrix((data, (rows, cols)), shape=(n_tot, n_tot), dtype=np.complex128)
+
+        if k.ndim == 2 and k.shape[1] == 2:
+            if k.shape[0] == 0:
+                raise ValueError("k with shape (N, 2) must have N > 0")
+
+            out = []
+            for i in range(k.shape[0]):
+                data, rows, cols = self._rust_class.get_phase(float(k[i, 0]), float(k[i, 1]))
+                out.append(coo_matrix((data, (rows, cols)), shape=(n_tot, n_tot), dtype=np.complex128))
+
+            return out
+
+        raise ValueError(f"k must have shape (2,) or (N, 2), got {k.shape}")
+
     def get_hopping_instructions(self):
         """
         Retrieves the raw connection data from the Rust backend.
@@ -216,7 +247,7 @@ class BilayerMoireLattice:
         self,
         tll=0.0, tuu=0.0, tlu=0.0, tul=0.0,
         tuself=0.0, tlself=0.0,
-        data_type=np.float64,
+        data_type=np.complex128,
         extra_inputs=None
     ):
         # 1. Get instructions from Rust
@@ -249,71 +280,6 @@ class BilayerMoireLattice:
         # 4. Construct the matrix
         n_tot = (len(l_lat.points) + len(u_lat.points)) * self.orbitals
         return coo_matrix((data, (rows, cols)), shape=(n_tot, n_tot), dtype=data_type)
-    
-    
-    
-
-
-    def _as_callable(self, val, n_args=4):
-        if callable(val):
-            return val
-        if n_args == 4:
-            return lambda c1, c2, t1, t2: val if val is not None else 0
-        return lambda c, t: val if val is not None else 0
-    
-    def _validate_hamiltonian_inputs(self, tll, tuu, tlu, tul, tuself, tlself):
-        """Helper to ensure all hopping terms are callable."""
-        tll, tuu, tlu, tul = [self._as_callable(t, 4) for t in (tll, tuu, tlu, tul)]
-        tuself, tlself = [self._as_callable(t, 2) for t in (tuself, tlself)]
-        assert all(
-            callable(fn)
-            for fn in (tll, tuu, tlu, tul, tuself, tlself)
-        ), "Hopping parameters must be floats, ints, or callable functions."
-        return tll, tuu, tlu, tul, tuself, tlself
-
-
-
-    def generate_k_space_hamiltonian(
-        self,
-        k: np.ndarray,
-        tll: Union[float, int, Callable] = None,
-        tuu: Union[float, int, Callable] = None,
-        tlu: Union[float, int, Callable] = None,
-        tul: Union[float, int, Callable] = None,
-        tlself: Union[float, int, Callable] = None,
-        tuself: Union[float, int, Callable] = None,
-    ):
-        if self.n1 != 1 or self.n2 != 1:
-            warnings.warn(
-                "k-space formulation typically assumes n1 = n2 = 1; results may not be physically meaningful.",
-                RuntimeWarning,
-            )
-
-        if not self.pbc:
-            warnings.warn(
-                "k-space Hamiltonian with open boundary conditions is k-independent and equivalent to the real-space matrix.",
-                RuntimeWarning,
-            )
-
-        # Validate and convert inputs to callables
-        tll, tuu, tlu, tul, tuself, tlself = self._validate_hamiltonian_inputs(
-            tll, tuu, tlu, tul, tuself, tlself
-        )
-
-        # Bloch phase factor helper
-        def part(this_coo, neigh_coo):
-            return np.exp(-1j * ((this_coo.squeeze() - neigh_coo.squeeze()) @ k))
-            # print(f"{this_coo.shape = }, {neigh_coo.shape = }, {k.shape = }")
-
-        return self.generate_hamiltonian(
-            tll=lambda c1, c2, t1, t2: tll(c1, c2, t1, t2) * part(c1, c2),
-            tuu=lambda c1, c2, t1, t2: tuu(c1, c2, t1, t2) * part(c1, c2),
-            tlu=lambda c1, c2, t1, t2: tlu(c1, c2, t1, t2) * part(c1, c2),
-            tul=lambda c1, c2, t1, t2: tul(c1, c2, t1, t2) * part(c1, c2),
-            tuself=tuself,
-            tlself=tlself,
-            data_type=np.complex128
-        )
 
 
     # --- Geometric Coefficients ---
@@ -419,4 +385,3 @@ class BilayerMoireLattice:
 #         k:int=1,  # number of orbitals
 #     ):
 #         pass
-

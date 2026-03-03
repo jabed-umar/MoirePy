@@ -124,6 +124,38 @@ impl SelfInstruction {
     }
 }
 
+pub struct ShiftInstruction {
+    pub rows: Vec<i32>,
+    pub cols: Vec<i32>,
+    pub dx: Vec<f64>,
+    pub dy: Vec<f64>,
+}
+
+impl ShiftInstruction {
+    pub fn new(capacity: usize) -> Self {
+        ShiftInstruction {
+            rows: Vec::with_capacity(capacity),
+            cols: Vec::with_capacity(capacity),
+            dx: Vec::with_capacity(capacity),
+            dy: Vec::with_capacity(capacity),
+        }
+    }
+
+    pub fn add(&mut self, row: i32, col: i32, dx: f64, dy: f64) {
+        self.rows.push(row);
+        self.cols.push(col);
+        self.dx.push(dx);
+        self.dy.push(dy);
+    }
+
+    pub fn clear(&mut self) {
+        self.rows.clear();
+        self.cols.clear();
+        self.dx.clear();
+        self.dy.clear();
+    }
+}
+
 
 
 // pub fn coo_to_csr<T>(
