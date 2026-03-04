@@ -267,7 +267,7 @@ r = |\vec{r}| = \sqrt{a^2 + b^2 + 2ab\cos\beta}
 
 <p><br></p>
 <h3 id="time-complexity_1">Time Complexity</h3>
-<p>If the number points is of the order <span class="arithmatex">\(O(n^2)\)</span> and they are sorted by distance, the time complexity of this part becomes <span class="arithmatex">\(O(n^2 \log n^2)\)</span>. Apart from this all other steps are multiple order smaller than this cost, hence can be ignored. That makes this algorithm much less than the <span class="arithmatex">\(O(n^3)\)</span> of the Diophantine approach and arguably more intuitive.</p>
+<p>If the number points is of the order <span class="arithmatex">\(O(n^2)\)</span> and they are sorted by distance, the time complexity of this part becomes <span class="arithmatex">\(O(n^2 \log n^2) =  O(n^2 \log n)\)</span> (because <span class="arithmatex">\(\log n^2 = 2 \log n\)</span>). Apart from this all other steps are multiple order smaller than this cost, hence can be ignored. That makes this algorithm much less than the <span class="arithmatex">\(O(n^3)\)</span> of the Diophantine approach and arguably more intuitive.</p>
 <h3 id="calculating-the-lattice-vectors-given-the-overlapping-points">Calculating the lattice vectors given the overlapping points</h3>
 <h2 id="summary">Summary</h2>
 <p>We avoided solving Diophantine equations by leaning on geometry and symmetry:</p>
