@@ -512,32 +512,27 @@ impl Layer {
     /// [`Layer::first_nearest_neighbours_internal`].
     ///
     /// # Arguments
-    /// * `py`: Python interpreter token (provided automatically by PyO3).
     /// * `points`: `(N, 2)` NumPy array of Cartesian coordinates to search from.
     /// * `types`: List of N basis-type strings (e.g. `["A", "B", "A", ...]`).
     ///   Determines which neighbour deltas are used per point.
     ///
     /// # Returns
-    /// A 3-tuple of 2-D NumPy arrays, each shape `(N, max_neighbours)`:
-    /// 1. `bigger_indices` (`i64`): raw KD-tree item index of each neighbour.
-    ///    Unfilled entries are `-1`.
-    /// 2. `smaller_indices` (`i64`): neighbour index mapped to the primary cell
-    ///    via `self.mappings`. Unfilled entries are `-1`.
-    /// 3. `distances` (`f64`): Euclidean distance to each neighbour. Unfilled: `NaN`.
+    /// A 3-tuple of Python lists-of-lists, each of length N:
+    /// 1. `bigger_indices` (`list[list[int]]`): raw KD-tree item index per neighbour.
+    /// 2. `smaller_indices` (`list[list[int]]`): primary-cell index via `self.mappings`.
+    /// 3. `distances` (`list[list[float]]`): Euclidean distance to each neighbour.
+    ///
+    /// Row lengths may differ between points (jagged), enabling non-rectangular
+    /// neighbour counts without padding or sentinel values.
     ///
     /// # Errors
     /// Returns `PyValueError` if an unknown type string is passed, or if any
     /// KD-tree hit exceeds the geometry tolerance.
-    pub fn first_nearest_neighbours<'py>(
+    pub fn first_nearest_neighbours(
         &self,
-        py: Python<'py>,                    // Explicitly add this to manage lifetimes
-        points: PyReadonlyArray2<'py, f64>, // Link points to the same lifetime
+        points: PyReadonlyArray2<f64>,
         types: Vec<String>,
-    ) -> PyResult<(
-        Bound<'py, PyArray2<i64>>,
-        Bound<'py, PyArray2<i64>>,
-        Bound<'py, PyArray2<f64>>,
-    )> {
+    ) -> PyResult<(Vec<Vec<i64>>, Vec<Vec<i64>>, Vec<Vec<f64>>)> {
         let pts = points.as_array();
 
         let type_ids: Vec<usize> = types
@@ -549,16 +544,8 @@ impl Layer {
             })
             .collect::<Result<Vec<_>, _>>()?;
 
-        let (bigger, smaller, dists) = self
-            .first_nearest_neighbours_internal(&pts, &type_ids)
-            .map_err(|e| pyo3::exceptions::PyValueError::new_err(e))?;
-
-        // Use the 'py' token passed in the arguments
-        Ok((
-            bigger.to_pyarray(py),
-            smaller.to_pyarray(py),
-            dists.to_pyarray(py),
-        ))
+        self.first_nearest_neighbours_internal(&pts, &type_ids)
+            .map_err(|e| pyo3::exceptions::PyValueError::new_err(e))
     }
 
     /// Finds all neighbours within a specified Euclidean distance of every query point.
@@ -1036,10 +1023,11 @@ impl Layer {
     /// For each of the N input points (with associated basis types), looks up the
     /// pre-stored neighbour displacement vectors for that type, queries the KD-tree
     /// at `point + delta` for every delta, and records the best match.
-    /// Results are stored in fixed-width 2-D arrays (`N x max_neighbours`) so that
-    /// the output is a single contiguous block of memory regardless of how many
-    /// neighbours each type has. Unfilled slots are filled with sentinel values:
-    /// `-1` for indices, `NaN` for distances.
+    ///
+    /// Results are stored as **jagged** `Vec<Vec<_>>` (one inner `Vec` per input
+    /// point), so different basis types with different neighbour counts produce
+    /// rows of different lengths without padding or error. This makes the function
+    /// safe for future non-rectangular lattices.
     ///
     /// This is kept separate from the `#[pymethods]` wrapper so that `moire.rs`
     /// can call it directly without Python/NumPy conversion overhead.
@@ -1049,13 +1037,10 @@ impl Layer {
     /// * `types`: Slice of N integer type-IDs (indices into `self.neighbours`).
     ///
     /// # Returns
-    /// A 3-tuple of owned arrays:
-    /// 1. `bigger_indices`: `(N, max_neighbours)` `i64` array of raw KD-tree item indices.
-    ///    Unfilled slots are `-1`.
-    /// 2. `smaller_indices`: `(N, max_neighbours)` `i64` array of primary-cell indices
-    ///    (after applying `self.mappings`). Unfilled slots are `-1`.
-    /// 3. `distances_arr`: `(N, max_neighbours)` `f64` Euclidean distances.
-    ///    Unfilled slots are `NaN`.
+    /// A 3-tuple of jagged vecs, each of length N:
+    /// 1. `bigger_indices`: raw KD-tree item index for each neighbour of point i.
+    /// 2. `smaller_indices`: primary-cell index (via `self.mappings`) for each neighbour.
+    /// 3. `distances`: Euclidean distance to each neighbour.
     ///
     /// # Errors
     /// Returns `Err(String)` if the KD-tree is not initialized, or if any KD-tree hit
@@ -1064,65 +1049,59 @@ impl Layer {
         &self,
         points: &ArrayView2<f64>,
         types: &[usize],
-    ) -> Result<(Array2<i64>, Array2<i64>, Array2<f64>), String> {
+    ) -> Result<(Vec<Vec<i64>>, Vec<Vec<i64>>, Vec<Vec<f64>>), String> {
         let tree = self.kdtree.as_ref().ok_or("KDTree not initialized.")?;
         let n_points = points.nrows();
-
-        // Find unique types in the input to determine the width of the output arrays
-        let mut unique_types: Vec<usize> = types.to_vec();
-        unique_types.sort_unstable();
-        unique_types.dedup();
-
-        let max_neighs = unique_types
-            .iter()
-            .map(|&t| self.neighbours[t].nrows())
-            .max()
-            .unwrap_or(0);
-
-        // Initialize arrays with default values (-1 for indices, NaN for distances)
-        let mut bigger_indices = Array2::<i64>::from_elem((n_points, max_neighs), -1);
-        let mut smaller_indices = Array2::<i64>::from_elem((n_points, max_neighs), -1);
-        let mut distances_arr = Array2::<f64>::from_elem((n_points, max_neighs), f64::NAN);
-
         let tol_sq = (self.toll_scale * 1e-2).powi(2);
 
-        // Iterate through unique types to perform bulk-like neighbor searches
-        for &t_id in &unique_types {
+        let mut bigger_indices  = Vec::with_capacity(n_points);
+        let mut smaller_indices = Vec::with_capacity(n_points);
+        let mut distances_arr   = Vec::with_capacity(n_points);
+
+        for (i, &t_id) in types.iter().enumerate() {
             let rel_neighs = &self.neighbours[t_id];
+            let n_neighs = rel_neighs.nrows();
 
-            for (i, &current_type_id) in types.iter().enumerate() {
-                if current_type_id != t_id {
-                    continue;
-                }
+            let mut row_big  = Vec::with_capacity(n_neighs);
+            let mut row_small = Vec::with_capacity(n_neighs);
+            let mut row_dist = Vec::with_capacity(n_neighs);
 
-                let point = points.row(i);
+            let point = points.row(i);
 
-                for (n_idx, delta) in rel_neighs.rows().into_iter().enumerate() {
-                    let target = [point[0] + delta[0], point[1] + delta[1]];
+            for delta in rel_neighs.rows().into_iter() {
+                let target = [point[0] + delta[0], point[1] + delta[1]];
 
-                    // KDTree query using the squared distance metric
-                    let nearest = tree.nearest_one::<kiddo::SquaredEuclidean>(&target);
+                let nearest = tree.nearest_one::<kiddo::SquaredEuclidean>(&target);
 
-                    if nearest.distance > tol_sq {
+                if nearest.distance > tol_sq {
+                    if self.pbc {
                         return Err(format!(
                             "Distance {} exceeds tolerance for type {} at point {}",
                             nearest.distance.sqrt(),
                             self.basis_types[t_id],
                             i
                         ));
-                    }
-
-                    let b_idx = nearest.item as i64;
-                    bigger_indices[[i, n_idx]] = b_idx;
-                    distances_arr[[i, n_idx]] = nearest.distance.sqrt();
-
-                    if let Some(ref map) = self.mappings {
-                        smaller_indices[[i, n_idx]] = map[b_idx as usize] as i64;
                     } else {
-                        smaller_indices[[i, n_idx]] = b_idx;
+                        // OBC: neighbour target falls outside the finite lattice — skip it.
+                        continue;
                     }
                 }
+
+                let b_idx = nearest.item as i64;
+                row_big.push(b_idx);
+                row_dist.push(nearest.distance.sqrt());
+
+                let s_idx = if let Some(ref map) = self.mappings {
+                    map[b_idx as usize] as i64
+                } else {
+                    b_idx
+                };
+                row_small.push(s_idx);
             }
+
+            bigger_indices.push(row_big);
+            smaller_indices.push(row_small);
+            distances_arr.push(row_dist);
         }
 
         Ok((bigger_indices, smaller_indices, distances_arr))

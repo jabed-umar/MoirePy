@@ -135,7 +135,7 @@ class BilayerMoireLattice:
         # plt.show()
         # plt.savefig("moire.pdf", bbox_inches='tight')
 
-    def generate_connections(self, inter_layer_radius: float = 3.0):
+    def generate_connections(self, inter_layer_radius: float = 1.0):
         """
         Populates the internal Rust hopping buffers for intra- and inter-layer connections.
 

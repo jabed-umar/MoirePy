@@ -422,15 +422,13 @@ impl BilayerMoire {
         ).expect("Lower neighbors failed");
 
         for i in 0..n_l {
-            for (&j, &b) in small_idx_l.row(i).iter().zip(big_idx_l.row(i).iter()) {
-                if j >= 0 && b >= 0 {
-                    let j_us = j as usize;
-                    let b_us = b as usize;
-                    h_ll.add(i as i32, j as i32, internal_types_l[i] as i32, internal_types_l[j_us] as i32);
-                    let dx = lower_big[[b_us, 0]] - points_l[[j_us, 0]];
-                    let dy = lower_big[[b_us, 1]] - points_l[[j_us, 1]];
-                    shifts.add(i as i32, j as i32, dx, dy);
-                }
+            for (&j, &b) in small_idx_l[i].iter().zip(big_idx_l[i].iter()) {
+                let j_us = j as usize;
+                let b_us = b as usize;
+                h_ll.add(i as i32, j as i32, internal_types_l[i] as i32, internal_types_l[j_us] as i32);
+                let dx = lower_big[[b_us, 0]] - points_l[[j_us, 0]];
+                let dy = lower_big[[b_us, 1]] - points_l[[j_us, 1]];
+                shifts.add(i as i32, j as i32, dx, dy);
             }
         }
 
@@ -441,15 +439,13 @@ impl BilayerMoire {
         ).expect("Upper neighbors failed");
 
         for i in 0..n_u {
-            for (&j, &b) in small_idx_u.row(i).iter().zip(big_idx_u.row(i).iter()) {
-                if j >= 0 && b >= 0 {
-                    let j_us = j as usize;
-                    let b_us = b as usize;
-                    h_uu.add(i as i32, j as i32, internal_types_u[i] as i32, internal_types_u[j_us] as i32);
-                    let dx = upper_big[[b_us, 0]] - points_u[[j_us, 0]];
-                    let dy = upper_big[[b_us, 1]] - points_u[[j_us, 1]];
-                    shifts.add(i as i32 + offset, j as i32 + offset, dx, dy);
-                }
+            for (&j, &b) in small_idx_u[i].iter().zip(big_idx_u[i].iter()) {
+                let j_us = j as usize;
+                let b_us = b as usize;
+                h_uu.add(i as i32, j as i32, internal_types_u[i] as i32, internal_types_u[j_us] as i32);
+                let dx = upper_big[[b_us, 0]] - points_u[[j_us, 0]];
+                let dy = upper_big[[b_us, 1]] - points_u[[j_us, 1]];
+                shifts.add(i as i32 + offset, j as i32 + offset, dx, dy);
             }
         }
 
@@ -559,7 +555,8 @@ impl BilayerMoire {
             .zip(shifts.dy.iter())
         {
             let theta = dx * kx + dy * ky;
-            let val = Complex::new(theta.cos(), -theta.sin());
+            let (sin_t, cos_t) = theta.sin_cos();
+            let val = Complex::new(cos_t, -sin_t);
             for r_orb in 0..k_orb {
                 for c_orb in 0..k_orb {
                     phase.add(row * k_orb + r_orb, col * k_orb + c_orb, val);

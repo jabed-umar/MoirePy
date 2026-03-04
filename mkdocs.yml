@@ -54,6 +54,12 @@ extra_css:
 # extra_javascript:
 #   - assets/script_find_theta.js
 
+extra:
+  notebooks_to_convert:
+    - getting_started/quickstart_tbg.ipynb
+    - getting_started/k_space_hamiltonian.ipynb
+    - getting_started/obc_vs_pbc.ipynb
+
 
 nav:
   - Home: index.md
@@ -90,3 +96,6 @@ markdown_extensions:
 
 extra_javascript:
   - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
+
+hooks:
+  - mkdocs_hooks.py
