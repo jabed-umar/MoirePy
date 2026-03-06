@@ -10,7 +10,7 @@ It is designed to be easy to use while remaining fully flexible. You can define 
 
 <p align="center">
   <!-- Replace with GIF later -->
-  <img src="https://jabed-umar.github.io/MoirePy/images/cover_image_gemini.png" width="600">
+  <img src="https://jabed-umar.github.io/MoirePy/images/cover_image_gemini.webp" width="600">
 </p>
 
 ---
