@@ -5,16 +5,50 @@ import matplotlib.pyplot as plt
 from .layers import Layer
 from .utils import get_rotation_matrix, are_coeffs_integers
 from . import moirepy_rust as rbck
-from .utils import get_rotation_matrix, LatticeAlreadyFinalisedError
+from .utils import LatticeAlreadyFinalisedError
 
 class COOBuilder:
+    """Lightweight mutable container for COO triplets.
+
+    Stores row indices, column indices, and values in parallel Python lists.
+    This class is useful when incrementally constructing sparse matrix data
+    before creating a SciPy sparse matrix.
+    """
+
     def __init__(self, rows=None, cols=None, data=None):
+        """Initialize the COO triplet buffers.
+
+        Parameters
+        ----------
+        rows : list[int], optional
+            Initial row indices.
+        cols : list[int], optional
+            Initial column indices.
+        data : list[float | complex], optional
+            Initial matrix values.
+
+        Raises
+        ------
+        AssertionError
+            If ``rows``, ``cols`` and ``data`` do not have equal length.
+        """
         self.rows = rows if rows is not None else []
         self.cols = cols if cols is not None else []
         self.data = data if data is not None else []
         assert len(self.rows) == len(self.cols) == len(self.data), "Initial rows, cols, and data must be of the same length."
 
     def add(self, r, c, val):
+        """Append one COO entry.
+
+        Parameters
+        ----------
+        r : int
+            Row index.
+        c : int
+            Column index.
+        val : float or complex
+            Matrix value at ``(r, c)``.
+        """
         self.rows.append(r)
         self.cols.append(c)
         self.data.append(val)
@@ -25,10 +59,21 @@ class COOBuilder:
 from time import perf_counter_ns
 
 class Timer:
+    """Simple lap timer that records elapsed durations in milliseconds."""
+
     def __init__(self):
+        """Start the timer and initialize storage for lap durations."""
         self.last = perf_counter_ns()
         self.times = []
+
     def lap(self):
+        """Record one lap duration.
+
+        Notes
+        -----
+        The elapsed time since the previous lap (or initialization) is
+        appended to :attr:`times` in milliseconds.
+        """
         now = perf_counter_ns()
         d = now - self.last
         self.times.append(d/1e6)
@@ -37,6 +82,43 @@ class Timer:
 
 
 class BilayerMoireLattice:
+    """Bilayer moire lattice wrapper with Rust-backed geometry and Hamiltonian assembly.
+
+    This class builds two rotated/translating copies of a monolayer lattice,
+    generates points in a common moire supercell, and exposes fast methods for
+    connection generation, phase factors, and sparse Hamiltonian construction.
+
+    Parameters
+    ----------
+    latticetype : type[Layer]
+        Layer class (not instance) that subclasses :class:`moirepy.layers.Layer`.
+    ll1, ll2 : int
+        Integer coefficients defining the lower-layer supercell direction.
+    ul1, ul2 : int
+        Integer coefficients defining the upper-layer direction used to infer
+        twist angle relative to the lower layer.
+    n1, n2 : int, optional
+        Number of supercell tiles along moire vectors ``mlv1`` and ``mlv2``.
+    translate_upper : tuple[float, float], optional
+        Translation applied to the upper layer after rotation.
+    pbc : bool, optional
+        Whether periodic boundary conditions are enabled.
+    study_proximity : int, optional
+        Neighbor-search shell depth used by each layer.
+    k : int, optional
+        Number of orbitals per site.
+    verbose : bool, optional
+        If ``True``, prints twist angle and generated-cell counts.
+
+    Raises
+    ------
+    ValueError
+        If ``latticetype`` is not a ``Layer`` subclass, or if the computed
+        moire vectors are incompatible with layer periodicity.
+    AssertionError
+        If generated upper and lower point counts are inconsistent.
+    """
+
     def __init__(
         self,
         latticetype: Layer,
@@ -107,6 +189,14 @@ class BilayerMoireLattice:
         assert len(self.lower_lattice.points) == len(self.upper_lattice.points), "FATAL ERROR: number of cells in lower and upper lattice are not equal, report and try different ll1, ll2, ul1, ul2 values."
 
     def plot_lattice(self):
+        """Plot both layer point clouds and moire/simulation boundaries.
+
+        Notes
+        -----
+        Adds artists to the current Matplotlib axes and sets equal aspect
+        ratio. Call ``plt.show()`` or save the figure after invoking this
+        method.
+        """
         mlv1 = self.mlv1
         mlv2 = self.mlv2
         n1 = self.n1
@@ -114,8 +204,8 @@ class BilayerMoireLattice:
 
         plt.plot(*zip(*self.lower_lattice.points), 'r.', markersize=2)
         plt.plot(*zip(*self.upper_lattice.points), 'b.', markersize=2)
-        self.lower_lattice.plot_lattice(colours=["b"], plot_connections=True)
-        self.upper_lattice.plot_lattice(colours=["r"], plot_connections=True)
+        # self.lower_lattice.plot_lattice(colours=["b"], plot_connections=True)
+        # self.upper_lattice.plot_lattice(colours=["r"], plot_connections=True)
 
         # parallellogram around the whole lattice
         plt.plot([0, n1*mlv1[0]], [0, n1*mlv1[1]], 'k', linewidth=1)
@@ -136,11 +226,17 @@ class BilayerMoireLattice:
         # plt.savefig("moire.pdf", bbox_inches='tight')
 
     def generate_connections(self, inter_layer_radius: float = 1.0):
-        """
-        Populates the internal Rust hopping buffers for intra- and inter-layer connections.
+        """Populate connection instruction buffers for all hopping channels.
 
-        Args:
-            inter_layer_radius (float): The cutoff distance for hopping between layers.
+        Parameters
+        ----------
+        inter_layer_radius : float, optional
+            Maximum distance for inter-layer neighbor search.
+
+        Raises
+        ------
+        RuntimeError
+            If lattice points have not been generated on either layer.
         """
         # 1. Ensure points exist on both layers before proceeding
         if self.lower_lattice.points is None or self.upper_lattice.points is None:
@@ -151,15 +247,23 @@ class BilayerMoireLattice:
         self._rust_class.generate_connections(float(inter_layer_radius))
 
     def get_phase(self, k):
-        """
-        Returns phase as COO matrix/matrices for one or many k-vectors.
+        """Compute Peierls phase matrix for one or multiple wavevectors.
 
-        Args:
-            k: array-like with shape (2,) or (N, 2)
+        Parameters
+        ----------
+        k : array-like
+            Either shape ``(2,)`` for one wavevector or ``(N, 2)`` for a batch.
 
-        Returns:
-            If k.shape == (2,): scipy.sparse.coo_matrix
-            If k.shape == (N, 2): list[scipy.sparse.coo_matrix]
+        Returns
+        -------
+        scipy.sparse.coo_matrix or list[scipy.sparse.coo_matrix]
+            Phase matrix/matrices with shape ``(n_tot, n_tot)`` where
+            ``n_tot = (n_lower + n_upper) * orbitals``.
+
+        Raises
+        ------
+        ValueError
+            If ``k`` does not have shape ``(2,)`` or ``(N, 2)``.
         """
         k = np.asarray(k, dtype=float)
         n_tot = (len(self.lower_lattice.points) + len(self.upper_lattice.points)) * self.orbitals
@@ -184,9 +288,13 @@ class BilayerMoireLattice:
         raise ValueError(f"k must have shape (2,) or (N, 2), got {k.shape}")
 
     def get_hopping_instructions(self):
-        """
-        Retrieves the raw connection data from the Rust backend.
-        Returns a dictionary containing site indices and type IDs for all hopping terms.
+        """Return raw hopping instruction objects from the Rust backend.
+
+        Returns
+        -------
+        dict[str, object]
+            Mapping with keys ``tll``, ``tuu``, ``tul``, ``tlu``,
+            ``tlself``, and ``tuself``.
         """
         # Assuming we expose these via getters in moire.rs
         return {
@@ -199,7 +307,26 @@ class BilayerMoireLattice:
         }
 
     def _prepare_hopping_input(self, val, instruction, layer_i, layer_j, extra_inputs=None):
-        """Prepares tll, tuu, tlu, tul. Handles scalars or (N, k, k) blocks."""
+        """Normalize pair-hopping input for Rust Hamiltonian builders.
+
+        Parameters
+        ----------
+        val : float or callable
+            Scalar hopping amplitude or callable returning an array with shape
+            ``(N, k, k)``.
+        instruction : object
+            Rust instruction buffer with site/type indices.
+        layer_i, layer_j : Layer
+            Source and destination layers.
+        extra_inputs : dict, optional
+            Additional keyword arguments forwarded to ``val`` when callable.
+
+        Returns
+        -------
+        float or np.ndarray
+            Scalar value or flattened contiguous array of length
+            ``N * k * k``.
+        """
         if not callable(val):
             # If scalar, we still send a float. Rust will handle the 'Scalar' variant.
             return float(val) if val is not None else 0.0
@@ -226,7 +353,26 @@ class BilayerMoireLattice:
         return np.ascontiguousarray(result, dtype=np.complex128 if np.iscomplexobj(result) else np.float64).flatten()
 
     def _prepare_self_input(self, val, instruction, layer, extra_inputs=None):
-        """Prepares tlself, tuself. Handles scalars or (N, k, k) blocks."""
+        """Normalize on-site/self-channel input for Rust Hamiltonian builders.
+
+        Parameters
+        ----------
+        val : float or callable
+            Scalar onsite term or callable returning an array with shape
+            ``(N, k, k)``.
+        instruction : object
+            Rust instruction buffer with site/type indices.
+        layer : Layer
+            Layer from which onsite terms are sampled.
+        extra_inputs : dict, optional
+            Additional keyword arguments forwarded to ``val`` when callable.
+
+        Returns
+        -------
+        float or np.ndarray
+            Scalar value or flattened contiguous array of length
+            ``N * k * k``.
+        """
         if not callable(val):
             return float(val) if val is not None else 0.0
 
@@ -250,6 +396,31 @@ class BilayerMoireLattice:
         data_type=np.complex128,
         extra_inputs=None
     ):
+        """Assemble the tight-binding Hamiltonian as a sparse COO matrix.
+
+        Parameters
+        ----------
+        tll, tuu, tlu, tul : float or callable, optional
+            Intra-/inter-layer hopping terms. Each can be:
+            (1) scalar, or (2) callable returning ``(N, k, k)`` blocks.
+        tuself, tlself : float or callable, optional
+            Upper/lower onsite terms. Same scalar-or-callable contract.
+        data_type : np.dtype, optional
+            Output sparse matrix dtype, typically ``np.float64`` or
+            ``np.complex128``.
+        extra_inputs : dict, optional
+            Extra keyword arguments passed into user callables.
+
+        Returns
+        -------
+        scipy.sparse.coo_matrix
+            Hamiltonian matrix with shape ``(n_tot, n_tot)``.
+
+        Notes
+        -----
+        Complex assembly is automatically selected if any input resolves to a
+        complex array or if ``data_type`` is ``np.complex128``.
+        """
         # 1. Get instructions from Rust
         instr = self.get_hopping_instructions()
         l_lat, u_lat = self.lower_lattice, self.upper_lattice
@@ -285,6 +456,7 @@ class BilayerMoireLattice:
     # --- Geometric Coefficients ---
     @property
     def ll1(self):
+        """int: First lower-layer integer coefficient."""
         return self._rust_class.ll1
     @ll1.setter
     def ll1(self, value):
@@ -292,6 +464,7 @@ class BilayerMoireLattice:
 
     @property
     def ll2(self):
+        """int: Second lower-layer integer coefficient."""
         return self._rust_class.ll2
     @ll2.setter
     def ll2(self, value):
@@ -299,6 +472,7 @@ class BilayerMoireLattice:
 
     @property
     def ul1(self):
+        """int: First upper-layer integer coefficient."""
         return self._rust_class.ul1
     @ul1.setter
     def ul1(self, value):
@@ -306,6 +480,7 @@ class BilayerMoireLattice:
 
     @property
     def ul2(self):
+        """int: Second upper-layer integer coefficient."""
         return self._rust_class.ul2
     @ul2.setter
     def ul2(self, value):
@@ -314,6 +489,7 @@ class BilayerMoireLattice:
     # --- Supercell Parameters ---
     @property
     def n1(self):
+        """int: Number of moire tiles along :attr:`mlv1`."""
         return self._rust_class.n1
     @n1.setter
     def n1(self, value):
@@ -321,6 +497,7 @@ class BilayerMoireLattice:
 
     @property
     def n2(self):
+        """int: Number of moire tiles along :attr:`mlv2`."""
         return self._rust_class.n2
     @n2.setter
     def n2(self, value):
@@ -328,6 +505,7 @@ class BilayerMoireLattice:
 
     @property
     def theta(self):
+        """float: Twist angle in radians."""
         return self._rust_class.theta
     @theta.setter
     def theta(self, value):
@@ -336,6 +514,7 @@ class BilayerMoireLattice:
     # --- Global Simulation State ---
     @property
     def pbc(self):
+        """bool: Whether periodic boundary conditions are enabled."""
         return self._rust_class.pbc
     @pbc.setter
     def pbc(self, value):
@@ -343,6 +522,7 @@ class BilayerMoireLattice:
 
     @property
     def orbitals(self):
+        """int: Number of orbitals per lattice site."""
         return self._rust_class.orbitals
     @orbitals.setter
     def orbitals(self, value):

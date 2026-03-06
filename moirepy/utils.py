@@ -2,21 +2,23 @@ import numpy as np
 
 
 def get_rotation_matrix(theta_rad: float) -> np.ndarray:
-    """
-    Computes a 2D rotation matrix for a given angle.
+    """Return the 2D counterclockwise rotation matrix.
 
-    Args:
-        theta_rad (float): The rotation angle in radians.
+    Parameters
+    ----------
+    theta_rad : float
+        Rotation angle in radians.
 
-    Returns:
-        np.ndarray: A 2x2 rotation matrix that rotates a point
-            counterclockwise by `theta_rad`.
+    Returns
+    -------
+    np.ndarray
+        Rotation matrix of shape ``(2, 2)``.
 
-    ```python
-    >>> get_rotation_matrix(np.pi/2)
+    Examples
+    --------
+    >>> get_rotation_matrix(np.pi / 2)
     array([[ 6.123234e-17, -1.000000e+00],
            [ 1.000000e+00,  6.123234e-17]])
-    ```
     """
     return np.array(
         [
@@ -26,11 +28,23 @@ def get_rotation_matrix(theta_rad: float) -> np.ndarray:
     )
 
 def are_coeffs_integers(v1, v2, v3, tol=1e-8):
-    """
-    Solves a v1 + b v2 = v3 for scalars a and b using Cramer's Rule,
-    and checks if both are integers (within a tolerance).
-    
-    v1, v2, v3 are lists or tuples or np arrays of length 2
+    """Check if ``v3`` is an integer linear combination of ``v1`` and ``v2``.
+
+    Solves ``a * v1 + b * v2 = v3`` in 2D using Cramer's rule, then tests
+    whether ``a`` and ``b`` are integers up to a tolerance.
+
+    Parameters
+    ----------
+    v1, v2, v3 : array-like of shape (2,)
+        Input 2D vectors.
+    tol : float, optional
+        Tolerance for determinant singularity and integer closeness test.
+
+    Returns
+    -------
+    bool
+        ``True`` if a unique solution exists and both coefficients are
+        integer-valued within ``tol``; otherwise ``False``.
     """
     a1, a2 = v1
     b1, b2 = v2
@@ -48,6 +62,16 @@ def are_coeffs_integers(v1, v2, v3, tol=1e-8):
 
 # class LatticeAlreadyFinalisedError(RuntimeError):
 class LatticeAlreadyFinalisedError(Exception):
+    """Error raised when attempting to mutate immutable lattice parameters.
+
+    Parameters
+    ----------
+    varname : str
+        Name of the attempted-to-modify attribute.
+    classname : str
+        Class name of the immutable object instance.
+    """
+
     def __init__(self, varname: str, classname: str):
         message = (
             f"Variable '{varname}' is not editable after creation."

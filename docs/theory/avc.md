@@ -21,21 +21,70 @@
         padding: 10px;
     }
 
-    table {
-        width: 100%;
+    /* ===== Custom table styles for avc.md only ===== */
+
+    /* Override Material theme's min-width on th (it sets min-width: 5rem via .md-typeset table:not([class]) th) */
+    .md-typeset #results-table th,
+    .md-typeset #results-table td {
+        min-width: 0;
+        padding: 8px 6px;
+        text-align: center;
+        word-break: break-word;
+    }
+
+    .md-typeset #results-table {
+        width: 30rem;
         border-collapse: collapse;
+        table-layout: fixed;
         margin-top: 20px;
     }
 
-    th,
-    td {
-        padding: 8px;
-        text-align: center;
-        border: 1px solid #ddd;
+    /* Column widths: # | deg | rad | ll1 | ll2 | ul1 | ul2 | points/cell */
+    .md-typeset #results-table th:nth-child(1),
+    .md-typeset #results-table td:nth-child(1) { width: 5%; }
+    .md-typeset #results-table th:nth-child(2),
+    .md-typeset #results-table td:nth-child(2) { width: 10%; }
+    .md-typeset #results-table th:nth-child(3),
+    .md-typeset #results-table td:nth-child(3) { width: 10%; }
+    .md-typeset #results-table th:nth-child(4),
+    .md-typeset #results-table td:nth-child(4) { width: 9%; }
+    .md-typeset #results-table th:nth-child(5),
+    .md-typeset #results-table td:nth-child(5) { width: 9%; }
+    .md-typeset #results-table th:nth-child(6),
+    .md-typeset #results-table td:nth-child(6) { width: 9%; }
+    .md-typeset #results-table th:nth-child(7),
+    .md-typeset #results-table td:nth-child(7) { width: 9%; }
+    .md-typeset #results-table th:nth-child(8),
+    .md-typeset #results-table td:nth-child(8) { width: 10%; }
+
+    /* Light mode colors */
+    [data-md-color-scheme="default"] .md-typeset #results-table th {
+        background: #f5f5f5;
+        color: #222;
+    }
+    [data-md-color-scheme="default"] .md-typeset #results-table td {
+        border-color: #ddd;
+    }
+    [data-md-color-scheme="default"] .md-typeset #results-table tr:nth-child(even) {
+        background: #fafafa;
+    }
+    [data-md-color-scheme="default"] .md-typeset #results-table tr:hover {
+        background: #eaeaea;
     }
 
-    thead {
-        background-color: #f2f2f2;
+    /* Dark mode colors */
+    [data-md-color-scheme="slate"] .md-typeset #results-table th {
+        background: #222;
+        color: #f5f5f5;
+    }
+    [data-md-color-scheme="slate"] .md-typeset #results-table td {
+        border-color: #444;
+    }
+    [data-md-color-scheme="slate"] .md-typeset #results-table tr:nth-child(even) {
+        background: #2a2a2a;
+    }
+    [data-md-color-scheme="slate"] .md-typeset #results-table tr:hover {
+        background: #333;
     }
 
     .hidden {
@@ -57,6 +106,44 @@
     .section{
         text-align: justify;
     }
+
+    #avc-context-menu {
+        position: fixed;
+        z-index: 10000;
+        min-width: 170px;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
+    }
+
+    #avc-context-menu button {
+        width: 100%;
+        text-align: left;
+        border-radius: 0;
+        background: transparent;
+        color: inherit;
+        padding: 10px 12px;
+    }
+
+    #avc-context-menu button:hover {
+        background: rgba(127, 127, 127, 0.2);
+    }
+
+    .md-typeset #results-body tr {
+        cursor: context-menu;
+    }
+
+    [data-md-color-scheme="default"] #avc-context-menu {
+        background: #ffffff;
+        color: #222;
+        border: 1px solid #ddd;
+    }
+
+    [data-md-color-scheme="slate"] #avc-context-menu {
+        background: #1f1f1f;
+        color: #f5f5f5;
+        border: 1px solid #444;
+    }
 </style>
 
 
@@ -65,7 +152,16 @@
 
 # Angle Value Calculator
 
-The **Moiré Angle Calculator** finds all possible commensurate angles between two stacked lattices by trimming both layers within a given radius and checking for periodic overlaps following the [Angle Calculation Process](angle_calculation_process.md). After calculation, it provides a list of angles with their corresponding `ll1`, `ll2`, `ul1`, `ul2` values that define the rotation between the two lattices along with the number of points in each cell of the Moiré lattice. Since most angles are irrational and can't be precisely represented, the rotation is defined using these coordinate pairs instead, they mark the overlapping points between the two lattices. Once you've selected an angle from the list, just copy the `ll1`, `ll2`, `ul1`, and `ul2` values into your code. The system will figure out the exact rotation angle from that. This also makes it easy to calculate the moire lattice vectors.
+Most physically relevant twist configurations are irrational, so typing a rounded angle directly into code is usually unstable and hard to reproduce.
+
+This calculator instead returns exact integer tuples `ll1`, `ll2`, `ul1`, `ul2` that define the commensurate match between the lower and upper layers. Those integers can be used directly in MoirePy and provide deterministic geometry reconstruction.
+
+Internally, both layers are truncated inside a chosen radius and overlap candidates are filtered using the [Angle Calculation Process](angle_calculation_process.md).  
+Each result row gives:
+
+- angle in degrees and radians
+- integer tuple (`ll1`, `ll2`, `ul1`, `ul2`)
+- estimated supercell size (`cells`)
 
 
 ??? warning "Some Guidelines"
@@ -143,7 +239,13 @@ The **Moiré Angle Calculator** finds all possible commensurate angles between t
 
 !!! note
 
-    The last column (number of points per unit cell in the Moiré lattice) has been calculated assuming only one point per unit cell. If you are using lattices which have multiple points per unit cell like hexagonal (2) or kagome (3), multiply this value by the number of points per unit cell in your lattice to get the actual number of points in the Moiré lattice.
+    The last column (**cells**) reports the total number of small cells in the moiré supercell including **both upper and lower layers**, assuming one basis point per unit cell.
+
+    If your lattice has multiple basis points per unit cell, scale accordingly:
+    <ul>
+        <li>Hexagonal (2 basis points): <code>actual_points = cells * 2</code></li>
+        <li>Kagome (3 basis points): <code>actual_points = cells * 3</code></li>
+    </ul>
 
 <table id="results-table">
     <thead>
@@ -155,13 +257,17 @@ The **Moiré Angle Calculator** finds all possible commensurate angles between t
             <th>ll2</th>
             <th>ul1</th>
             <th>ul2</th>
-            <th>points/cell</th>
+            <th title="Estimated supercell size">cells</th>
         </tr>
     </thead>
     <tbody id="results-body">
         <!-- Generated results will be displayed here -->
     </tbody>
 </table>
+</div>
+
+<div id="avc-context-menu" class="hidden" role="menu" aria-label="Row actions">
+    <button id="avc-copy-preset" type="button" role="menuitem" title="Copy ll1, ll2, ul1, ul2 tuple">Copy preset</button>
 </div>
 
 <!-- <script src="assets/script_find_theta.js"></script> -->
@@ -182,6 +288,108 @@ The **Moiré Angle Calculator** finds all possible commensurate angles between t
         TriangularLayer: [1, 0, 0.5, root3 / 2],
         KagomeLayer: [1, 0, 0.5, root3 / 2],
     };
+
+    const contextMenu = document.getElementById("avc-context-menu");
+    const copyPresetButton = document.getElementById("avc-copy-preset");
+    const resultsBody = document.getElementById("results-body");
+    let contextMenuRow = null;
+
+    function closeContextMenu() {
+        contextMenu.classList.add("hidden");
+        contextMenuRow = null;
+    }
+
+    function getPresetStringFromRow(row) {
+        const cells = row.querySelectorAll("td");
+        if (cells.length < 8) return null;
+
+        const ll1 = cells[3].textContent.trim();
+        const ll2 = cells[4].textContent.trim();
+        const ul1 = cells[5].textContent.trim();
+        const ul2 = cells[6].textContent.trim();
+
+        return `ll1=${ll1}, ll2=${ll2}, ul1=${ul1}, ul2=${ul2},`;
+    }
+
+    async function copyTextToClipboard(text) {
+        try {
+            await navigator.clipboard.writeText(text);
+            return true;
+        } catch (err) {
+            const fallback = document.createElement("textarea");
+            fallback.value = text;
+            fallback.setAttribute("readonly", "");
+            fallback.style.position = "absolute";
+            fallback.style.left = "-9999px";
+            document.body.appendChild(fallback);
+            fallback.select();
+            const copied = document.execCommand("copy");
+            document.body.removeChild(fallback);
+            return copied;
+        }
+    }
+
+    resultsBody.addEventListener("contextmenu", (event) => {
+        const row = event.target.closest("tr");
+        if (!row) return;
+
+        event.preventDefault();
+        contextMenuRow = row;
+        contextMenu.classList.remove("hidden");
+
+        const menuWidth = 170;
+        const menuHeight = 44;
+        const padding = 8;
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
+
+        let left = event.clientX;
+        let top = event.clientY;
+
+        if (left + menuWidth + padding > viewportWidth) {
+            left = viewportWidth - menuWidth - padding;
+        }
+        if (top + menuHeight + padding > viewportHeight) {
+            top = viewportHeight - menuHeight - padding;
+        }
+
+        contextMenu.style.left = `${Math.max(left, padding)}px`;
+        contextMenu.style.top = `${Math.max(top, padding)}px`;
+    });
+
+    copyPresetButton.addEventListener("click", async () => {
+        if (!contextMenuRow) return;
+        const preset = getPresetStringFromRow(contextMenuRow);
+        if (!preset) return;
+
+        const success = await copyTextToClipboard(preset);
+        closeContextMenu();
+
+        if (success) {
+            const original = copyPresetButton.textContent;
+            copyPresetButton.textContent = "Copied!";
+            setTimeout(() => {
+                copyPresetButton.textContent = original;
+            }, 900);
+        } else {
+            alert("Copy failed. Please copy the values manually.");
+        }
+    });
+
+    document.addEventListener("click", (event) => {
+        if (!event.target.closest("#avc-context-menu")) {
+            closeContextMenu();
+        }
+    });
+
+    document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+            closeContextMenu();
+        }
+    });
+
+    window.addEventListener("scroll", closeContextMenu, true);
+    window.addEventListener("resize", closeContextMenu);
 
     document.getElementById("precision").addEventListener("input", function() {
         document.getElementById("precision-value").textContent = this.value;
@@ -382,10 +590,10 @@ The **Moiré Angle Calculator** finds all possible commensurate angles between t
     }
 
     function displayResults_(results) {
-        const resultsBody = document.getElementById("results-body");
         resultsBody.innerHTML = ""; // Clear previous results
         results.forEach((tuple, index) => {
             const row = document.createElement("tr");
+            row.title = "Row actions available";
             const cell = document.createElement("td");
             cell.textContent = index + 1;  // add the index
             row.appendChild(cell);
