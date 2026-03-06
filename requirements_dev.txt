@@ -9,6 +9,6 @@ mkdocstrings-python
 # mkdocs-jupyter
 mkdocs-bibtex
 
-# mkdocs-material
+mkdocs-material
 # mkdocs-kpn
 # mkdocs-terminal

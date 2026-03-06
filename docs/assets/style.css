@@ -1,3 +1,9 @@
 /* .section{
 	text-align: justify;
 } */
+
+.md-header__button.md-logo img {
+  height: 2rem;
+  /* width: auto; */
+  /* max-height: none; */
+}

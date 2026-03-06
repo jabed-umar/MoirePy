@@ -178,7 +178,7 @@ Each result row gives:
         - Unresponsiveness or infinite loops  
         - Unexpected program behaviour  
 
-        Proceed only if you believe the results yielded by the [Angle Calculation Process](../angle_calculation_process) are correct and meaningful for your custom lattice vectors.
+        Proceed only if you believe the results yielded by the [Angle Calculation Process](angle_calculation_process.md) are correct and meaningful for your custom lattice vectors.
 
     **Larger Value of points per cell** More points per cell in the lattice means larger hamiltonian matrix, which can lead to longer computation times and higher memory usage. Especially if planning to invert the hamiltonian matrix and find eigenvalues and eigenvectors later.
 
