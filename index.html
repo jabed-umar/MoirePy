@@ -442,15 +442,20 @@
     
     
     
+      
+        
+        
+      
     
-    <li class="md-nav__item md-nav__item--nested">
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
         
         
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
         
           
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
             
   
   
@@ -636,15 +641,20 @@
     
     
     
+      
+        
+        
+      
     
-    <li class="md-nav__item md-nav__item--nested">
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
         
         
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
         
           
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
             
   
   
@@ -708,7 +718,7 @@
   
   
     <li class="md-nav__item">
-      <a href="benchmarks.md" class="md-nav__link">
+      <a href="benchmarks/" class="md-nav__link">
         
   
   
@@ -746,15 +756,20 @@
     
     
     
+      
+        
+        
+      
     
-    <li class="md-nav__item md-nav__item--nested">
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
         
         
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
         
           
-          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
             
   
   
@@ -940,15 +955,20 @@
     
     
     
+      
+        
+        
+      
     
-    <li class="md-nav__item md-nav__item--nested">
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
         
         
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
         
           
-          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
             
   
   
@@ -1014,6 +1034,8 @@
     
     
     
+    
+      
     
     
     <li class="md-nav__item md-nav__item--nested">
@@ -1125,6 +1147,8 @@
     
     
     
+    
+      
     
     
     <li class="md-nav__item md-nav__item--nested">
@@ -1320,6 +1344,8 @@
     
     
     
+    
+      
     
     
     <li class="md-nav__item md-nav__item--nested">
@@ -1673,16 +1699,16 @@
 <h2 id="benchmark-why-this-is-fast">Benchmark: Why This Is Fast</h2>
 <p>Basic benchmark snapshots using Twisted Bilayer Graphene (TBG) as a test case, benchmarked on a laptop with a 12th Gen Intel Core i5 (performance cores).</p>
 <h3 id="experiment-1-full-pipeline">Experiment 1: Full Pipeline</h3>
-<p><img alt="Experiment 1: Full pipeline benchmark" src="docs/benchmark/experiment1_total_pipeline.webp" /></p>
+<p><img alt="Experiment 1: Full pipeline benchmark" src="https://jabed-umar.github.io/MoirePy/benchmark/experiment1_total_pipeline.webp" /></p>
 <p>This includes lattice generation plus Hamiltonian assembly.
 Even at around <strong>160k lattice points</strong>, the full pipeline is about <strong>620 ms</strong>. For context, configurations near the magic angle (<span class="arithmatex">\(\sim 1.1^\circ\)</span>) typically have just around <strong>5-6k lattice points</strong>.</p>
 <h3 id="experiment-2-subsequent-hamiltonian-generation">Experiment 2: Subsequent Hamiltonian Generation</h3>
-<p><img alt="Experiment 2: Hamiltonian-only benchmark" src="docs/benchmark/experiment2_hamiltonian_only.webp" /></p>
+<p><img alt="Experiment 2: Hamiltonian-only benchmark" src="https://jabed-umar.github.io/MoirePy/benchmark/experiment2_hamiltonian_only.webp" /></p>
 <p>After setup, Hamiltonian generation is much faster.
 At around <strong>160k lattice points</strong>, it is about <strong>15 ms</strong>.
 This is the speed profile we optimize for: heavy setup once, then fast repeated builds.
 Memory usage in these runs is negligible relative to typical laptop RAM.</p>
-<p>For more comprehensive performance benchmarks, visit this: <a href="https://jabed-umar.github.io/MoirePy/benchmark/">BENCHMARK</a></p>
+<p>For more comprehensive performance benchmarks, visit this: <a href="https://jabed-umar.github.io/MoirePy/benchmarks/">BENCHMARK</a></p>
 <hr />
 <h2 id="contributing">Contributing</h2>
 <p>Contributions are welcome.</p>
@@ -1751,7 +1777,7 @@ Memory usage in these runs is negligible relative to typical laptop RAM.</p>
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": ".", "features": [], "search": "assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": ".", "features": ["navigation.sections"], "search": "assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="assets/javascripts/bundle.79ae519e.min.js"></script>

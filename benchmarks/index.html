@@ -10,31 +10,31 @@
       
       
       
-        <link rel="canonical" href="https://jabed-umar.github.io/MoirePy/api/generated/moirepy.layers.SquareLayer/">
+        <link rel="canonical" href="https://jabed-umar.github.io/MoirePy/benchmarks/">
       
       
-        <link rel="prev" href="../moirepy.moire.BilayerMoireLattice/">
+        <link rel="prev" href="../examples/">
       
       
-        <link rel="next" href="../moirepy.layers.TriangularLayer/">
+        <link rel="next" href="../theory/theory_intro/">
       
       
         
       
       
-      <link rel="icon" href="../../../assets/images/favicon.png">
+      <link rel="icon" href="../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.4">
     
     
       
-        <title>SquareLayer - MoirePy – Python Library for Moiré Lattice Simulation</title>
+        <title>Benchmarks and Performance Tips - MoirePy – Python Library for Moiré Lattice Simulation</title>
       
     
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
       
         
-        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
       
       
 
@@ -53,11 +53,11 @@
       
     
     
-      <link rel="stylesheet" href="../../../assets/_mkdocstrings.css">
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
     
-      <link rel="stylesheet" href="../../../assets/style.css">
+      <link rel="stylesheet" href="../assets/style.css">
     
-    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -82,7 +82,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#moirepylayerssquarelayer" class="md-skip">
+        <a href="#moirepy-benchmarks" class="md-skip">
           Skip to content
         </a>
       
@@ -98,9 +98,9 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../../.." title="MoirePy – Python Library for Moiré Lattice Simulation" class="md-header__button md-logo" aria-label="MoirePy – Python Library for Moiré Lattice Simulation" data-md-component="logo">
+    <a href=".." title="MoirePy – Python Library for Moiré Lattice Simulation" class="md-header__button md-logo" aria-label="MoirePy – Python Library for Moiré Lattice Simulation" data-md-component="logo">
       
-  <img src="../../../assets/logo.svg" alt="logo">
+  <img src="../assets/logo.svg" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -117,7 +117,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              SquareLayer
+              Benchmarks and Performance Tips
             
           </span>
         </div>
@@ -233,9 +233,9 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../../.." title="MoirePy – Python Library for Moiré Lattice Simulation" class="md-nav__button md-logo" aria-label="MoirePy – Python Library for Moiré Lattice Simulation" data-md-component="logo">
+    <a href=".." title="MoirePy – Python Library for Moiré Lattice Simulation" class="md-nav__button md-logo" aria-label="MoirePy – Python Library for Moiré Lattice Simulation" data-md-component="logo">
       
-  <img src="../../../assets/logo.svg" alt="logo">
+  <img src="../assets/logo.svg" alt="logo">
 
     </a>
     MoirePy – Python Library for Moiré Lattice Simulation
@@ -262,7 +262,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../.." class="md-nav__link">
+      <a href=".." class="md-nav__link">
         
   
   
@@ -341,7 +341,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../getting_started/quickstart_tbg/" class="md-nav__link">
+      <a href="../getting_started/quickstart_tbg/" class="md-nav__link">
         
   
   
@@ -369,7 +369,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../getting_started/k_space_hamiltonian/" class="md-nav__link">
+      <a href="../getting_started/k_space_hamiltonian/" class="md-nav__link">
         
   
   
@@ -397,7 +397,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../getting_started/obc_vs_pbc/" class="md-nav__link">
+      <a href="../getting_started/obc_vs_pbc/" class="md-nav__link">
         
   
   
@@ -425,7 +425,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../getting_started/prepare_layers/" class="md-nav__link">
+      <a href="../getting_started/prepare_layers/" class="md-nav__link">
         
   
   
@@ -453,7 +453,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../getting_started/custom_hoppings/" class="md-nav__link">
+      <a href="../getting_started/custom_hoppings/" class="md-nav__link">
         
   
   
@@ -485,8 +485,10 @@
       
   
   
+    
   
   
+  
     
     
     
@@ -497,11 +499,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
           <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
@@ -522,7 +524,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             
@@ -540,7 +542,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../examples/" class="md-nav__link">
+      <a href="../examples/" class="md-nav__link">
         
   
   
@@ -565,10 +567,19 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../../benchmarks/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -584,6 +595,7 @@
   
 
       </a>
+      
     </li>
   
 
@@ -655,7 +667,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../theory/theory_intro/" class="md-nav__link">
+      <a href="../theory/theory_intro/" class="md-nav__link">
         
   
   
@@ -683,7 +695,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../theory/tight_binding_ham/" class="md-nav__link">
+      <a href="../theory/tight_binding_ham/" class="md-nav__link">
         
   
   
@@ -711,7 +723,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../theory/search_algorithm_kdtree/" class="md-nav__link">
+      <a href="../theory/search_algorithm_kdtree/" class="md-nav__link">
         
   
   
@@ -739,7 +751,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../theory/angle_calculation_process/" class="md-nav__link">
+      <a href="../theory/angle_calculation_process/" class="md-nav__link">
         
   
   
@@ -767,7 +779,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../theory/avc/" class="md-nav__link">
+      <a href="../theory/avc/" class="md-nav__link">
         
   
   
@@ -799,8 +811,6 @@
       
   
   
-    
-  
   
   
     
@@ -813,11 +823,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
         
           
           <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
@@ -838,7 +848,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_5">
             <span class="md-nav__icon md-icon"></span>
             
@@ -856,7 +866,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../" class="md-nav__link">
+      <a href="../api/" class="md-nav__link">
         
   
   
@@ -933,7 +943,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../moirepy.layers.Layer/" class="md-nav__link">
+      <a href="../api/generated/moirepy.layers.Layer/" class="md-nav__link">
         
   
   
@@ -961,7 +971,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../moirepy.moire.BilayerMoireLattice/" class="md-nav__link">
+      <a href="../api/generated/moirepy.moire.BilayerMoireLattice/" class="md-nav__link">
         
   
   
@@ -994,8 +1004,6 @@
                 
   
   
-    
-  
   
   
     
@@ -1005,11 +1013,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_3" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_3" >
         
           
           <label class="md-nav__link" for="__nav_5_3" id="__nav_5_3_label" tabindex="0">
@@ -1030,7 +1038,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_3_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_3_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_5_3">
             <span class="md-nav__icon md-icon"></span>
             
@@ -1045,37 +1053,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    SquareLayer
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../api/generated/moirepy.layers.SquareLayer/" class="md-nav__link">
         
   
   
@@ -1091,37 +1072,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#moirepy.layers.SquareLayer" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        SquareLayer
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1134,7 +1084,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../moirepy.layers.TriangularLayer/" class="md-nav__link">
+      <a href="../api/generated/moirepy.layers.TriangularLayer/" class="md-nav__link">
         
   
   
@@ -1162,7 +1112,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../moirepy.layers.Rhombus60Layer/" class="md-nav__link">
+      <a href="../api/generated/moirepy.layers.Rhombus60Layer/" class="md-nav__link">
         
   
   
@@ -1190,7 +1140,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../moirepy.layers.KagomeLayer/" class="md-nav__link">
+      <a href="../api/generated/moirepy.layers.KagomeLayer/" class="md-nav__link">
         
   
   
@@ -1218,7 +1168,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../moirepy.layers.HexagonalLayer/" class="md-nav__link">
+      <a href="../api/generated/moirepy.layers.HexagonalLayer/" class="md-nav__link">
         
   
   
@@ -1303,7 +1253,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../moirepy.utils.get_rotation_matrix/" class="md-nav__link">
+      <a href="../api/generated/moirepy.utils.get_rotation_matrix/" class="md-nav__link">
         
   
   
@@ -1331,7 +1281,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../moirepy.utils.are_coeffs_integers/" class="md-nav__link">
+      <a href="../api/generated/moirepy.utils.are_coeffs_integers/" class="md-nav__link">
         
   
   
@@ -1359,7 +1309,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../moirepy.utils.LatticeAlreadyFinalisedError/" class="md-nav__link">
+      <a href="../api/generated/moirepy.utils.LatticeAlreadyFinalisedError/" class="md-nav__link">
         
   
   
@@ -1415,25 +1365,6 @@
     
   
   
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#moirepy.layers.SquareLayer" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        SquareLayer
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
 </nav>
                   </div>
                 </div>
@@ -1452,105 +1383,7 @@
   
 
 
-<h1 id="moirepylayerssquarelayer"><code>moirepy.layers.SquareLayer</code></h1>
-
-
-<div class="doc doc-object doc-class">
-
-
-
-<a id="moirepy.layers.SquareLayer"></a>
-    <div class="doc doc-contents first">
-            <p class="doc doc-class-bases">
-              Bases: <code><a class="autorefs autorefs-internal" title="moirepy.layers.Layer" href="../moirepy.layers.Layer/#moirepy.layers.Layer">Layer</a></code></p>
-
-
-
-        <p>A simple square lattice with one atom per unit cell.</p>
-<p>Lattice vectors are <code>[1, 0]</code> and <code>[0, 1]</code>. The single atom type
-<code>"A"</code> has four nearest neighbours at the cardinal directions.</p>
-
-
-<p><span class="doc-section-title">Parameters:</span></p>
-    <table>
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Type</th>
-          <th>Description</th>
-          <th>Default</th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr class="doc-section-item">
-            <td>
-                <code>pbc</code>
-            </td>
-            <td>
-                  <code><span title="bool">bool</span></code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>Periodic boundary conditions. Default is <code>False</code>.</p>
-              </div>
-            </td>
-            <td>
-                  <code>False</code>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-            <td>
-                <code>study_proximity</code>
-            </td>
-            <td>
-                  <code><span title="int">int</span></code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>Number of supercell shells for the neighbour search. Default is <code>1</code>.</p>
-              </div>
-            </td>
-            <td>
-                  <code>1</code>
-            </td>
-          </tr>
-      </tbody>
-    </table>
-
-
-<p><span class="doc-section-title">Examples:</span></p>
-    <div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">moirepy</span><span class="w"> </span><span class="kn">import</span> <span class="n">SquareLayer</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">layer</span> <span class="o">=</span> <span class="n">SquareLayer</span><span class="p">()</span>
-</code></pre></div>
-
-
-
-
-
-
-
-
-
-
-
-<div class="doc doc-children">
-
-
-
-
-
-
-
-
-
-
-
-
-  </div>
-
-    </div>
-
-</div>
+<h1 id="moirepy-benchmarks">MoirePy Benchmarks</h1>
 
 
 
@@ -1600,10 +1433,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.sections"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.sections"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
       
         <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
       
