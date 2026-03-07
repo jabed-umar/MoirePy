@@ -79,21 +79,21 @@ Basic benchmark snapshots using Twisted Bilayer Graphene (TBG) as a test case, b
 
 ### Experiment 1: Full Pipeline
 
-![Experiment 1: Full pipeline benchmark](docs/benchmark/experiment1_total_pipeline.webp)
+![Experiment 1: Full pipeline benchmark](https://jabed-umar.github.io/MoirePy/benchmark/experiment1_total_pipeline.webp)
 
 This includes lattice generation plus Hamiltonian assembly.
 Even at around **160k lattice points**, the full pipeline is about **620 ms**. For context, configurations near the magic angle ($\sim 1.1^\circ$) typically have just around **5-6k lattice points**.
 
 ### Experiment 2: Subsequent Hamiltonian Generation
 
-![Experiment 2: Hamiltonian-only benchmark](docs/benchmark/experiment2_hamiltonian_only.webp)
+![Experiment 2: Hamiltonian-only benchmark](https://jabed-umar.github.io/MoirePy/benchmark/experiment2_hamiltonian_only.webp)
 
 After setup, Hamiltonian generation is much faster.
 At around **160k lattice points**, it is about **15 ms**.
 This is the speed profile we optimize for: heavy setup once, then fast repeated builds.
 Memory usage in these runs is negligible relative to typical laptop RAM.
 
-For more comprehensive performance benchmarks, visit this: [BENCHMARK](https://jabed-umar.github.io/MoirePy/benchmark/)
+For more comprehensive performance benchmarks, visit this: [BENCHMARK](https://jabed-umar.github.io/MoirePy/benchmarks/)
 
 ---
 

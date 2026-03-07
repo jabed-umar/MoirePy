@@ -4,7 +4,7 @@ build-backend = "maturin"
 
 [project]
 name = "moirepy"
-description = "Simulate moire lattice systems in both real and momentum space and calculate various related observables."
+description = "Simulate moire systems, generate hamiltonian in both real and momentum space and calculate various related observables."
 authors = [
     { name = "Aritra Mukhopadhyay", email = "amukherjeeniser@gmail.com" },
     { name = "Jabed Umar", email = "jabedumar12@gmail.com" }

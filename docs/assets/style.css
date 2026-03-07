@@ -7,3 +7,18 @@
   /* width: auto; */
   /* max-height: none; */
 }
+
+/* Light Mode (default) */
+[data-md-color-scheme="default"] .md-nav__item--section > .md-nav__link {
+  color: #6e47b5 !important;
+}
+
+/* Dark Mode (slate) */
+[data-md-color-scheme="slate"] .md-nav__item--section > .md-nav__link {
+  color: #9d81d1 !important;
+}
+
+/* This ensures the expansion icon matches the text color */
+.md-nav__item--section > .md-nav__link .md-nav__icon {
+  color: inherit;
+}

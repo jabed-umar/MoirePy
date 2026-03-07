@@ -8,6 +8,9 @@ theme:
   name: material
   logo: assets/logo.svg
   # favicon: images/logo/favicon.png
+  features:
+    # - navigation.expand
+    - navigation.sections
 
   palette:
     - scheme: slate
@@ -23,8 +26,6 @@ theme:
       toggle:
         icon: material/weather-night
         name: Switch to dark mode
-
-
 
 plugins:
   - search
