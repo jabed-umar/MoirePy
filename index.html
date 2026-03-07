@@ -331,6 +331,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#philosophy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Philosophy
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#installation" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -353,13 +364,41 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#philosophy" class="md-nav__link">
+  <a href="#benchmark-why-this-is-fast" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Philosophy
+        Benchmark: Why This Is Fast
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Benchmark: Why This Is Fast">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#experiment-1-full-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Experiment 1: Full Pipeline
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#experiment-2-subsequent-hamiltonian-generation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Experiment 2: Subsequent Hamiltonian Generation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1456,6 +1495,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#philosophy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Philosophy
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#installation" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1478,13 +1528,41 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#philosophy" class="md-nav__link">
+  <a href="#benchmark-why-this-is-fast" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Philosophy
+        Benchmark: Why This Is Fast
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Benchmark: Why This Is Fast">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#experiment-1-full-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Experiment 1: Full Pipeline
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#experiment-2-subsequent-hamiltonian-generation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Experiment 2: Subsequent Hamiltonian Generation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1531,8 +1609,8 @@
 
 
 <h1 id="moirepy-twist-it-solve-it-own-it">MoirePy: Twist It, Solve It, Own It!</h1>
-<p><strong>MoirePy</strong> is a FOSS Python library for simulating <strong>moire lattices</strong> with a clean, highly Pythonic API.</p>
-<p>It is designed to be easy to use while remaining fully flexible. You can define custom lattice geometries, program arbitrary hopping functions, and build tight-binding Hamiltonians in both <strong>real space</strong> and <strong>k-space</strong>, with support for <strong>open (OBC)</strong> and <strong>periodic (PBC)</strong> boundary conditions. Generated Hamiltonians can also be exported to tools like Kwant for further analysis.</p>
+<p><strong>MoirePy</strong> is a FOSS Python library for simulating <strong>moire lattices</strong> with a clean, highly Pythonic API. The performance-critical backend is written in <strong>Rust</strong>, which keeps large lattice generation and Hamiltonian assembly fast while preserving a Python-first workflow.</p>
+<p>It is designed to be easy to use while remaining fully flexible. You can define custom lattice geometries, program arbitrary hopping functions, and build tight-binding Hamiltonians in both <strong>real space</strong> and <strong>k-space</strong>, with support for <strong>open (OBC)</strong> and <strong>periodic (PBC)</strong> boundary conditions. Generate your lattice and Hamiltonian in MoirePy, then export to the tools you already use (like <strong>Kwant</strong>, <strong>NumPy</strong>, <strong>SciPy</strong>, and related ecosystems) and keep your workflow.</p>
 <ul>
 <li><strong>Documentation:</strong> <a href="https://jabed-umar.github.io/MoirePy/">https://jabed-umar.github.io/MoirePy/</a><br></li>
 <li><strong>Github Repository:</strong> <a href="https://github.com/jabed-umar/MoirePy">https://github.com/jabed-umar/MoirePy</a><br></li>
@@ -1540,20 +1618,25 @@
 </ul>
 <p align="center">
   <!-- Replace with GIF later -->
-  <img src="https://jabed-umar.github.io/MoirePy/images/cover_image_gemini.png" width="600">
+  <img src="https://jabed-umar.github.io/MoirePy/images/cover_image_gemini.webp" width="600">
 </p>
 
 <hr />
 <h2 id="why-moirepy">Why MoirePy</h2>
 <ul>
-<li><strong>Define anything</strong>: No restrictions on lattice geometry or orbitals</li>
-<li><strong>Pythonic API</strong>: If you know Python, MoirePy is intuitive</li>
-<li><strong>Custom hoppings</strong>: Fully programmable intra/inter-layer couplings</li>
-<li><strong>Real-space + k-space</strong>: Both supported natively</li>
-<li><strong>OBC + PBC</strong>: Switch boundary conditions easily</li>
-<li><strong>Kwant-compatible</strong>: Export Hamiltonians for further analysis</li>
-<li><strong>Fast construction</strong>: Efficient neighbour search using KDTree</li>
-<li><strong>Reproducibility-first</strong>: Designed to replicate known results and papers</li>
+<li><strong>Plug and play</strong>: Build in MoirePy, continue in your current stack: Kwant, NumPy, SciPy etc.</li>
+<li><strong>Fast by default</strong>: Rust backend + optimized core algorithms.</li>
+<li><strong>Flexible models</strong>: Custom geometry, orbitals, and hoppings.</li>
+<li><strong>Multiple modes</strong>: Real-space/k-space and OBC/PBC supported.</li>
+<li><strong>Easy onboarding</strong>: Pythonic API and web tools for quick tinkering.</li>
+</ul>
+<hr />
+<h2 id="philosophy">Philosophy</h2>
+<ul>
+<li><strong>Not a workflow replacement</strong>: Use MoirePy where it shines, then export to <em>Kwant</em>, <em>NumPy</em>, <em>SciPy</em>, and more.</li>
+<li><strong>Do one thing and do it well</strong>: Focus on robust and fast moire lattice simulation and Hamiltonian generation.</li>
+<li><strong>Power to you</strong>: If it is mathematically possible, you can build it. No questions asked.</li>
+<li><strong>Learn by doing</strong>: Explore fast, and reproduce well-known paper systems.</li>
 </ul>
 <hr />
 <h2 id="installation">Installation</h2>
@@ -1587,18 +1670,19 @@
 <span class="nb">print</span><span class="p">(</span><span class="n">ham</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 </code></pre></div>
 <hr />
-<h2 id="philosophy">Philosophy</h2>
-<p>MoirePy does not try to enforce what is "physically valid".</p>
-<p>If you want:</p>
-<ul>
-<li>unusual lattices</li>
-<li>non-standard couplings</li>
-<li>high orbital counts</li>
-</ul>
-<p>you are free to do so.</p>
-<blockquote>
-<p>The library gives you control. You decide what makes sense.</p>
-</blockquote>
+<h2 id="benchmark-why-this-is-fast">Benchmark: Why This Is Fast</h2>
+<p>Basic benchmark snapshots using Twisted Bilayer Graphene (TBG) as a test case, benchmarked on a laptop with a 12th Gen Intel Core i5 (performance cores).</p>
+<h3 id="experiment-1-full-pipeline">Experiment 1: Full Pipeline</h3>
+<p><img alt="Experiment 1: Full pipeline benchmark" src="docs/benchmark/experiment1_total_pipeline.webp" /></p>
+<p>This includes lattice generation plus Hamiltonian assembly.
+Even at around <strong>160k lattice points</strong>, the full pipeline is about <strong>620 ms</strong>. For context, configurations near the magic angle (<span class="arithmatex">\(\sim 1.1^\circ\)</span>) typically have just around <strong>5-6k lattice points</strong>.</p>
+<h3 id="experiment-2-subsequent-hamiltonian-generation">Experiment 2: Subsequent Hamiltonian Generation</h3>
+<p><img alt="Experiment 2: Hamiltonian-only benchmark" src="docs/benchmark/experiment2_hamiltonian_only.webp" /></p>
+<p>After setup, Hamiltonian generation is much faster.
+At around <strong>160k lattice points</strong>, it is about <strong>15 ms</strong>.
+This is the speed profile we optimize for: heavy setup once, then fast repeated builds.
+Memory usage in these runs is negligible relative to typical laptop RAM.</p>
+<p>For more comprehensive performance benchmarks, visit this: <a href="https://jabed-umar.github.io/MoirePy/benchmark/">BENCHMARK</a></p>
 <hr />
 <h2 id="contributing">Contributing</h2>
 <p>Contributions are welcome.</p>

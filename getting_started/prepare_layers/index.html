@@ -82,7 +82,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#how-to-prepare-custom-layers" class="md-skip">
+        <a href="#defining-custom-layers-in-moirepy" class="md-skip">
           Skip to content
         </a>
       
@@ -431,6 +431,24 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Defining Custom Layers
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -447,6 +465,58 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#squarelayer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SquareLayer
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#using-a-layer-with-bilayermoirelattice" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Using a layer with BilayerMoireLattice
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#a-more-realistic-example-graphene" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A more realistic example: graphene
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -1339,6 +1409,47 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#squarelayer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SquareLayer
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#using-a-layer-with-bilayermoirelattice" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Using a layer with BilayerMoireLattice
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#a-more-realistic-example-graphene" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A more realistic example: graphene
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -1357,7 +1468,90 @@
   
 
 
-<h1 id="how-to-prepare-custom-layers">How to prepare Custom Layers</h1>
+<h1 id="defining-custom-layers-in-moirepy">Defining Custom Layers in MoirePy</h1>
+<p>A <code>Layer</code> describes a single 2D crystal: its primitive lattice vectors, the positions of atoms within the unit cell, and the displacement vectors to each atom's nearest neighbours. Every layer class in MoirePy is a subclass of <code>Layer</code> and provides these four pieces of information:</p>
+<ul>
+<li><code>lv1</code>, <code>lv2</code> — primitive lattice vectors</li>
+<li><code>basis_points</code> — atom positions inside one unit cell, labelled by sublattice type</li>
+<li><code>neighbours</code> — displacement vectors to nearest neighbours, keyed by sublattice type</li>
+<li><code>pbc</code>, <code>study_proximity</code> — runtime controls, passed through directly to <code>super().__init__(...)</code></li>
+</ul>
+<h2 id="squarelayer"><code>SquareLayer</code></h2>
+<p>A minimal example: one atom per unit cell, four nearest neighbours along the cardinal directions.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">moirepy</span><span class="w"> </span><span class="kn">import</span> <span class="n">BilayerMoireLattice</span><span class="p">,</span> <span class="n">Layer</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">SquareLayer</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">study_proximity</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># local definitions, passed to parent</span>
+        <span class="n">lv1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>  <span class="c1"># Lattice vector in the x-direction</span>
+        <span class="n">lv2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>  <span class="c1"># Lattice vector in the y-direction</span>
+
+        <span class="n">basis_points</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="c1"># location and name of that one point inside the unit cell</span>
+            <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">),</span>  <span class="c1"># pos_x, pos_y, sublattice_name</span>
+        <span class="p">]</span>
+
+        <span class="n">neighbours</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;A&quot;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>   <span class="c1"># Right</span>
+                <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>   <span class="c1"># Up</span>
+                <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>  <span class="c1"># Left</span>
+                <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span>  <span class="c1"># Down</span>
+            <span class="p">],</span>
+        <span class="p">}</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">lv1</span><span class="p">,</span> <span class="n">lv2</span><span class="p">,</span> <span class="n">basis_points</span><span class="p">,</span> <span class="n">neighbours</span><span class="p">,</span> <span class="n">pbc</span><span class="p">,</span> <span class="n">study_proximity</span><span class="p">)</span>
+</code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The sublattice labels assigned in <code>basis_points</code> (e.g. <code>"A"</code>) must match the keys used in the <code>neighbours</code> dictionary exactly. Each key in <code>neighbours</code> is expected to correspond to a distinct sublattice in the unit cell; any mismatch will result in errors.</p>
+</div>
+<h2 id="using-a-layer-with-bilayermoirelattice">Using a layer with <code>BilayerMoireLattice</code></h2>
+<p>Once you have a layer class, pass it to <code>BilayerMoireLattice</code>. The integer pairs <code>(ll1, ll2)</code> and <code>(ul1, ul2)</code> define the commensurate supercell and implicitly determine the twist angle.</p>
+<div class="highlight"><pre><span></span><code><span class="n">lattice</span> <span class="o">=</span> <span class="n">BilayerMoireLattice</span><span class="p">(</span>
+    <span class="n">latticetype</span><span class="o">=</span><span class="n">SquareLayer</span><span class="p">,</span>
+    <span class="n">ll1</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">ll2</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">ul1</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">ul2</span><span class="o">=</span><span class="mi">3</span>
+<span class="p">)</span>
+
+<span class="c1"># Output:</span>
+<span class="c1"># twist angle = 0.2838 rad (16.2602 deg)</span>
+<span class="c1"># 25 cells in upper lattice</span>
+<span class="c1"># 25 cells in lower lattice</span>
+</code></pre></div>
+<p><code>BilayerMoireLattice</code> takes the layer geometry, stacks two copies at the twist angle implied by those integers, and constructs the full moiré supercell. From this point you can extract the Hamiltonian, compute band structures, and so on. The layer class is the only thing that changes between different material systems.</p>
+<h2 id="a-more-realistic-example-graphene">A more realistic example: graphene</h2>
+<p>The honeycomb lattice is the most studied moiré system. Compared to <code>SquareLayer</code>, a <code>Graphene</code> layer introduces two additional considerations: physical units and a two-site unit cell.</p>
+<div class="highlight"><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Graphene</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">study_proximity</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">A_GRAPHENE</span> <span class="o">=</span> <span class="mf">2.46</span>  <span class="c1"># lattice constant in Ångströms</span>
+
+        <span class="n">lv1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="n">A_GRAPHENE</span>
+        <span class="n">lv2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">])</span> <span class="o">*</span> <span class="n">A_GRAPHENE</span>
+
+        <span class="n">basis_points</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="n">A_GRAPHENE</span><span class="p">,</span> <span class="n">A_GRAPHENE</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="s2">&quot;B&quot;</span><span class="p">),</span>
+        <span class="p">]</span>
+
+        <span class="c1"># Standard neighbours for hexagonal lattice</span>
+        <span class="n">neigh_deltas</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+            <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">3</span><span class="p">)],</span>
+            <span class="p">[</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">3</span><span class="p">))],</span>
+            <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">3</span><span class="p">))]</span>
+        <span class="p">])</span> <span class="o">*</span> <span class="n">A_GRAPHENE</span>
+
+        <span class="n">neighbours</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;A&quot;</span><span class="p">:</span> <span class="n">neigh_deltas</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">:</span> <span class="o">-</span><span class="n">neigh_deltas</span><span class="p">}</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">lv1</span><span class="p">,</span> <span class="n">lv2</span><span class="p">,</span> <span class="n">basis_points</span><span class="p">,</span> <span class="n">neighbours</span><span class="p">,</span> <span class="n">pbc</span><span class="p">,</span> <span class="n">study_proximity</span><span class="p">)</span>
+</code></pre></div>
+<p>A few things to note:</p>
+<ul>
+<li><strong>Physical units.</strong> All vectors are scaled by the real graphene lattice constant <code>A_GRAPHENE = 2.46</code> Å. For toy models the absolute scale is irrelevant, but for real materials it determines all inter-atomic distances and coupling strengths.</li>
+<li><strong>Two sublattices.</strong> The honeycomb lattice has two inequivalent carbon sites, <code>A</code> and <code>B</code>, so <code>basis_points</code> carries two entries and <code>neighbours</code> carries two keys. The antisymmetry <code>"B": -neigh_deltas</code> reflects the fact that the neighbour displacements of B are exactly those of A reversed.</li>
+<li><strong>The call to <code>super().__init__</code> is unchanged.</strong> The same interface holds regardless of the complexity of the layer.</li>
+</ul>
+<p>Substituting <code>Graphene</code> for <code>SquareLayer</code> in the <code>BilayerMoireLattice</code> call above produces a twisted bilayer graphene supercell with no other changes to the workflow.</p>
 
 
 

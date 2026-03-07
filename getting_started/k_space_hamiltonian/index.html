@@ -1623,12 +1623,10 @@
 </code></pre></div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>we convert it to a dense array and take only the real part because the system size is small and the hamiltonian is purely real in this case. For larger systems, it is recommended to work with sparse matrices to save memory and computational resources.</p>
+<p>we convert it to a dense array and take only the real part because the system size is small and the hamiltonian is purely real in this case. For larger systems, it is recommended to work with sparse matrices to save memory and computational resources. While the real-space hopping matrix is real, the k-space Hamiltonian is Hermitian and complex in general.</p>
 </div>
 <div class="highlight"><pre><span></span><code><span class="n">k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">])</span>
-
 <span class="n">Hk</span> <span class="o">=</span> <span class="n">real_ham</span> <span class="o">*</span> <span class="n">lattice</span><span class="o">.</span><span class="n">get_phase</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span>
-
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Matrix shape: </span><span class="si">{</span><span class="n">Hk</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
 <span class="c1"># Output:</span>
