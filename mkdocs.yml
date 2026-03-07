@@ -55,6 +55,8 @@ extra:
     - getting_started/quickstart_tbg.ipynb
     - getting_started/k_space_hamiltonian.ipynb
     - getting_started/obc_vs_pbc.ipynb
+    - getting_started/prepare_layers.ipynb
+    - getting_started/custom_hoppings.ipynb
 
 
 nav:

@@ -1,8 +1,8 @@
 # MoirePy: Twist It, Solve It, Own It!
 
-**MoirePy** is a FOSS Python library for simulating **moire lattices** with a clean, highly Pythonic API.
+**MoirePy** is a FOSS Python library for simulating **moire lattices** with a clean, highly Pythonic API. The performance-critical backend is written in **Rust**, which keeps large lattice generation and Hamiltonian assembly fast while preserving a Python-first workflow.
 
-It is designed to be easy to use while remaining fully flexible. You can define custom lattice geometries, program arbitrary hopping functions, and build tight-binding Hamiltonians in both **real space** and **k-space**, with support for **open (OBC)** and **periodic (PBC)** boundary conditions. Generated Hamiltonians can also be exported to tools like Kwant for further analysis.
+It is designed to be easy to use while remaining fully flexible. You can define custom lattice geometries, program arbitrary hopping functions, and build tight-binding Hamiltonians in both **real space** and **k-space**, with support for **open (OBC)** and **periodic (PBC)** boundary conditions. Generate your lattice and Hamiltonian in MoirePy, then export to the tools you already use (like **Kwant**, **NumPy**, **SciPy**, and related ecosystems) and keep your workflow.
 
 * **Documentation:** [https://jabed-umar.github.io/MoirePy/](https://jabed-umar.github.io/MoirePy/)<br>
 * **Github Repository:** [https://github.com/jabed-umar/MoirePy](https://github.com/jabed-umar/MoirePy)<br>
@@ -17,14 +17,20 @@ It is designed to be easy to use while remaining fully flexible. You can define 
 
 ## Why MoirePy
 
-* **Define anything**: No restrictions on lattice geometry or orbitals
-* **Pythonic API**: If you know Python, MoirePy is intuitive
-* **Custom hoppings**: Fully programmable intra/inter-layer couplings
-* **Real-space + k-space**: Both supported natively
-* **OBC + PBC**: Switch boundary conditions easily
-* **Kwant-compatible**: Export Hamiltonians for further analysis
-* **Fast construction**: Efficient neighbour search using KDTree
-* **Reproducibility-first**: Designed to replicate known results and papers
+* **Plug and play**: Build in MoirePy, continue in your current stack: Kwant, NumPy, SciPy etc.
+* **Fast by default**: Rust backend + optimized core algorithms.
+* **Flexible models**: Custom geometry, orbitals, and hoppings.
+* **Multiple modes**: Real-space/k-space and OBC/PBC supported.
+* **Easy onboarding**: Pythonic API and web tools for quick tinkering.
+
+---
+
+## Philosophy
+
+* **Not a workflow replacement**: Use MoirePy where it shines, then export to *Kwant*, *NumPy*, *SciPy*, and more.
+* **Do one thing and do it well**: Focus on robust and fast moire lattice simulation and Hamiltonian generation.
+* **Power to you**: If it is mathematically possible, you can build it. No questions asked.
+* **Learn by doing**: Explore fast, and reproduce well-known paper systems.
 
 ---
 
@@ -67,19 +73,27 @@ print(ham.shape)
 
 ---
 
-## Philosophy
+## Benchmark: Why This Is Fast
 
-MoirePy does not try to enforce what is "physically valid".
+Basic benchmark snapshots using Twisted Bilayer Graphene (TBG) as a test case, benchmarked on a laptop with a 12th Gen Intel Core i5 (performance cores).
 
-If you want:
+### Experiment 1: Full Pipeline
 
-* unusual lattices
-* non-standard couplings
-* high orbital counts
+![Experiment 1: Full pipeline benchmark](docs/benchmark/experiment1_total_pipeline.webp)
 
-you are free to do so.
+This includes lattice generation plus Hamiltonian assembly.
+Even at around **160k lattice points**, the full pipeline is about **620 ms**. For context, configurations near the magic angle ($\sim 1.1^\circ$) typically have just around **5-6k lattice points**.
 
-> The library gives you control. You decide what makes sense.
+### Experiment 2: Subsequent Hamiltonian Generation
+
+![Experiment 2: Hamiltonian-only benchmark](docs/benchmark/experiment2_hamiltonian_only.webp)
+
+After setup, Hamiltonian generation is much faster.
+At around **160k lattice points**, it is about **15 ms**.
+This is the speed profile we optimize for: heavy setup once, then fast repeated builds.
+Memory usage in these runs is negligible relative to typical laptop RAM.
+
+For more comprehensive performance benchmarks, visit this: [BENCHMARK](https://jabed-umar.github.io/MoirePy/benchmark/)
 
 ---
 

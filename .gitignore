@@ -15,3 +15,5 @@ site/
 old_docs
 target
 *.so
+
+neomoirepy
