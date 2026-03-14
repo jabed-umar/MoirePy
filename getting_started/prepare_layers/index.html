@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.4">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.5">
     
     
       
@@ -1497,10 +1497,10 @@
 <h1 id="defining-custom-layers-in-moirepy">Defining Custom Layers in MoirePy</h1>
 <p>A <code>Layer</code> describes a single 2D crystal: its primitive lattice vectors, the positions of atoms within the unit cell, and the displacement vectors to each atom's nearest neighbours. Every layer class in MoirePy is a subclass of <code>Layer</code> and provides these four pieces of information:</p>
 <ul>
-<li><code>lv1</code>, <code>lv2</code> — primitive lattice vectors</li>
-<li><code>basis_points</code> — atom positions inside one unit cell, labelled by sublattice type</li>
-<li><code>neighbours</code> — displacement vectors to nearest neighbours, keyed by sublattice type</li>
-<li><code>pbc</code>, <code>study_proximity</code> — runtime controls, passed through directly to <code>super().__init__(...)</code></li>
+<li><code>lv1</code>, <code>lv2</code>: primitive lattice vectors</li>
+<li><code>basis_points</code>: atom positions inside one unit cell, labelled by sublattice type</li>
+<li><code>neighbours</code>: displacement vectors to nearest neighbours, keyed by sublattice type</li>
+<li><code>pbc</code>, <code>study_proximity</code>: runtime controls, passed through directly to <code>super().__init__(...)</code></li>
 </ul>
 <h2 id="squarelayer"><code>SquareLayer</code></h2>
 <p>A minimal example: one atom per unit cell, four nearest neighbours along the cardinal directions.</p>
@@ -1550,7 +1550,7 @@
 <p>The honeycomb lattice is the most studied moiré system. Compared to <code>SquareLayer</code>, a <code>Graphene</code> layer introduces two additional considerations: physical units and a two-site unit cell.</p>
 <div class="highlight"><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Graphene</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">study_proximity</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">A_GRAPHENE</span> <span class="o">=</span> <span class="mf">2.46</span>  <span class="c1"># lattice constant in Ångströms</span>
+        <span class="n">A_GRAPHENE</span> <span class="o">=</span> <span class="mf">2.46</span>  <span class="c1"># lattice constant in angstrom</span>
 
         <span class="n">lv1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="n">A_GRAPHENE</span>
         <span class="n">lv2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">])</span> <span class="o">*</span> <span class="n">A_GRAPHENE</span>
@@ -1573,7 +1573,7 @@
 </code></pre></div>
 <p>A few things to note:</p>
 <ul>
-<li><strong>Physical units.</strong> All vectors are scaled by the real graphene lattice constant <code>A_GRAPHENE = 2.46</code> Å. For toy models the absolute scale is irrelevant, but for real materials it determines all inter-atomic distances and coupling strengths.</li>
+<li><strong>Physical units.</strong> All vectors are scaled by the real graphene lattice constant <code>A_GRAPHENE = 2.46</code> angstrom. For toy models the absolute scale is irrelevant, but for real materials it determines all inter-atomic distances and coupling strengths.</li>
 <li><strong>Two sublattices.</strong> The honeycomb lattice has two inequivalent carbon sites, <code>A</code> and <code>B</code>, so <code>basis_points</code> carries two entries and <code>neighbours</code> carries two keys. The antisymmetry <code>"B": -neigh_deltas</code> reflects the fact that the neighbour displacements of B are exactly those of A reversed.</li>
 <li><strong>The call to <code>super().__init__</code> is unchanged.</strong> The same interface holds regardless of the complexity of the layer.</li>
 </ul>

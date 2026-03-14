@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.4">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.5">
     
     
       
@@ -82,7 +82,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#designing-custom-hopping" class="md-skip">
+        <a href="#designing-custom-hoppings" class="md-skip">
           Skip to content
         </a>
       
@@ -464,6 +464,24 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Designing Custom Hopping
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -480,6 +498,152 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-the-six-hopping-slots" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. The Six Hopping Slots
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-function-signatures" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Function Signatures
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Function Signatures">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pair-hopping-tll-tuu-tlu-tul" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pair-hopping (tll, tuu, tlu, tul)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#on-site-tlself-tuself" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        On-site (tlself, tuself)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-the-hopping-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. The Hopping Model
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Setup
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-defining-the-custom-function" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Defining the Custom Function
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-building-the-hamiltonian" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Building the Hamiltonian
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-seeing-the-effect-dos-vs-decay-length" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Seeing the Effect: DOS vs Decay Length
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Next Steps
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -1365,6 +1529,141 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-the-six-hopping-slots" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. The Six Hopping Slots
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-function-signatures" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Function Signatures
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Function Signatures">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pair-hopping-tll-tuu-tlu-tul" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pair-hopping (tll, tuu, tlu, tul)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#on-site-tlself-tuself" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        On-site (tlself, tuself)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-the-hopping-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. The Hopping Model
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Setup
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-defining-the-custom-function" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Defining the Custom Function
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-building-the-hamiltonian" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Building the Hamiltonian
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-seeing-the-effect-dos-vs-decay-length" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Seeing the Effect: DOS vs Decay Length
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Next Steps
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -1383,9 +1682,229 @@
   
 
 
-<h1 id="designing-custom-hopping">Designing Custom Hopping</h1>
-<div class="highlight"><pre><span></span><code>
+<h1 id="designing-custom-hoppings">Designing Custom Hoppings</h1>
+<p>In the previous section we defined custom layer geometries. The layer tells MoirePy <em>where</em> the atoms sit; the hopping parameters tell it <em>how strongly</em> they couple. By default you pass a constant float and every bond of that type gets the same amplitude. In this section we replace those constants with callables so the coupling varies bond-by-bond, driven by the actual distance between atoms.</p>
+<h2 id="1-the-six-hopping-slots">1. The Six Hopping Slots</h2>
+<p><code>generate_hamiltonian</code> accepts six parameters:</p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tll</code></td>
+<td>Intra-layer hopping inside the <strong>lower</strong> layer</td>
+</tr>
+<tr>
+<td><code>tuu</code></td>
+<td>Intra-layer hopping inside the <strong>upper</strong> layer</td>
+</tr>
+<tr>
+<td><code>tlu</code></td>
+<td>Inter-layer hopping from <strong>lower</strong> to <strong>upper</strong></td>
+</tr>
+<tr>
+<td><code>tul</code></td>
+<td>Inter-layer hopping from <strong>upper</strong> to <strong>lower</strong></td>
+</tr>
+<tr>
+<td><code>tlself</code></td>
+<td>On-site energy for atoms in the <strong>lower</strong> layer</td>
+</tr>
+<tr>
+<td><code>tuself</code></td>
+<td>On-site energy for atoms in the <strong>upper</strong> layer</td>
+</tr>
+</tbody>
+</table>
+<p>Each slot accepts either:</p>
+<ul>
+<li>A <strong>float</strong> or <strong>int</strong>: every bond of that type gets the same constant amplitude.</li>
+<li>Or a <strong>callable</strong> (a function for example): MoirePy calls it once per hopping channel and expects an array back.</li>
+</ul>
+<p>You can freely mix: pass a float for <code>tll</code> and a function for <code>tul</code>. All six slots follow the same rule and default to <strong>zero (0)</strong> if not specified.</p>
+<h2 id="2-function-signatures">2. Function Signatures</h2>
+<p>The signature differs slightly depending on whether the parameter is a <strong>pair-hopping</strong> term (<code>tll</code>, <code>tuu</code>, <code>tlu</code>, <code>tul</code>) or an <strong>on-site</strong> term (<code>tlself</code>, <code>tuself</code>).</p>
+<h3 id="pair-hopping-tll-tuu-tlu-tul">Pair-hopping (<code>tll</code>, <code>tuu</code>, <code>tlu</code>, <code>tul</code>)</h3>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">my_hopping</span><span class="p">(</span><span class="n">pos_i</span><span class="p">,</span> <span class="n">pos_j</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">type_i</span><span class="p">,</span> <span class="n">type_j</span><span class="p">,</span> <span class="n">lattice</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="o">...</span>
+    <span class="k">return</span> <span class="n">values</span>
 </code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>pos_i</code></td>
+<td><code>ndarray (N, 2)</code></td>
+<td>Coordinates of the source atoms</td>
+</tr>
+<tr>
+<td><code>pos_j</code></td>
+<td><code>ndarray (N, 2)</code></td>
+<td>Coordinates of the destination atoms. In case of PBC, this is the mapped coordinate of the atom inside the supercell.</td>
+</tr>
+<tr>
+<td><code>R</code></td>
+<td><code>ndarray (N, 2)</code></td>
+<td>Supercell shift vectors for the point <code>j</code>. Add this to <code>pos_j</code> to get the actual coordinate of the atom.</td>
+</tr>
+<tr>
+<td><code>type_i</code></td>
+<td><code>list[str]</code> of length N</td>
+<td>Atom-type labels of source atoms (e.g. <code>"A"</code>, <code>"B"</code>)</td>
+</tr>
+<tr>
+<td><code>type_j</code></td>
+<td><code>list[str]</code> of length N</td>
+<td>Atom-type labels of destination atoms</td>
+</tr>
+<tr>
+<td><code>lattice</code></td>
+<td><code>BilayerMoireLattice</code></td>
+<td>The full lattice object; has <code>theta</code>, <code>mlv1</code>, <code>mlv2</code>, etc.</td>
+</tr>
+<tr>
+<td><code>**kwargs</code></td>
+<td>any</td>
+<td>Anything you pass via <code>extra_inputs</code></td>
+</tr>
+</tbody>
+</table>
+<p><code>N</code> is the total number of bonds of that hopping type in the supercell.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The shape of the returned value should be <code>(N, k, k)</code> where <code>k</code> is the number of orbitals per atom. For single-orbital (<code>k=1</code>) systems <code>(N,)</code> shape doesn't raise error.</p>
+</div>
+<h3 id="on-site-tlself-tuself">On-site (<code>tlself</code>, <code>tuself</code>)</h3>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">my_onsite</span><span class="p">(</span><span class="n">pos_i</span><span class="p">,</span> <span class="n">type_i</span><span class="p">,</span> <span class="n">lattice</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="o">...</span>
+    <span class="k">return</span> <span class="n">values</span>
+</code></pre></div>
+<p><code>R</code> is absent here because on-site terms do not hop anywhere.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This example only uses <code>pos_i</code> and <code>pos_j</code> to compute bond length. The remaining arguments are there when you need them: <code>type_i</code>/<code>type_j</code> lets you distinguish A-&gt;B from A-&gt;A bonds; <code>R</code> gives the periodic image offset of each hop; <code>lattice</code> exposes <code>lattice.theta</code>, <code>lattice.mlv1</code>, and the rest of the geometry.</p>
+</div>
+<h2 id="3-the-hopping-model">3. The Hopping Model</h2>
+<p>We use a Gaussian decay for the inter-layer hopping:</p>
+<div class="arithmatex">\[t(r) = t_0 \, \exp\!\left(-\left(\frac{r}{r_c}\right)^2\right)\]</div>
+<ul>
+<li><span class="arithmatex">\(t_0\)</span> is the maximum hopping amplitude at zero separation.</li>
+<li><span class="arithmatex">\(r_c\)</span> is the decay length. Bonds much longer than <span class="arithmatex">\(r_c\)</span> contribute almost nothing.</li>
+</ul>
+<p>Orbital overlap decays rapidly with distance, and the Gaussian captures that behavior with just two parameters. We keep <code>tll</code> and <code>tuu</code> as plain floats (constant nearest-neighbour hopping within each layer) and put the Gaussian only on <code>tul</code> and <code>tlu</code>, which control the inter-layer coupling.</p>
+<h2 id="4-setup">4. Setup</h2>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">moirepy</span><span class="w"> </span><span class="kn">import</span> <span class="n">BilayerMoireLattice</span><span class="p">,</span> <span class="n">SquareLayer</span>
+
+<span class="n">ll1</span><span class="p">,</span> <span class="n">ll2</span><span class="p">,</span> <span class="n">ul1</span><span class="p">,</span> <span class="n">ul2</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span>
+
+<span class="n">lattice</span> <span class="o">=</span> <span class="n">BilayerMoireLattice</span><span class="p">(</span>
+    <span class="n">SquareLayer</span><span class="p">,</span> <span class="n">ll1</span><span class="p">,</span> <span class="n">ll2</span><span class="p">,</span> <span class="n">ul1</span><span class="p">,</span> <span class="n">ul2</span><span class="p">,</span>
+    <span class="n">n1</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">n2</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">lattice</span><span class="o">.</span><span class="n">generate_connections</span><span class="p">(</span><span class="n">inter_layer_radius</span><span class="o">=</span><span class="mf">3.0</span><span class="p">)</span>
+
+<span class="c1"># Output:</span>
+<span class="c1"># twist angle = 0.3948 rad (22.6199 deg)</span>
+<span class="c1"># 13 cells in upper lattice</span>
+<span class="c1"># 13 cells in lower lattice</span>
+</code></pre></div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Set <code>inter_layer_radius</code> comfortably above your largest <code>r_c</code>. Here <code>r_c</code> stays at or below 1.0 while the radius is 3.0, so every bond that matters falls within the search radius, and the Gaussian handles the suppression of distant ones.</p>
+</div>
+<h2 id="5-defining-the-custom-function">5. Defining the Custom Function</h2>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">gaussian_inter</span><span class="p">(</span><span class="n">pos_i</span><span class="p">,</span> <span class="n">pos_j</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">type_i</span><span class="p">,</span> <span class="n">type_j</span><span class="p">,</span> <span class="n">lattice</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">rc</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gaussian-decay inter-layer hopping.&quot;&quot;&quot;</span>
+    <span class="c1"># R maps pos_j to its true physical coordinate inside the supercell</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">pos_i</span> <span class="o">-</span> <span class="p">(</span><span class="n">pos_j</span> <span class="o">+</span> <span class="n">R</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>  
+    <span class="k">return</span> <span class="n">t0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">r</span> <span class="o">/</span> <span class="n">rc</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+</code></pre></div>
+<p><code>pos_i - (pos_j + R)</code> has shape <code>(N, 2)</code>, so <code>np.linalg.norm(..., axis=1)</code> gives a length-N array of distances, one per bond. The function returns a length-N array, exactly what MoirePy expects.</p>
+<h2 id="6-building-the-hamiltonian">6. Building the Hamiltonian</h2>
+<p>Pass <code>t0</code> and <code>rc</code> through <code>extra_inputs</code>. Every key there becomes a keyword argument to your callable.</p>
+<div class="highlight"><pre><span></span><code><span class="n">INTRA_T</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span>  <span class="c1"># constant nearest-neighbour hopping within each layer</span>
+<span class="n">T0</span>      <span class="o">=</span>  <span class="mf">0.5</span>  <span class="c1"># inter-layer amplitude at r=0</span>
+<span class="n">RC</span>      <span class="o">=</span>  <span class="mf">1.0</span>  <span class="c1"># Gaussian decay length</span>
+
+<span class="n">ham</span> <span class="o">=</span> <span class="n">lattice</span><span class="o">.</span><span class="n">generate_hamiltonian</span><span class="p">(</span>
+    <span class="n">tll</span><span class="o">=</span><span class="n">INTRA_T</span><span class="p">,</span>           <span class="c1"># float: same hop for every intra-lower bond</span>
+    <span class="n">tuu</span><span class="o">=</span><span class="n">INTRA_T</span><span class="p">,</span>           <span class="c1"># float: same hop for every intra-upper bond</span>
+    <span class="n">tul</span><span class="o">=</span><span class="n">gaussian_inter</span><span class="p">,</span>    <span class="c1"># callable</span>
+    <span class="n">tlu</span><span class="o">=</span><span class="n">gaussian_inter</span><span class="p">,</span>    <span class="c1"># callable (tlu = tul dagger for a Hermitian system)</span>
+    <span class="n">tlself</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>            <span class="c1"># float: zero on-site energy</span>
+    <span class="n">tuself</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>            <span class="c1"># float: zero on-site energy</span>
+    <span class="n">extra_inputs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;t0&quot;</span><span class="p">:</span> <span class="n">T0</span><span class="p">,</span> <span class="s2">&quot;rc&quot;</span><span class="p">:</span> <span class="n">RC</span><span class="p">},</span>
+<span class="p">)</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Hamiltonian shape: </span><span class="si">{</span><span class="n">ham</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Output:</span>
+<span class="c1"># Hamiltonian shape: (26, 26)</span>
+</code></pre></div>
+<div class="admonition warning">
+<p class="admonition-title">Hermiticity</p>
+<p>MoirePy does not enforce <code>tlu = tul*</code> automatically. For a physical Hermitian system, make sure your <code>tlu</code> callable returns the complex conjugate of what <code>tul</code> returns, or pass the same real-valued function for both as we do here.</p>
+</div>
+<h2 id="7-seeing-the-effect-dos-vs-decay-length">7. Seeing the Effect: DOS vs Decay Length</h2>
+<p>We compute the Density of States (DOS) for two values of <code>rc</code>. A short decay length means only the closest inter-layer pairs couple strongly. A longer one lets distant pairs contribute, which broadens the hybridisation features in the spectrum.</p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_dos</span><span class="p">(</span><span class="n">rc</span><span class="p">):</span>
+    <span class="n">ham</span> <span class="o">=</span> <span class="n">lattice</span><span class="o">.</span><span class="n">generate_hamiltonian</span><span class="p">(</span>
+        <span class="n">tll</span><span class="o">=</span><span class="n">INTRA_T</span><span class="p">,</span> <span class="n">tuu</span><span class="o">=</span><span class="n">INTRA_T</span><span class="p">,</span>
+        <span class="n">tul</span><span class="o">=</span><span class="n">gaussian_inter</span><span class="p">,</span> <span class="n">tlu</span><span class="o">=</span><span class="n">gaussian_inter</span><span class="p">,</span>
+        <span class="n">extra_inputs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;t0&quot;</span><span class="p">:</span> <span class="n">T0</span><span class="p">,</span> <span class="s2">&quot;rc&quot;</span><span class="p">:</span> <span class="n">rc</span><span class="p">},</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigvalsh</span><span class="p">(</span><span class="n">ham</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">sharey</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">ax</span><span class="p">,</span> <span class="n">rc</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+    <span class="n">axes</span><span class="p">,</span>
+    <span class="p">[</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+    <span class="p">[</span><span class="sa">r</span><span class="s2">&quot;Short range ($r_c = 0.4$)&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;Long range ($r_c = 1.0$)&quot;</span><span class="p">],</span>
+<span class="p">):</span>
+    <span class="n">evals</span> <span class="o">=</span> <span class="n">get_dos</span><span class="p">(</span><span class="n">rc</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">evals</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span> <span class="n">orientation</span><span class="o">=</span><span class="s2">&quot;horizontal&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;steelblue&quot;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s2">&quot;white&quot;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Count&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;gray&quot;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">)</span>
+
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Energy (eV)&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s2">&quot;Density of States: effect of inter-layer decay length&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div>
+<p><img alt="Image" src="../../images/custom_hoppings/plot_1.webp" /></p>
+<p>With <code>rc=0.4</code> the layers are nearly decoupled: the DOS looks like two weakly split copies of the monolayer spectrum. With <code>rc=1.0</code> more distant bonds contribute, the hybridisation is stronger, and the peak structure changes visibly. This is the direct fingerprint of the custom hopping function.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code>generate_hamiltonian</code> runs in <span class="arithmatex">\(O(N)\)</span> time once connections are established. You can call it repeatedly with different <code>rc</code> or <code>t0</code> values without rebuilding the lattice or re-running <code>generate_connections</code>.</p>
+</div>
+<h2 id="summary">Summary</h2>
+<ul>
+<li>All six hopping slots accept a <strong>float, int, or any callable</strong>; you can mix and match freely.</li>
+<li>Pair-hopping callables receive <code>(pos_i, pos_j, R, type_i, type_j, lattice, **kwargs)</code>; on-site callables receive <code>(pos_i, type_i, lattice, **kwargs)</code>.</li>
+<li>Pass extra parameters to your callable via the <code>extra_inputs</code> dict.</li>
+<li>Set <code>inter_layer_radius</code> larger than your largest <code>r_c</code>; let the hopping function handle suppression.</li>
+<li>For a Hermitian system, ensure <code>tlu</code> is the complex conjugate of <code>tul</code>.</li>
+</ul>
+<h2 id="next-steps">Next Steps</h2>
+<ol>
+<li><strong><a href="../k_space_hamiltonian/">K-Space and Band Structures</a></strong>: Fold this Hamiltonian into momentum space and compute a band structure.</li>
+<li><strong><a href="../obc_vs_pbc/">OBC vs PBC</a></strong>: See how boundary conditions change the spectrum.</li>
+<li><strong><a href="../../examples/">Tutorials and Replicated Papers</a></strong>: See full physical results with realistic hop models.</li>
+</ol>
 
 
 
