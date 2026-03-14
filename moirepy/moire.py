@@ -130,8 +130,8 @@ class BilayerMoireLattice:
 
         plt.plot(*zip(*self.lower_lattice.points), 'r.', markersize=2)
         plt.plot(*zip(*self.upper_lattice.points), 'b.', markersize=2)
-        # self.lower_lattice.plot_lattice(colours=["b"], plot_connections=True)
-        # self.upper_lattice.plot_lattice(colours=["r"], plot_connections=True)
+        self.lower_lattice.plot_lattice(colours=["b"], plot_connections=True)
+        self.upper_lattice.plot_lattice(colours=["r"], plot_connections=True)
 
         # parallellogram around the whole lattice
         plt.plot([0, n1*mlv1[0]], [0, n1*mlv1[1]], 'k', linewidth=1)
@@ -238,8 +238,9 @@ class BilayerMoireLattice:
         Parameters
         ----------
         val : float or callable
-            Scalar hopping amplitude or callable returning an array with shape
-            ``(N, k, k)``.
+            Scalar hopping amplitude or callable
+            ``val(coo_i, coo_j, R, labels_i, labels_j, moire, **extra_inputs)``
+            returning an array with shape ``(N, k, k)``.
         instruction : object
             Rust instruction buffer with site/type indices.
         layer_i, layer_j : Layer
@@ -268,13 +269,13 @@ class BilayerMoireLattice:
         coo_i = layer_i.points[instruction.site_i]
         coo_j = layer_j.points[instruction.site_j]
 
-        # 3. Call user function. Expected output shape: (N, k, k)
-        result = val(coo_i, coo_j, labels_i, labels_j, self, **extra_inputs if extra_inputs is not None else {})
-        # result = np.array([
-        #     val(ci, cj, li, lj) for ci, cj, li, lj in zip(coo_i, coo_j, labels_i, labels_j)
-        # ])
+        # 3. Build R (supercell shift vectors), shape (N, 2)
+        R = np.column_stack([instruction.dx, instruction.dy])
 
-        # 4. Flatten to 1D array for Rust
+        # 4. Call user function. Expected output shape: (N, k, k)
+        result = val(coo_i, coo_j, R, labels_i, labels_j, self, **extra_inputs if extra_inputs is not None else {})
+
+        # 5. Flatten to 1D array for Rust
         # Shape change: (N, k, k) -> (N * k * k,)
         return np.ascontiguousarray(result, dtype=np.complex128 if np.iscomplexobj(result) else np.float64).flatten()
 

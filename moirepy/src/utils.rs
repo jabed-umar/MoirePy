@@ -66,6 +66,10 @@ pub struct HoppingInstruction {
     pub type1: Vec<i32>,
     #[pyo3(get)]
     pub type2: Vec<i32>,
+    #[pyo3(get)]
+    pub dx: Vec<f64>,
+    #[pyo3(get)]
+    pub dy: Vec<f64>,
 }
 
 
@@ -78,14 +82,18 @@ impl HoppingInstruction {
             site_j: Vec::with_capacity(capacity),
             type1: Vec::with_capacity(capacity),
             type2: Vec::with_capacity(capacity),
+            dx: Vec::with_capacity(capacity),
+            dy: Vec::with_capacity(capacity),
         }
     }
 
-    pub fn add(&mut self, i: i32, j: i32, t1: i32, t2: i32) {
+    pub fn add(&mut self, i: i32, j: i32, t1: i32, t2: i32, dx: f64, dy: f64) {
         self.site_i.push(i);
         self.site_j.push(j);
         self.type1.push(t1);
         self.type2.push(t2);
+        self.dx.push(dx);
+        self.dy.push(dy);
     }
     
     pub fn clear(&mut self) {
@@ -93,6 +101,8 @@ impl HoppingInstruction {
         self.site_j.clear();
         self.type1.clear();
         self.type2.clear();
+        self.dx.clear();
+        self.dy.clear();
     }
 }
 
@@ -123,39 +133,6 @@ impl SelfInstruction {
         self.ptype.clear();
     }
 }
-
-pub struct ShiftInstruction {
-    pub rows: Vec<i32>,
-    pub cols: Vec<i32>,
-    pub dx: Vec<f64>,
-    pub dy: Vec<f64>,
-}
-
-impl ShiftInstruction {
-    pub fn new(capacity: usize) -> Self {
-        ShiftInstruction {
-            rows: Vec::with_capacity(capacity),
-            cols: Vec::with_capacity(capacity),
-            dx: Vec::with_capacity(capacity),
-            dy: Vec::with_capacity(capacity),
-        }
-    }
-
-    pub fn add(&mut self, row: i32, col: i32, dx: f64, dy: f64) {
-        self.rows.push(row);
-        self.cols.push(col);
-        self.dx.push(dx);
-        self.dy.push(dy);
-    }
-
-    pub fn clear(&mut self) {
-        self.rows.clear();
-        self.cols.clear();
-        self.dx.clear();
-        self.dy.clear();
-    }
-}
-
 
 
 // pub fn coo_to_csr<T>(
