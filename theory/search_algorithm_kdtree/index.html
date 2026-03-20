@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.5">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
     
     
       
@@ -722,6 +722,24 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Searching Algorithm & KDTree
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -738,6 +756,135 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#why-do-we-need-a-search-algorithm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why Do We Need a Search Algorithm?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-naive-approach-linear-search" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Naive Approach: Linear Search
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#a-simpler-analogy-the-1d-search-problem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A Simpler Analogy: The 1D Search Problem
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sorted-data-and-binary-search" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sorted Data and Binary Search
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#total-cost-analysis-and-when-preprocessing-pays-off" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Total Cost Analysis and When Preprocessing Pays Off
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#extension-to-higher-dimensions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Extension to Higher Dimensions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kd-tree-conceptual-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        KD-Tree: Conceptual Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kd-tree-operations-and-complexity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        KD-Tree Operations and Complexity
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#implementation-in-moirepy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Implementation in MoirePy
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -1365,6 +1512,124 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#why-do-we-need-a-search-algorithm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why Do We Need a Search Algorithm?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-naive-approach-linear-search" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Naive Approach: Linear Search
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#a-simpler-analogy-the-1d-search-problem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A Simpler Analogy: The 1D Search Problem
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sorted-data-and-binary-search" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sorted Data and Binary Search
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#total-cost-analysis-and-when-preprocessing-pays-off" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Total Cost Analysis and When Preprocessing Pays Off
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#extension-to-higher-dimensions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Extension to Higher Dimensions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kd-tree-conceptual-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        KD-Tree: Conceptual Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kd-tree-operations-and-complexity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        KD-Tree Operations and Complexity
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#implementation-in-moirepy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Implementation in MoirePy
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -1384,6 +1649,97 @@
 
 
 <h1 id="searching-algorithm-kdtree">Searching Algorithm &amp; KDTree</h1>
+<p>In this section we would learn one of the algorithmic optimisations of MoirePy which makes it so fast. The construction of moiré systems involves repeated geometric queries over large sets of atomic positions. A naive implementation quickly becomes computationally prohibitive. The purpose of this section is to motivate the need for efficient search structures, beginning from first principles.</p>
+<h2 id="why-do-we-need-a-search-algorithm">Why Do We Need a Search Algorithm?</h2>
+<p>The fundamental object in MoirePy is a collection of atomic positions embedded in two-dimensional space. These positions are typically represented as a finite set:</p>
+<div class="arithmatex">\[\{x_i \in \mathbb{R}^2 \mid i = 1, 2, \dots, n\}\]</div>
+<p>While constructing Hamiltonians, particularly for interlayer coupling, one frequently encounters the following problem:</p>
+<p>Given a point <span class="arithmatex">\(x\)</span>, find all points <span class="arithmatex">\(x_j\)</span> such that</p>
+<div class="arithmatex">\[|x - x_j| &lt; r\]</div>
+<p>for some fixed radius <span class="arithmatex">\(r\)</span>.
+This is not an occasional operation. It is performed repeatedly, often for every atom in one layer against atoms in another layer. Consequently, the efficiency of this search directly determines the overall performance of the simulation.</p>
+<p>A human observer can look at a spatial distribution of points and immediately discard large regions as irrelevant. A computer, however, does not "see" geometry in this way. It only processes structured data, typically as arrays or lists of coordinates. Without additional structure, the only available strategy is to examine each point individually.</p>
+<p>Thus, the problem reduces to designing a method that allows efficient identification of nearby points without exhaustively checking every element in the dataset.</p>
+<h2 id="the-naive-approach-linear-search">The Naive Approach: Linear Search</h2>
+<p>The most direct method is to iterate over all points <span class="arithmatex">\(x_j\)</span> and compute the distance to <span class="arithmatex">\(x\)</span>. This results in the algorithm:</p>
+<p>For each query point <span class="arithmatex">\(x\)</span>:</p>
+<ul>
+<li>For each <span class="arithmatex">\(x_j\)</span>:<ul>
+<li>Compute <span class="arithmatex">\(|x - x_j|\)</span></li>
+<li>Accept if less than <span class="arithmatex">\(r\)</span>, otherwise reject</li>
+</ul>
+</li>
+</ul>
+<p>This procedure requires <span class="arithmatex">\(O(n)\)</span> time for a single query.</p>
+<p>If such a search is performed for every point in the dataset, the total complexity becomes</p>
+<div class="arithmatex">\[O(n^2)\]</div>
+<p>In the context of moiré systems, where <span class="arithmatex">\(n\)</span> can be large due to superlattice effects, this quadratic scaling is unacceptable. Even moderate increases in system size lead to dramatic increases in computation time.</p>
+<p>The inefficiency arises from the absence of any structure in the data. Every query is treated independently, and no information from previous computations is reused.</p>
+<h2 id="a-simpler-analogy-the-1d-search-problem">A Simpler Analogy: The 1D Search Problem</h2>
+<p>To understand the core issue, consider finding a specific value in an unsorted 1D array of <span class="arithmatex">\(n\)</span> elements.</p>
+<p><img alt="1D Unsorted Search" src="../../images/theory/search_algorithm_kdtree/1d_unsorted.svg" /></p>
+<p>In the above figure, say the task is to find the element <code>7</code>. Without order, we must scan the array sequentially layer by layer. We check <code>1</code>, then <code>8</code>, and later find <code>7</code>. In the average case scenario, this requires <span class="arithmatex">\(O(n)\)</span> time for a single lookup. Doing this search once is fine. However, if we need to search for <span class="arithmatex">\(n\)</span> different items, the total computational cost mirrors our spatial search problem: it balloons to an unfeasible <span class="arithmatex">\(O(n^2)\)</span>.</p>
+<p>The root of this quadratic inefficiency is the lack of organization in the data.</p>
+<h2 id="sorted-data-and-binary-search">Sorted Data and Binary Search</h2>
+<p>Now suppose that the array is somehow already sorted in ascending order. This additional structure enables a fundamentally different search strategy.</p>
+<p>Instead of scanning sequentially, one can repeatedly divide the search interval into halves. At each step, the middle element is compared with the target value <span class="arithmatex">\(x\)</span>, and one half of the array is instantly discarded.</p>
+<p><img alt="1D Sorted Search" src="../../images/theory/search_algorithm_kdtree/1d_sorted_binary.svg" /></p>
+<p>As illustrated in the preceding figure, finding an element like 7 in a sorted array drastically minimizes comparisons. For example here we reached 7 in just 3 comparisons. This procedure is known as binary search and has a time complexity of</p>
+<div class="arithmatex">\[O(\log n)\]</div>
+<p>Thus, by introducing structure (sorting), the cost of a single search is reduced from <span class="arithmatex">\(O(n)\)</span> to <span class="arithmatex">\(O(\log n)\)</span>. If we perform <span class="arithmatex">\(n\)</span> such searches, the total cost becomes</p>
+<div class="arithmatex">\[O(n \log n)\]</div>
+<p>which is significantly better than <span class="arithmatex">\(O(n^2)\)</span>.</p>
+<h2 id="total-cost-analysis-and-when-preprocessing-pays-off">Total Cost Analysis and When Preprocessing Pays Off</h2>
+<p>The dramatic improvement in search time assumes the array is already sorted. However, sorting the array requires an initial computational effort of</p>
+<div class="arithmatex">\[O(n \log n)\]</div>
+<blockquote>
+<p>Is this upfront trade-off worth it?</p>
+</blockquote>
+<p>Let's compare the total cost for performing <span class="arithmatex">\(n\)</span> searches over <span class="arithmatex">\(n\)</span> elements:</p>
+<ul>
+<li><strong>Naive approach:</strong> <span class="arithmatex">\(O(n^2)\)</span></li>
+<li><strong>Sorted approach:</strong> <span class="arithmatex">\(O(n \log n \text{ (sorting)}) + O(n \log n \text{ (searching)}) = O(n \log n)\)</span></li>
+</ul>
+<p>The structured approach is asymptotically and practically far more efficient. The key principle is that sorting is a one-time preprocessing step, whereas searching is performed repeatedly.</p>
+<p>In moiré simulations, neighbor searches are performed for entirely large sets of atoms. The total number of queries we make far exceeds the minimum required to justify the preprocessing cost. Therefore, investing the upfront time to organize the spatial data into a searchable structure is absolutely essential.</p>
+<h2 id="extension-to-higher-dimensions">Extension to Higher Dimensions</h2>
+<p>The improvement achieved in one dimension relies on sorting. This idea does not generalize naturally to higher dimensions. In two dimensions, there is no single ordering of points that preserves spatial proximity in a simple way. A sorted list in the <span class="arithmatex">\(x\)</span>-coordinate alone does not guarantee closeness in <span class="arithmatex">\(y\)</span>, and vice versa.</p>
+<p>Thus, the notion of ordering must be replaced by a notion of <strong>spatial partitioning</strong>.</p>
+<p>The goal remains the same. Given a point <span class="arithmatex">\(x \in \mathbb{R}^2\)</span>, we wish to efficiently identify all points within a radius <span class="arithmatex">\(r\)</span>. However, instead of organizing points along a line, we now organize them within regions of space. The central idea is to recursively divide space into smaller subregions so that large portions can be excluded from consideration during a query.</p>
+<p>This leads naturally to tree-based data structures designed for geometric data.</p>
+<h2 id="kd-tree-conceptual-overview">KD-Tree: Conceptual Overview</h2>
+<p>A k-dimensional tree, or KD-tree, is a binary tree that partitions space recursively along coordinate axes. Each node in the tree represents a subset of points and is associated with a splitting hyperplane.</p>
+<p>In two dimensions, the construction proceeds as follows:</p>
+<ul>
+<li>At the root, points are divided using a vertical line based on their <span class="arithmatex">\(x\)</span>-coordinate.</li>
+<li>At the next level, each subset is divided using a horizontal line based on their <span class="arithmatex">\(y\)</span>-coordinate.</li>
+<li>This process alternates between axes at successive levels.</li>
+</ul>
+<p>Each split divides the set of points into two subsets. The recursion continues until a stopping condition is reached, typically when the number of points in a node becomes small.</p>
+<p><img alt="KD-Tree Partitioning" src="../../images/theory/search_algorithm_kdtree/kd_tree_partitioning.svg" /></p>
+<p>The resulting structure, visually captured in the above figure, is a binary tree where each node corresponds to a region of space. Leaf nodes contain a small number of points.</p>
+<p>This hierarchical partitioning allows efficient queries. When searching for neighbors, entire regions can be excluded if they lie outside the query radius.</p>
+<p>A more detailed treatment of KD-trees can be found in the original reference:
+<a href="https://en.wikipedia.org/wiki/K-d_tree">https://en.wikipedia.org/wiki/K-d_tree</a></p>
+<h2 id="kd-tree-operations-and-complexity">KD-Tree Operations and Complexity</h2>
+<p>The construction of a KD-tree requires recursively selecting splitting points and partitioning the dataset. With appropriate strategies, this can be achieved in <span class="arithmatex">\(O(n \log n)\)</span> time.</p>
+<p>Query operations, such as nearest-neighbor search or radius search, proceed by traversing the tree. At each node, the algorithm determines whether the corresponding region could contain points within the query radius. If not, that entire subtree is discarded.</p>
+<p>The efficiency arises from this pruning step. Instead of examining all points, the algorithm only visits nodes whose regions intersect the search region.</p>
+<p>For typical distributions of points, the average query complexity is</p>
+<div class="arithmatex">\[O(\log n)\]</div>
+<p>Thus, in practical applications involving spatial data, KD-trees perform significantly better than naive search.</p>
+<h2 id="implementation-in-moirepy">Implementation in MoirePy</h2>
+<p>MoirePy operates in two physical dimensions, so it builds a 2D KD-tree once and queries it repeatedly throughout the simulation. Since our atomic layers are static after generation, we don't need to mathematically add or remove points dynamically. This makes an <strong>immutable KD-tree</strong> the perfect fit, effectively avoiding the cost of maintaining structure during queries.</p>
+<p>To achieve maximum performance, MoirePy leverages the <a href="https://docs.rs/kiddo/latest/kiddo/"><code>kiddo</code></a> library in Rust. <code>kiddo</code> is specifically highly-engineered for blazing-fast, static KD-trees.</p>
+<p>A key feature of <code>kiddo</code> is its <strong>bucket size</strong> parameter. Normally, a tree stores just one point per absolute leaf, which requires jumping around in memory (pointer chasing) as you traverse all the way down. <code>kiddo</code> solves this by grouping multiple points into local "buckets" at the leaf nodes.</p>
+<p>MoirePy uses a bucket size of <strong>32</strong>. This strikes an optimal computational balance:
+* The overall tree depth remains shallow, minimizing branch traversal overhead.
+* Once the search algorithm reaches a leaf bucket, the CPU can sequentially and efficiently scan all 32 points, which fits perfectly into modern CPU cache lines without needing expensive memory jumps.</p>
+<h2 id="summary">Summary</h2>
+<p>The need for efficient search arises from repeated geometric queries over large datasets. A naive approach leads to quadratic complexity, which is not feasible for realistic systems.</p>
+<p>By introducing structure, first through sorting in one dimension and then through spatial partitioning in higher dimensions, the cost of search can be reduced significantly.</p>
+<p>The KD-tree provides a practical solution for organizing spatial data. It enables efficient queries by hierarchically partitioning space and pruning irrelevant regions.</p>
+<p>In MoirePy, this approach is implemented using a high-performance immutable KD-tree with a carefully chosen bucket size. The result is a substantial improvement in computational efficiency, making large-scale moiré simulations tractable.</p>
 
 
 

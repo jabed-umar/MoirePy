@@ -1,0 +1,15 @@
+{
+  "name": "avc-wasm",
+  "type": "module",
+  "version": "0.1.0",
+  "files": [
+    "avc_wasm_bg.wasm",
+    "avc_wasm.js",
+    "avc_wasm.d.ts"
+  ],
+  "main": "avc_wasm.js",
+  "types": "avc_wasm.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ]
+}

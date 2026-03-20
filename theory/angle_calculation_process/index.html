@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.5">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
     
     
       
@@ -885,10 +885,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#calculating-the-lattice-vectors-given-the-overlapping-points" class="md-nav__link">
+  <a href="#calculating-the-super-lattice-vectors" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Calculating the lattice vectors given the overlapping points
+        Calculating the super-lattice vectors
       
     </span>
   </a>
@@ -897,17 +897,6 @@
         
       </ul>
     </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#summary" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Summary
-      
-    </span>
-  </a>
   
 </li>
       
@@ -1604,10 +1593,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#calculating-the-lattice-vectors-given-the-overlapping-points" class="md-nav__link">
+  <a href="#calculating-the-super-lattice-vectors" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Calculating the lattice vectors given the overlapping points
+        Calculating the super-lattice vectors
       
     </span>
   </a>
@@ -1616,17 +1605,6 @@
         
       </ul>
     </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#summary" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Summary
-      
-    </span>
-  </a>
   
 </li>
       
@@ -1685,7 +1663,7 @@ R(\theta) =
 \vec{R}^1_{p,q} = a\vec{a} + b\vec{b} \quad \text{and} \quad
 \vec{R}^2_{m,n} = R(\theta)(m\vec{m} + n\vec{n}), \quad a, b, m, n \in \mathbb{Z}
 \]</div>
-<p><img src="../../images/angle_calculation_process/moire.svg" alt="Moiré Diagram" style="max-width: 100%; width: 600px; margin: auto; display: block;"></p>
+<p><img src="../../images/theory/angle_calculation_process/moire.svg" alt="Moiré Diagram" style="max-width: 100%; width: 600px; margin: auto; display: block;"></p>
 <p><em><center><strong>Fig 1:</strong> Illustration of vector matching for commensurate moiré patterns. Here vectors m and n are already rotated by angle theta. </center></em></p>
 <p>For a commensurate moiré superlattice to form, there must exist integers <span class="arithmatex">\(a, b, m, n\)</span> such that:</p>
 <div class="arithmatex">\[\vec{R}^1_{p,q} = \vec{R}^2_{m,n}\]</div>
@@ -1723,12 +1701,12 @@ r = |\vec{r}| = \sqrt{a^2 + b^2 + 2ab\cos\beta}
 <div style="display: flex; justify-content: center; gap: 20px; align-items: flex-start; flex-wrap: wrap;">
 
   <figure style="margin: 0; text-align: center;">
-    <img src="../../images/angle_calculation_process/concentric_shells.svg" alt="Concentric Lattice Points" style="max-width: 100%; width: 300px;">
+    <img src="../../images/theory/angle_calculation_process/concentric_shells.svg" alt="Concentric Lattice Points" style="max-width: 100%; width: 300px;">
     <figcaption style="margin-top: 8px; font-style: italic;"><strong>Fig 2:</strong> Lattice points reside in concentric circles</figcaption>
   </figure>
 
   <figure style="margin: 0; text-align: center;">
-    <img src="../../images/angle_calculation_process/points_per_radius.svg" alt="Number of Points per Radius Level" style="max-width: 100%; width: 300px;">
+    <img src="../../images/theory/angle_calculation_process/points_per_radius.svg" alt="Number of Points per Radius Level" style="max-width: 100%; width: 300px;">
     <figcaption style="margin-top: 8px; font-style: italic;"><strong>Fig 3:</strong> Number of points in each shell is<br>a multiple of 6 (Triangle lattice)</figcaption>
   </figure>
 
@@ -1743,37 +1721,40 @@ r = |\vec{r}| = \sqrt{a^2 + b^2 + 2ab\cos\beta}
 <li>
 <p><strong>Group points by radius</strong>:
     For each point (<span class="arithmatex">\(\mathbf{p}\)</span>) in <span class="arithmatex">\(A_r\)</span> and <span class="arithmatex">\(B_r\)</span>, compute its distance <span class="arithmatex">\(d = \|\mathbf{p}\|\)</span> from the origin.
-    In each lattice, group points that lie at the same radius into <em>levels</em>.</p>
+    In each lattice, group points that lie at the same radius into <em>shells</em> or <em>levels</em>.</p>
 </li>
 <li>
 <p><strong>Identify shared levels</strong>:
     Let <span class="arithmatex">\(D = \{d \mid d \text{ occurs in both } A_r \text{ and } B_r \} \setminus \{0\}\)</span>.
-    These are the radii at which both lattices have points.</p>
+    These are the non-zero radii at which both lattices have points.</p>
 </li>
 <li>
-<p><strong>Filter by angular sector</strong>:
-    For each <span class="arithmatex">\(d \in D\)</span>, consider only those points <span class="arithmatex">\(\{\mathbf{p}\} \in A_r\)</span> and <span class="arithmatex">\(\{\mathbf{q}\} \in B_r\)</span> on level <span class="arithmatex">\(d\)</span> such that</p>
-<div class="arithmatex">\[
-0 &lt; \angle\mathbf{p} \le \theta_\text{max}, \quad
-0 &lt; \angle\mathbf{q} \le \theta_\text{max}
-\]</div>
-<p>where <span class="arithmatex">\(\theta_\text{max}\)</span> is the lattice's symmetry sector (e.g., <span class="arithmatex">\(60^\circ\)</span> for triangular lattices, <span class="arithmatex">\(90^\circ\)</span> for square lattices). Although till now we have discussed as if the upper lattice and lower lattice can be different, in practice we have never tested this code on different lattices. Neither do we know if those cases will yield any commensurate angles. For now, we will assume that both lattices are the same. So here when we say lattice's symmetry sector, we mean the symmetry sectors of both are same.</p>
+<p><strong>Compute angle differences (Candidate Generation)</strong>:
+    For each shared radius <span class="arithmatex">\(d \in D\)</span>, we look at every point <span class="arithmatex">\(\mathbf{p_1} \in A_r\)</span> and <span class="arithmatex">\(\mathbf{p_2} \in B_r\)</span> situated at that distance. 
+    To halve the search space and avoid mirror-image duplicates, we ignore any points where <span class="arithmatex">\(y &lt; 0\)</span>.
+    For each valid pair <span class="arithmatex">\((\mathbf{p_1}, \mathbf{p_2})\)</span>, we calculate the rotation angle needed to map <span class="arithmatex">\(\mathbf{p_1}\)</span> to <span class="arithmatex">\(\mathbf{p_2}\)</span>:</p>
+<div class="arithmatex">\[ \theta = (\angle\mathbf{p_2} - \angle\mathbf{p_1}) \pmod{360^\circ} \]</div>
+<p>If <span class="arithmatex">\(\theta\)</span> falls within our requested angular range (e.g. <span class="arithmatex">\(0^\circ &lt; \theta &lt; \theta_\text{max}\)</span>), we record this as a candidate match.</p>
 </li>
 <li>
-<p><strong>Compute angle differences</strong>:
-   Now we will pair points from <span class="arithmatex">\(\{\mathbf{p}\}\)</span> with <span class="arithmatex">\(\{\mathbf{q}\}\)</span> at each common level <span class="arithmatex">\(D\)</span>. For each point from <span class="arithmatex">\(\{\mathbf{p}\}\)</span>, we will pair it with every point from <span class="arithmatex">\(\{\mathbf{q}\}\)</span>. For each pair, compute the angle differences. </p>
+<p><strong>Clash Resolution &amp; Deduplication</strong>:
+    The candidate list is sorted by rotation angle <span class="arithmatex">\(\theta\)</span>. Because the lattice is highly symmetric, many different pairs of points will yield the exact same rotation angle. 
+    We group candidates whose angles match. For each group of duplicate angles, we keep only one winner using the following heuristics:</p>
+<ul>
+<li><strong>Primary choice</strong>: The pair belonging to the <em>smallest radius</em> shell wins. This ensures we select the smallest possible moiré supercell (i.e., the fundamental unit cell rather than a larger multiple).</li>
+<li><strong>Tie-breaker</strong>: If radii are equal, we select the pair whose orientation (the azimuthal angle of the vector sum of its super lattice basis vectors) is closest to <span class="arithmatex">\(0^\circ\)</span>. This is done purely for cosmetic purposes. All the other candidates are geometrically equivalent to this one.</li>
+</ul>
 </li>
 </ol>
-<p>This procedure ensures we collect unique, minimal-angle configurations that could align under rotation, constrained to the symmetry of the lattice.</p>
 <details>
   <summary>Some Practical Optimizations</summary>
 
     <ul>
         <li>
-          In <strong>Step 4</strong> after calculating the angle difference (say \(\theta\)), we keep the angle only if it is in the range \(0 < \theta < \theta_\text{max}\). Note that we exclude \(0\) because it corresponds to the trivial case where no rotation is applied, and we exclude \(\theta_\text{max}\) because it corresponds to the case where the two lattices are again perfectly aligned, as if no rotation is applied. Also we do not take angles more than \(\theta_\text{max}\) because they are equivalent to angles less than \(\theta_\text{max}\) due to periodicity.
+          <strong>Y-axis Filtering:</strong> As mentioned in Step 3, any point with a negative Y-coordinate is skipped outright. Any match involving a lower-half point simply manifests as a geometrically equivalent match further down the pipeline. Stripping them early cuts the inner $O(N^2)$ loop iterations by $75\%$.
         </li>
         <li>
-          In <strong>Step 1</strong>, when using same lattice as both upper and lower layer, after grouping points that lie at the same distance from the origin, we discard those \(d\)s who just have 6 points (4 points for square lattice). This is because it will lead us to no rotation anyway. We keep only those \(d\)s which have more than 6 points (12, 18, etc. for triangular lattice; 8, 12, etc. for square lattice) where we can form pairs of points that yield non-trivial angles.
+          <strong>Excluding zero distance:</strong> The origin $(0, 0)$ is explicitly removed from the shared levels $D$. The origin always maps to itself under any rotation, providing no useful geometric constraints for resolving $\theta$.
         </li>
     </ul>
 
@@ -1782,8 +1763,34 @@ r = |\vec{r}| = \sqrt{a^2 + b^2 + 2ab\cos\beta}
 <p><br></p>
 <h3 id="time-complexity_1">Time Complexity</h3>
 <p>If the number points is of the order <span class="arithmatex">\(O(n^2)\)</span> and they are sorted by distance, the time complexity of this part becomes <span class="arithmatex">\(O(n^2 \log n^2) =  O(n^2 \log n)\)</span> (because <span class="arithmatex">\(\log n^2 = 2 \log n\)</span>). Apart from this all other steps are multiple order smaller than this cost, hence can be ignored. That makes this algorithm much less than the <span class="arithmatex">\(O(n^3)\)</span> of the Diophantine approach and arguably more intuitive.</p>
-<h3 id="calculating-the-lattice-vectors-given-the-overlapping-points">Calculating the lattice vectors given the overlapping points</h3>
-<h2 id="summary">Summary</h2>
+<h3 id="calculating-the-super-lattice-vectors">Calculating the super-lattice vectors</h3>
+<p>Once the process has identified a valid commensurate angle <span class="arithmatex">\(\theta\)</span> and its corresponding overlapping point, the algorithm computes integer indices <code>ll1, ll2</code> (for the lower layer) and <code>ul1, ul2</code> (for the upper layer). These indices describe how to reach the coincidence point <span class="arithmatex">\(\mathbf{p}\)</span> using the primitive basis vectors of the respective layers.</p>
+<p>To actually construct the moiré supercell geometry, we need the large <strong>moiré lattice vectors</strong> (<span class="arithmatex">\(\mathbf{m_{lv1}}\)</span> and <span class="arithmatex">\(\mathbf{m_{lv2}}\)</span>). Because a moiré lattice inherits the point-group symmetry of its constituent layers, the second moiré vector is just the first vector rotated by the natural angle between the monolayer's basis vectors (<span class="arithmatex">\(\beta\)</span>).</p>
+<p>Mathematically, this is expressed as follows:</p>
+<ol>
+<li><strong>Find the inherent angle between the monolayer's basis vectors (<span class="arithmatex">\(\beta\)</span>)</strong>:<br />
+   Let <span class="arithmatex">\(\mathbf{a_1}\)</span> and <span class="arithmatex">\(\mathbf{a_2}\)</span> be the primitive lattice vectors of the given monolayer. For different types of layers in upper and lower, we . The angle <span class="arithmatex">\(\beta\)</span> between them is found using the dot product:</li>
+</ol>
+<p>$$ \beta = \cos^{-1}\left( \frac{\mathbf{a_1} \cdot \mathbf{a_2}}{|\mathbf{a_1}| |\mathbf{a_2}|} \right) $$</p>
+<ol>
+<li><strong>Compute the first super-lattice vector (<span class="arithmatex">\(\mathbf{m_{lv1}}\)</span>)</strong>:<br />
+   The coincidence point directly gives us the first super-lattice vector. Using the lower layer indices (<span class="arithmatex">\(l_1\)</span>, <span class="arithmatex">\(l_2\)</span>) returned by the algorithm:</li>
+</ol>
+<p>$$ \mathbf{m_{lv1}} = l_1 \mathbf{a_1} + l_2 \mathbf{a_2} $$</p>
+<ol>
+<li><strong>Compute the second super-lattice vector (<span class="arithmatex">\(\mathbf{m_{lv2}}\)</span>)</strong>:<br />
+   To preserve the underlying lattice symmetry in the moiré pattern, the second vector is simply the first one rotated by <span class="arithmatex">\(\beta\)</span>:</li>
+</ol>
+<p>$$ \mathbf{m_{lv2}} = R(\beta)\mathbf{m_{lv1}} $$</p>
+<p>where <span class="arithmatex">\(R(\beta)\)</span> is the standard 2D rotation matrix:</p>
+<p>$$
+   R(\beta) =
+   \begin{bmatrix}
+   \cos\beta &amp; -\sin\beta \
+   \sin\beta &amp; \cos\beta
+   \end{bmatrix}
+   $$</p>
+<p>These two vectors, <span class="arithmatex">\(\mathbf{m_{lv1}}\)</span> and <span class="arithmatex">\(\mathbf{m_{lv2}}\)</span>, span the exact boundaries of the commensurate moiré supercell, which can then be populated with the individual atoms of both layers.</p>
 <p>We avoided solving Diophantine equations by leaning on geometry and symmetry:</p>
 <ul>
 <li>Points are grouped by radius</li>
