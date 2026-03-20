@@ -227,25 +227,39 @@ Each result row gives:
         <div style="color: red; border: 1px solid red; padding: 5px; text-align: center;"><b>WARNING:</b> RESULTS MIGHT BE MEANINGLESS OR INACCURATE</div>
     </div>
 
+    <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+        <label>Angle range (degrees):</label>
+        <div style="display: flex; gap: 6px; align-items: center;">
+            <label for="angle-start">Start:</label>
+            <input type="number" id="angle-start" value="0" min="0" max="360" step="any" style="width: 80px;">
+        </div>
+        <div style="display: flex; gap: 6px; align-items: center;">
+            <label for="angle-end">End:</label>
+            <input type="number" id="angle-end" value="60" min="0" max="360" step="any" style="width: 80px;">
+        </div>
+    </div>
+
     <div style="display: flex; gap: 10px; align-items: center;">
         <label for="precision">Precision (10^-x):</label>
         <input type="range" id="precision" min="2" max="12" value="6" step="1" style="width: 30vw;">
         <span id="precision-value">6</span>
-    </div>   
+    </div>
 
     <button onclick="calculate()">CALCULATE</button>
 </div>
 
 
-!!! note
+??? note
 
-    The last column (**cells**) reports the total number of small cells in the moiré supercell including **both upper and lower layers**, assuming one basis point per unit cell.
+    The last column (**cells**) reports the total number of small cells in the moiré supercell including **both upper and lower layers**.
 
     If your lattice has multiple basis points per unit cell, scale accordingly:
     <ul>
         <li>Hexagonal (2 basis points): <code>actual_points = cells * 2</code></li>
         <li>Kagome (3 basis points): <code>actual_points = cells * 3</code></li>
     </ul>
+
+You can right click (or long-touch) to copy rows as python code.
 
 <table id="results-table">
     <thead>
@@ -267,7 +281,9 @@ Each result row gives:
 </div>
 
 <div id="avc-context-menu" class="hidden" role="menu" aria-label="Row actions">
-    <button id="avc-copy-preset" type="button" role="menuitem" title="Copy ll1, ll2, ul1, ul2 tuple">Copy Row</button>
+    <button id="avc-copy-preset" type="button" role="menuitem" title="Copy ll1, ll2, ul1, ul2 tuple">Copy Row as python</button>
+    <div style="height: 1px; background: rgba(127,127,127,0.2); margin: 4px 0;"></div>
+    <button id="avc-download-csv" type="button" role="menuitem" title="Export entire table">Download table as csv</button>
 </div>
 
 <!-- <script src="assets/script_find_theta.js"></script> -->
@@ -277,7 +293,15 @@ Each result row gives:
 
 
 
-<script>
+<script type="module">
+
+    // WASM engine — load once, non-blocking.
+    // Path is relative to the rendered page (/theory/avc/ → /theory/assets/…)
+    import init, { find_values as wasm_find_values }
+        from '../avc-wasm/pkg/avc_wasm.js';
+
+    let wasmReady = false;
+    init().then(() => { wasmReady = true; });
 
     let root3 = Math.sqrt(3);
 
@@ -376,6 +400,44 @@ Each result row gives:
         }
     });
 
+    const downloadCsvButton = document.getElementById("avc-download-csv");
+    downloadCsvButton.addEventListener("click", () => {
+        closeContextMenu();
+        
+        const table = document.getElementById("results-table");
+        if (!table) return;
+
+        let csvString = "";
+        const rows = table.querySelectorAll("tr");
+        
+        for (const row of rows) {
+            const cols = row.querySelectorAll("th, td");
+            const rowData = [];
+            for (const col of cols) {
+                // Escape quotes and wrap in quotes if there's a comma
+                let text = col.textContent.trim();
+                if (text.includes(",") || text.includes('"')) {
+                    text = `"${text.replace(/"/g, '""')}"`;
+                }
+                rowData.push(text);
+            }
+            csvString += rowData.join(",") + "\n";
+        }
+
+        const blob = new Blob([csvString], { type: "text/csv;charset=utf-8;" });
+        const link = document.createElement("a");
+        if (link.download !== undefined) {
+            const url = URL.createObjectURL(blob);
+            link.setAttribute("href", url);
+            link.setAttribute("download", "commensurate_angles.csv");
+            link.style.visibility = "hidden";
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
+    });
+
     document.addEventListener("click", (event) => {
         if (!event.target.closest("#avc-context-menu")) {
             closeContextMenu();
@@ -395,7 +457,7 @@ Each result row gives:
         document.getElementById("precision-value").textContent = this.value;
     });
 
-    function updateLatticeVectors() {
+    window.updateLatticeVectors = function() {
         const type = document.getElementById("latticeType").value;
         const customDiv = document.getElementById("custom-vectors");
 
@@ -417,6 +479,11 @@ Each result row gives:
             document.getElementById("layer2-lv2x").value = vec[2];
             document.getElementById("layer2-lv2y").value = vec[3];
         }
+
+        // Auto-set angle range based on lattice symmetry
+        const angleEnd = (type === "SquareLayer") ? 90 : 60;
+        document.getElementById("angle-start").value = 0;
+        document.getElementById("angle-end").value = angleEnd;
     }
 
     function gcd(x, y) {
@@ -443,34 +510,39 @@ Each result row gives:
         return `${num}/${den}`;
     }
 
-    function calculate() {
+    window.calculate = function() {
+        if (!wasmReady) {
+            alert("WASM engine is still loading — please try again in a moment.");
+            return;
+        }
+
         const radius = parseInt(document.getElementById("radius").value);
 
-        const layer1Vectors = [
+        const layer1Vectors = new Float64Array([
             parseFloat(document.getElementById("layer1-lv1x").value),
             parseFloat(document.getElementById("layer1-lv1y").value),
             parseFloat(document.getElementById("layer1-lv2x").value),
             parseFloat(document.getElementById("layer1-lv2y").value)
-        ];
+        ]);
 
-        const layer2Vectors = [
+        const layer2Vectors = new Float64Array([
             parseFloat(document.getElementById("layer2-lv1x").value),
             parseFloat(document.getElementById("layer2-lv1y").value),
             parseFloat(document.getElementById("layer2-lv2x").value),
             parseFloat(document.getElementById("layer2-lv2y").value)
-        ];
+        ]);
 
         const precision = parseInt(document.getElementById("precision").value);
-
-        // console.log(radius, layer1Vectors, layer2Vectors);
+        const angle_start = parseFloat(document.getElementById("angle-start").value);
+        const angle_end = parseFloat(document.getElementById("angle-end").value);
 
         const t0 = performance.now();
-        const results = find_values(radius, layer1Vectors, layer2Vectors, tol=precision);
+        const flat = wasm_find_values(radius, layer1Vectors, layer2Vectors, precision, angle_start, angle_end);
         const t1 = performance.now();
 
-        console.log(results);
-        console.log(`Found ${results.length} results in ${(t1 - t0).toFixed(2)} milliseconds.`);
-        displayResults_(results);
+        const N = flat.length / 7;
+        console.log(`Found ${N} results in ${(t1 - t0).toFixed(2)} milliseconds.`);
+        displayResults(flat, precision);
     }
 
     function calc_indices(p, lv1, lv2) {
@@ -525,88 +597,29 @@ Each result row gives:
         return [distMap, new Set([...distMap.keys()])];
     }
 
-    function find_values(radius, layer1Vectors, layer2Vectors, tol = 6) {
 
-        const [a1x, a1y, b1x, b1y] = layer1Vectors;
-        const [a2x, a2y, b2x, b2y] = layer2Vectors;
-
-        if (JSON.stringify(layer1Vectors) !== JSON.stringify(layer2Vectors)) {
-            alert("Warning: Vectors are not identical! Results might be inaccurate or meaningless.");
-        }
-
-        const lv1 = [a1x, a1y];
-        const lv2 = [b1x, b1y];
-
-        const lattice1 = generate_lattice_points(lv1, lv2, radius);
-        const lattice2 = generate_lattice_points(lv1, lv2, radius);
-
-        const [dict1, dist_set1] = process_lattice(lattice1, tol);
-        const [dict2, dist_set2] = process_lattice(lattice2, tol);
-
-        const common_dists = [...dist_set1].filter(d => dist_set2.has(d)).sort((a, b) => a - b).slice(1);
-
-        const angle_dict = {};
-        const lattice_angle = angle_from_x(lv2) - angle_from_x(lv1);
-
-        const isValidTheta = (theta) => theta > 0 && theta < lattice_angle;
-
-        for (const d of common_dists) {
-            // console.log(d)
-            const pts1 = Object.values(dict1.get(d)).filter(p => isValidTheta(angle_from_x(p)));
-            const pts2 = Object.values(dict2.get(d)).filter(p => isValidTheta(angle_from_x(p)));
-
-            for (const p1 of pts1) {
-                const theta1 = parseFloat(angle_from_x(p1).toFixed(tol));
-
-                for (const p2 of pts2) {
-                    const theta2 = parseFloat(angle_from_x(p2));
-                    const angle = parseFloat((theta2 - theta1));
-                    // use cos theta square between p1 and p2 as uid
-                    const uid = angleId(p1, p2);
-
-                    if (
-                        theta2 <= theta1 ||
-                        angle < Math.pow(10, -tol) ||
-                        uid in angle_dict
-                    ) continue;
-
-                    angle_dict[uid] = [p1, p2, angle];
-                }
-            }
-        }
-
-        const results = Object.entries(angle_dict)
-        .sort(([, a], [, b]) => parseFloat(a[2]) - parseFloat(b[2]))  // ascending by angle
-        .map(([k, [p1, p2, angle]]) => {
-            const thetaRad = (parseFloat(angle) * Math.PI) / 180;
-            const thetaDeg = parseFloat(angle);
-            const [i1, j1] = calc_indices(p1, lv1, lv2);
-            const [i2, j2] = calc_indices(p2, lv1, lv2);
-            const num_pts =   2*(p1[0] * p1[0] + p1[1] * p1[1]) * 1;  // 1 for one point per unit cell
-            return [thetaDeg.toFixed(tol), thetaRad.toFixed(tol), i2, j2, i1, j1, num_pts];
-        });
-
-        return results;
-    }
-
-    function displayResults_(results) {
-        resultsBody.innerHTML = ""; // Clear previous results
-        results.forEach((tuple, index) => {
+    // flat: Float64Array with 7 values per row
+    //   [ angle_deg, angle_rad, ll1, ll2, ul1, ul2, cells ]
+    function displayResults(flat, precision) {
+        resultsBody.innerHTML = "";
+        const N = flat.length / 7;
+        for (let i = 0; i < N; i++) {
             const row = document.createElement("tr");
             row.title = "Row actions available";
-            const cell = document.createElement("td");
-            cell.textContent = index + 1;  // add the index
-            row.appendChild(cell);
-            tuple.forEach(value => {
+            const idxCell = document.createElement("td");
+            idxCell.textContent = i + 1;
+            row.appendChild(idxCell);
+            for (let j = 0; j < 7; j++) {
                 const cell = document.createElement("td");
-                cell.textContent = value;
+                cell.textContent = j < 2
+                    ? flat[i * 7 + j].toFixed(precision)
+                    : Math.round(flat[i * 7 + j]);
                 row.appendChild(cell);
-            });
+            }
             resultsBody.appendChild(row);
-        });
+        }
     }
 
-    updateLatticeVectors('layer1');
-    updateLatticeVectors('layer2');
+    updateLatticeVectors();
 
 </script>

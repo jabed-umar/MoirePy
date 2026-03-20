@@ -1,0 +1,22 @@
+[package]
+name = "avc-wasm"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "avc_wasm"
+# avc.rs lives one level up beside avc.md
+path = "avc.rs"
+crate-type = ["cdylib"]
+
+[dependencies]
+wasm-bindgen = "0.2"
+
+# To compile (run from this directory — docs/theory/avc-wasm/):
+#
+#   cargo install wasm-pack
+#   wasm-pack build --target web
+#
+# This produces docs/theory/avc-wasm/pkg/avc_wasm.js  (JS glue)
+#                docs/theory/avc-wasm/pkg/avc_wasm_bg.wasm  (binary)
+# Commit both files; no Rust toolchain is needed at deploy time.
