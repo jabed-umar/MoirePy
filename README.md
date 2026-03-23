@@ -101,11 +101,14 @@ For more comprehensive performance benchmarks, visit this: [BENCHMARK](https://j
 
 Contributions are welcome.
 
-* Report bugs or request features via issues
-* Submit pull requests for improvements
-* Add examples, tutorials, or benchmarks
+Please read the full contribution guide at [contributing.md](contributing.md).
 
-A detailed contributing guide will be added soon.
+Highlights:
+
+* Join our [Discord server](https://discord.gg/EzRzMXgzfe) to coordinate and discuss ideas.
+* Choose your path: **Docs Contributor** (examples, blogs, docs) or **Developer Contributor** (Rust core, Python API, tests/CI).
+* Start from issues and submit focused pull requests.
+* Follow project philosophy: keep implementations simple, benchmark in practice, and optimize for user experience.
 
 ---
 
