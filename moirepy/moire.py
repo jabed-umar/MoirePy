@@ -255,8 +255,38 @@ class BilayerMoireLattice:
             ``N * k * k``.
         """
         if not callable(val):
-            # If scalar, we still send a float. Rust will handle the 'Scalar' variant.
-            return float(val) if val is not None else 0.0
+            if val is None:
+                return 0.0
+
+            n_pairs = len(instruction.site_i)
+            k = self.orbitals
+            arr = np.asarray(val)
+
+            # Scalar path: keep scalar so Rust uses Input::Scalar.
+            if arr.ndim == 0:
+                scalar = arr.item()
+                return complex(scalar) if np.iscomplexobj(arr) else float(scalar)
+
+            # Constant block path: (k, k) gets repeated for every pair.
+            if arr.shape == (k, k):
+                tiled = np.broadcast_to(arr, (n_pairs, k, k))
+                out_dtype = np.complex128 if np.iscomplexobj(arr) else np.float64
+                return np.ascontiguousarray(tiled, dtype=out_dtype).ravel()
+
+            # Direct per-pair input path: (N, k, k)
+            if arr.shape == (n_pairs, k, k):
+                out_dtype = np.complex128 if np.iscomplexobj(arr) else np.float64
+                return np.ascontiguousarray(arr, dtype=out_dtype).ravel()
+
+            # Special-case k=1 convenience: accept shape (N,) as per-pair scalar vector.
+            if k == 1 and arr.shape == (n_pairs,):
+                out_dtype = np.complex128 if np.iscomplexobj(arr) else np.float64
+                return np.ascontiguousarray(arr, dtype=out_dtype).ravel()
+
+            raise ValueError(
+                f"Invalid hopping input shape {arr.shape}; expected scalar, ({k},{k}), ({n_pairs},{k},{k})"
+                + (f", or ({n_pairs},) for k=1" if k == 1 else "")
+            )
 
         k = self.orbitals
         # 1. Map IDs to string labels
@@ -274,10 +304,32 @@ class BilayerMoireLattice:
 
         # 4. Call user function. Expected output shape: (N, k, k)
         result = val(coo_i, coo_j, R, labels_i, labels_j, self, **extra_inputs if extra_inputs is not None else {})
+        n_pairs = len(instruction.site_i)
+        result_arr = np.asarray(result)
+
+        # k=1 convenience: callable can return a scalar constant.
+        if self.orbitals == 1 and result_arr.ndim == 0:
+            scalar = result_arr.item()
+            return complex(scalar) if np.iscomplexobj(result_arr) else float(scalar)
 
         # 5. Flatten to 1D array for Rust
         # Shape change: (N, k, k) -> (N * k * k,)
-        return np.ascontiguousarray(result, dtype=np.complex128 if np.iscomplexobj(result) else np.float64).flatten()
+        out_dtype = np.complex128 if np.iscomplexobj(result_arr) else np.float64
+
+        if result_arr.shape == (n_pairs, self.orbitals, self.orbitals):
+            return np.ascontiguousarray(result_arr, dtype=out_dtype).ravel()
+
+        if result_arr.shape == (self.orbitals, self.orbitals):
+            tiled = np.broadcast_to(result_arr, (n_pairs, self.orbitals, self.orbitals))
+            return np.ascontiguousarray(tiled, dtype=out_dtype).ravel()
+
+        if self.orbitals == 1 and result_arr.shape == (n_pairs,):
+            return np.ascontiguousarray(result_arr, dtype=out_dtype).ravel()
+
+        raise ValueError(
+            f"Callable hopping returned shape {result_arr.shape}; expected ({n_pairs},{self.orbitals},{self.orbitals})"
+            + (f", ({self.orbitals},{self.orbitals}), scalar, or ({n_pairs},) for k=1" if self.orbitals == 1 else f" or ({self.orbitals},{self.orbitals})")
+        )
 
     def _prepare_self_input(self, val, instruction, layer, extra_inputs=None):
         """Normalize on-site/self-channel input for Rust Hamiltonian builders.
@@ -301,7 +353,38 @@ class BilayerMoireLattice:
             ``N * k * k``.
         """
         if not callable(val):
-            return float(val) if val is not None else 0.0
+            if val is None:
+                return 0.0
+
+            n_sites = len(instruction.site_i)
+            k = self.orbitals
+            arr = np.asarray(val)
+
+            # Scalar path: keep scalar so Rust uses Input::Scalar.
+            if arr.ndim == 0:
+                scalar = arr.item()
+                return complex(scalar) if np.iscomplexobj(arr) else float(scalar)
+
+            # Constant onsite block path: (k, k) repeated for every site.
+            if arr.shape == (k, k):
+                tiled = np.broadcast_to(arr, (n_sites, k, k))
+                out_dtype = np.complex128 if np.iscomplexobj(arr) else np.float64
+                return np.ascontiguousarray(tiled, dtype=out_dtype).ravel()
+
+            # Direct per-site input path: (N, k, k)
+            if arr.shape == (n_sites, k, k):
+                out_dtype = np.complex128 if np.iscomplexobj(arr) else np.float64
+                return np.ascontiguousarray(arr, dtype=out_dtype).ravel()
+
+            # Special-case k=1 convenience: accept shape (N,) as per-site scalar vector.
+            if k == 1 and arr.shape == (n_sites,):
+                out_dtype = np.complex128 if np.iscomplexobj(arr) else np.float64
+                return np.ascontiguousarray(arr, dtype=out_dtype).ravel()
+
+            raise ValueError(
+                f"Invalid onsite input shape {arr.shape}; expected scalar, ({k},{k}), ({n_sites},{k},{k})"
+                + (f", or ({n_sites},) for k=1" if k == 1 else "")
+            )
 
         k = self.orbitals
         basis = np.array(layer.basis_types)
@@ -314,7 +397,30 @@ class BilayerMoireLattice:
         #     val(c, l) for c, l in zip(coo_i, labels_i)
         # ])
 
-        return np.ascontiguousarray(result, dtype=np.complex128 if np.iscomplexobj(result) else np.float64).flatten()
+        n_sites = len(instruction.site_i)
+        result_arr = np.asarray(result)
+
+        # k=1 convenience: callable can return a scalar constant.
+        if self.orbitals == 1 and result_arr.ndim == 0:
+            scalar = result_arr.item()
+            return complex(scalar) if np.iscomplexobj(result_arr) else float(scalar)
+
+        out_dtype = np.complex128 if np.iscomplexobj(result_arr) else np.float64
+
+        if result_arr.shape == (n_sites, self.orbitals, self.orbitals):
+            return np.ascontiguousarray(result_arr, dtype=out_dtype).ravel()
+
+        if result_arr.shape == (self.orbitals, self.orbitals):
+            tiled = np.broadcast_to(result_arr, (n_sites, self.orbitals, self.orbitals))
+            return np.ascontiguousarray(tiled, dtype=out_dtype).ravel()
+
+        if self.orbitals == 1 and result_arr.shape == (n_sites,):
+            return np.ascontiguousarray(result_arr, dtype=out_dtype).ravel()
+
+        raise ValueError(
+            f"Callable onsite returned shape {result_arr.shape}; expected ({n_sites},{self.orbitals},{self.orbitals})"
+            + (f", ({self.orbitals},{self.orbitals}), scalar, or ({n_sites},) for k=1" if self.orbitals == 1 else f" or ({self.orbitals},{self.orbitals})")
+        )
 
     def generate_hamiltonian(
         self,
