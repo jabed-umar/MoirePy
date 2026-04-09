@@ -58,6 +58,8 @@ extra:
     - getting_started/obc_vs_pbc.ipynb
     - getting_started/prepare_layers.ipynb
     - getting_started/custom_hoppings.ipynb
+    - getting_started/multiple_orbitals.ipynb
+    - getting_started/non_hermitian.ipynb
 
 
 nav:
@@ -65,18 +67,20 @@ nav:
   - Getting Started:
     - Quickstart TBG in 5 Minutes: getting_started/quickstart_tbg.md
     - K-Space Hamiltonian Generation: getting_started/k_space_hamiltonian.md
-    - Simulating Lattices in Open vs. Periodic Boundary Conditions: getting_started/obc_vs_pbc.md
+    - Lattices in Open vs. Periodic Boundary Conditions: getting_started/obc_vs_pbc.md
+    - Multiple-Orbital Systems: getting_started/multiple_orbitals.md
+    - Non-Hermitian Systems: getting_started/non_hermitian.md
     - Defining Custom Layers: getting_started/prepare_layers.md
     - Designing Custom Hopping: getting_started/custom_hoppings.md
   - Tutorials and Benchmarks:
     - Tutorials and Replicated Papers: examples.md
     - Benchmarks and Performance Tips: benchmarks.md
-  - Theory:
-    - Theoretical Background: theory/theory_intro.md
-    - Tight Binding Formulation: theory/tight_binding_ham.md
+  - "Theory: Algorithms":
     - Searching Algorithm & KDTree: theory/search_algorithm_kdtree.md
     - Angle Calculation Logic: theory/angle_calculation_process.md
     - Angle Value Calculator: theory/avc.md
+  - "Theory: Physics":
+    - Tight Binding Formulation: theory_physics/tight_binding_ham.md
   - API Reference:
     - Overview: api/index.md
     - Core Classes:
