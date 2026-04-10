@@ -19,10 +19,15 @@ def parse_args() -> argparse.Namespace:
         default=SCRIPT_DIR,
         help="Directory where PDF plots will be written.",
     )
+    parser.add_argument(
+        "--save-webp",
+        action="store_true",
+        help="Save WEBP plots only (100 dpi, quality=60). Without this flag, PDF is saved.",
+    )
     return parser.parse_args()
 
 
-def plot_results(x: np.ndarray, y: np.ndarray, out_path: Path) -> None:
+def plot_results(x: np.ndarray, y: np.ndarray, out_base_path: Path, save_webp: bool) -> None:
     plt.rcParams.update(
         {
             "font.size": 14,
@@ -46,9 +51,21 @@ def plot_results(x: np.ndarray, y: np.ndarray, out_path: Path) -> None:
 
     ax.grid(alpha=0.3)
     plt.tight_layout()
-    plt.savefig(out_path, bbox_inches="tight")
+    if save_webp:
+        out_webp_path = out_base_path.with_suffix(".webp")
+        plt.savefig(
+            out_webp_path,
+            bbox_inches="tight",
+            format="webp",
+            dpi=100,
+            pil_kwargs={"quality": 60},
+        )
+        print(f"Plot saved to {out_webp_path}")
+    else:
+        out_pdf_path = out_base_path.with_suffix(".pdf")
+        plt.savefig(out_pdf_path, bbox_inches="tight")
+        print(f"Plot saved to {out_pdf_path}")
     plt.close(fig)
-    print(f"Plot saved to {out_path}")
 
 
 def main() -> None:
@@ -69,11 +86,11 @@ def main() -> None:
 
     args.output_dir.mkdir(parents=True, exist_ok=True)
 
-    out_exp1 = args.output_dir / "experiment1_total_pipeline.pdf"
-    out_exp2 = args.output_dir / "experiment2_hamiltonian_only.pdf"
+    out_exp1 = args.output_dir / "experiment1_total_pipeline"
+    out_exp2 = args.output_dir / "experiment2_hamiltonian_only"
 
-    plot_results(x, y1, out_exp1)
-    plot_results(x, y2, out_exp2)
+    plot_results(x, y1, out_exp1, args.save_webp)
+    plot_results(x, y2, out_exp2, args.save_webp)
 
 
 if __name__ == "__main__":
