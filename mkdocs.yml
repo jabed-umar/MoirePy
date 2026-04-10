@@ -74,7 +74,7 @@ nav:
     - Designing Custom Hopping: getting_started/custom_hoppings.md
   - Tutorials and Benchmarks:
     - Tutorials and Replicated Papers: examples.md
-    - Benchmarks and Performance Tips: benchmarks.md
+    - Benchmarks: benchmarks.md
   - "Theory: Algorithms":
     - Searching Algorithm & KDTree: theory/search_algorithm_kdtree.md
     - Angle Calculation Logic: theory/angle_calculation_process.md
