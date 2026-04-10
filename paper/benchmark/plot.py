@@ -1,14 +1,38 @@
+import argparse
 import json
+from pathlib import Path
+
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.ticker import ScalarFormatter
-from utils import OUT_JSON, OUT_EXP1, OUT_EXP2
 
-def plot_results(x: np.ndarray, y: np.ndarray, out_path):
-    plt.rcParams.update({
-        "font.size": 14, "axes.labelsize": 18, "xtick.labelsize": 14,
-        "ytick.labelsize": 14, "lines.linewidth": 2.0, "lines.markersize": 6,
-    })
+
+SCRIPT_DIR = Path(__file__).resolve().parent
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Generate benchmark plots from a benchmark JSON file.")
+    parser.add_argument("--input-json", type=Path, required=True, help="Path to benchmark JSON file.")
+    parser.add_argument(
+        "--output-dir",
+        type=Path,
+        default=SCRIPT_DIR,
+        help="Directory where PDF plots will be written.",
+    )
+    return parser.parse_args()
+
+
+def plot_results(x: np.ndarray, y: np.ndarray, out_path: Path) -> None:
+    plt.rcParams.update(
+        {
+            "font.size": 14,
+            "axes.labelsize": 18,
+            "xtick.labelsize": 14,
+            "ytick.labelsize": 14,
+            "lines.linewidth": 2.0,
+            "lines.markersize": 6,
+        }
+    )
 
     fig, ax = plt.subplots(figsize=(6.5, 4.5))
     ax.plot(x, y, marker="o")
@@ -22,33 +46,35 @@ def plot_results(x: np.ndarray, y: np.ndarray, out_path):
 
     ax.grid(alpha=0.3)
     plt.tight_layout()
-    
-    # Save as PDF as requested
-    final_path = out_path.with_suffix(".pdf")
-    plt.savefig(final_path, bbox_inches="tight")
-    
-    # # save webp for faster loading in websites
-    # final_path = out_path.with_suffix(".webp")
-    # plt.savefig(final_path, bbox_inches="tight", format="webp", pil_kwargs={"quality": 60, "lossless": False, "method": 6, "optimize": True})
+    plt.savefig(out_path, bbox_inches="tight")
+    plt.close(fig)
+    print(f"Plot saved to {out_path}")
 
-    plt.close()
-    print(f"Plot saved to {final_path}")
 
-def main():
-    if not OUT_JSON.exists():
-        print(f"Error: {OUT_JSON} not found. Run benchmark.py first.")
-        return
+def main() -> None:
+    args = parse_args()
 
-    with open(OUT_JSON, "r") as f:
-        data = json.load(f)
+    if not args.input_json.exists():
+        raise FileNotFoundError(f"Input JSON not found: {args.input_json}")
 
-    results = data["results"]
-    x = np.array([r["cells_times_2"] for r in results])
-    y1 = np.array([r["experiment_1_ms"] for r in results])
-    y2 = np.array([r["experiment_2_ms"] for r in results])
+    data = json.loads(args.input_json.read_text(encoding="utf-8"))
+    results = data.get("results", [])
 
-    plot_results(x, y1, OUT_EXP1)
-    plot_results(x, y2, OUT_EXP2)
+    if not results:
+        raise ValueError(f"No results found in JSON: {args.input_json}")
+
+    x = np.array([r["cells_times_2"] for r in results], dtype=float)
+    y1 = np.array([r["experiment_1_ms"] for r in results], dtype=float)
+    y2 = np.array([r["experiment_2_ms"] for r in results], dtype=float)
+
+    args.output_dir.mkdir(parents=True, exist_ok=True)
+
+    out_exp1 = args.output_dir / "experiment1_total_pipeline.pdf"
+    out_exp2 = args.output_dir / "experiment2_hamiltonian_only.pdf"
+
+    plot_results(x, y1, out_exp1)
+    plot_results(x, y2, out_exp2)
+
 
 if __name__ == "__main__":
     main()
