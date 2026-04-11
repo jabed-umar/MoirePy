@@ -61,11 +61,11 @@ extra:
     - getting_started/multiple_orbitals.ipynb
     - getting_started/non_hermitian.ipynb
 
-    - docs/examples/nori.ipynb
-    - docs/examples/koshino.ipynb
+    - replications/nori.ipynb
+    - replications/koshino.ipynb
 
-    - docs/examples/tight_binding_ham.ipynb
-    - docs/examples/dos_calculation.ipynb
+    - examples/tight_binding_ham.ipynb
+    - examples/dos_calculation.ipynb
 
 
 nav:
@@ -78,8 +78,8 @@ nav:
     - Non-Hermitian Systems: getting_started/non_hermitian.md
     - Defining Custom Layers: getting_started/prepare_layers.md
     - Designing Custom Hopping: getting_started/custom_hoppings.md
-  - Tutorials and Benchmarks:
-    - Examples and Replicated Papers: examples.md
+  - Examples and Benchmarks:
+    - Replicated Papers: replications.md
     - Benchmarks: benchmarks.md
   - "Theory: Algorithms":
     - Searching Algorithm & KDTree: theory/search_algorithm_kdtree.md

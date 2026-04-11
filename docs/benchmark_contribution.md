@@ -134,13 +134,12 @@ Notes:
 After the run completes, submit your JSON through our benchmark issue form.
 
 1. Locate your result file:
-   - `docs/benchmark/<your_machine_label>/benchmark_results.json`
-2. Open a new benchmark submission issue:
-   - https://github.com/jabed-umar/MoirePy/issues/new?template=benchmark_submission.yml
+    - `docs/benchmark/<your_machine_label>/benchmark_results.json`
+2. Open a new [benchmark submission issue](https://github.com/jabed-umar/MoirePy/issues/new?template=benchmark_submission.yml)
 3. Fill in:
-   - **System/Hardware Name** (human-readable machine name)
-   - **Upload Benchmark JSON** (attach `benchmark_results.json`)
-   - **Extra Notes** (optional: cooling, thermals, plugged-in battery state, background load, etc.)
+    - **System/Hardware Name** (human-readable machine name)
+    - **Upload Benchmark JSON** (attach `benchmark_results.json`)
+    - **Extra Notes** (optional: cooling, thermals, plugged-in battery state, background load, etc.)
 4. Submit the issue.
 
 That’s it. We will review and add your results to the benchmark docs.
