@@ -10,31 +10,31 @@
       
       
       
-        <link rel="canonical" href="https://jabed-umar.github.io/MoirePy/theory/tight_binding_ham/">
+        <link rel="canonical" href="https://jabed-umar.github.io/MoirePy/replications/">
       
       
-        <link rel="prev" href="../theory_intro/">
+        <link rel="prev" href="../getting_started/custom_hoppings/">
       
       
-        <link rel="next" href="../search_algorithm_kdtree/">
+        <link rel="next" href="../benchmarks/">
       
       
         
       
       
-      <link rel="icon" href="../../assets/images/favicon.png">
+      <link rel="icon" href="../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
     
     
       
-        <title>Tight Binding Formulation - MoirePy – Python Library for Moiré Lattice Simulation</title>
+        <title>Replicated Papers - MoirePy – Python Library for Moiré Lattice Simulation</title>
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
       
       
 
@@ -53,11 +53,13 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
     
-      <link rel="stylesheet" href="../../assets/style.css">
+      <link rel="stylesheet" href="../assets/style.css">
     
-    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+      <link rel="stylesheet" href="../assets/replications.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -82,7 +84,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#tight-binding-moire-hamiltonian-construction" class="md-skip">
+        <a href="#replicated-papers" class="md-skip">
           Skip to content
         </a>
       
@@ -98,9 +100,9 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../.." title="MoirePy – Python Library for Moiré Lattice Simulation" class="md-header__button md-logo" aria-label="MoirePy – Python Library for Moiré Lattice Simulation" data-md-component="logo">
+    <a href=".." title="MoirePy – Python Library for Moiré Lattice Simulation" class="md-header__button md-logo" aria-label="MoirePy – Python Library for Moiré Lattice Simulation" data-md-component="logo">
       
-  <img src="../../assets/logo.svg" alt="logo">
+  <img src="../assets/logo.svg" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -117,7 +119,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Tight Binding Formulation
+              Replicated Papers
             
           </span>
         </div>
@@ -233,9 +235,9 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../.." title="MoirePy – Python Library for Moiré Lattice Simulation" class="md-nav__button md-logo" aria-label="MoirePy – Python Library for Moiré Lattice Simulation" data-md-component="logo">
+    <a href=".." title="MoirePy – Python Library for Moiré Lattice Simulation" class="md-nav__button md-logo" aria-label="MoirePy – Python Library for Moiré Lattice Simulation" data-md-component="logo">
       
-  <img src="../../assets/logo.svg" alt="logo">
+  <img src="../assets/logo.svg" alt="logo">
 
     </a>
     MoirePy – Python Library for Moiré Lattice Simulation
@@ -262,7 +264,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../.." class="md-nav__link">
+      <a href=".." class="md-nav__link">
         
   
   
@@ -341,7 +343,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../getting_started/quickstart_tbg/" class="md-nav__link">
+      <a href="../getting_started/quickstart_tbg/" class="md-nav__link">
         
   
   
@@ -369,7 +371,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../getting_started/k_space_hamiltonian/" class="md-nav__link">
+      <a href="../getting_started/k_space_hamiltonian/" class="md-nav__link">
         
   
   
@@ -397,14 +399,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../getting_started/obc_vs_pbc/" class="md-nav__link">
+      <a href="../getting_started/obc_vs_pbc/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Simulating Lattices in Open vs. Periodic Boundary Conditions
+    Lattices in Open vs. Periodic Boundary Conditions
   
 
     
@@ -425,7 +427,63 @@
   
   
     <li class="md-nav__item">
-      <a href="../../getting_started/prepare_layers/" class="md-nav__link">
+      <a href="../getting_started/multiple_orbitals/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Multiple-Orbital Systems
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting_started/non_hermitian/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Non-Hermitian Systems
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting_started/prepare_layers/" class="md-nav__link">
         
   
   
@@ -453,7 +511,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../getting_started/custom_hoppings/" class="md-nav__link">
+      <a href="../getting_started/custom_hoppings/" class="md-nav__link">
         
   
   
@@ -461,121 +519,6 @@
     
   
     Designing Custom Hopping
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    
-    
-    
-    
-      
-        
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
-        
-          
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Tutorials and Benchmarks
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_3">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Tutorials and Benchmarks
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../examples/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Tutorials and Replicated Papers
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../benchmarks/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Benchmarks and Performance Tips
   
 
     
@@ -618,17 +561,17 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
-          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
             
   
   
   <span class="md-ellipsis">
     
   
-    Theory
+    Examples and Benchmarks
   
 
     
@@ -639,44 +582,16 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_4">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             
   
-    Theory
+    Examples and Benchmarks
   
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../theory_intro/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Theoretical Background
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
             
               
                 
@@ -701,7 +616,7 @@
   <span class="md-ellipsis">
     
   
-    Tight Binding Formulation
+    Replicated Papers
   
 
     
@@ -723,7 +638,94 @@
   
   
     <li class="md-nav__item">
-      <a href="../search_algorithm_kdtree/" class="md-nav__link">
+      <a href="../benchmarks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Benchmarks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Theory of Algorithms
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Theory of Algorithms
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../theory/search_algorithm_kdtree/" class="md-nav__link">
         
   
   
@@ -751,7 +753,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../angle_calculation_process/" class="md-nav__link">
+      <a href="../theory/angle_calculation_process/" class="md-nav__link">
         
   
   
@@ -779,7 +781,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../avc/" class="md-nav__link">
+      <a href="../theory/avc/" class="md-nav__link">
         
   
   
@@ -866,7 +868,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api/" class="md-nav__link">
+      <a href="../api/" class="md-nav__link">
         
   
   
@@ -943,7 +945,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api/generated/moirepy.layers.Layer/" class="md-nav__link">
+      <a href="../api/generated/moirepy.layers.Layer/" class="md-nav__link">
         
   
   
@@ -971,7 +973,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api/generated/moirepy.moire.BilayerMoireLattice/" class="md-nav__link">
+      <a href="../api/generated/moirepy.moire.BilayerMoireLattice/" class="md-nav__link">
         
   
   
@@ -1056,7 +1058,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api/generated/moirepy.layers.SquareLayer/" class="md-nav__link">
+      <a href="../api/generated/moirepy.layers.SquareLayer/" class="md-nav__link">
         
   
   
@@ -1084,7 +1086,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api/generated/moirepy.layers.TriangularLayer/" class="md-nav__link">
+      <a href="../api/generated/moirepy.layers.TriangularLayer/" class="md-nav__link">
         
   
   
@@ -1112,7 +1114,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api/generated/moirepy.layers.Rhombus60Layer/" class="md-nav__link">
+      <a href="../api/generated/moirepy.layers.Rhombus60Layer/" class="md-nav__link">
         
   
   
@@ -1140,7 +1142,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api/generated/moirepy.layers.KagomeLayer/" class="md-nav__link">
+      <a href="../api/generated/moirepy.layers.KagomeLayer/" class="md-nav__link">
         
   
   
@@ -1168,7 +1170,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api/generated/moirepy.layers.HexagonalLayer/" class="md-nav__link">
+      <a href="../api/generated/moirepy.layers.HexagonalLayer/" class="md-nav__link">
         
   
   
@@ -1253,7 +1255,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api/generated/moirepy.utils.get_rotation_matrix/" class="md-nav__link">
+      <a href="../api/generated/moirepy.utils.get_rotation_matrix/" class="md-nav__link">
         
   
   
@@ -1281,7 +1283,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api/generated/moirepy.utils.are_coeffs_integers/" class="md-nav__link">
+      <a href="../api/generated/moirepy.utils.are_coeffs_integers/" class="md-nav__link">
         
   
   
@@ -1309,7 +1311,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api/generated/moirepy.utils.LatticeAlreadyFinalisedError/" class="md-nav__link">
+      <a href="../api/generated/moirepy.utils.LatticeAlreadyFinalisedError/" class="md-nav__link">
         
   
   
@@ -1383,47 +1385,151 @@
   
 
 
-<h1 id="tight-binding-moire-hamiltonian-construction">Tight Binding Moiré Hamiltonian Construction</h1>
-<p>The <strong>tight-binding Hamiltonian</strong> <sup id="fnref:ashcroft1976"><a class="footnote-ref" href="#fn:ashcroft1976">1</a></sup> is a widely used model in solid-state physics and quantum chemistry to describe the electronic structure of solids, specially in crystals and layered materials. In this model, electrons are considered <em>localized</em> around atomic sites but can <em>hop</em> to neighbouring atoms. To describe such a Hamiltonian for a <strong>Moiré system</strong>, we use the second quantized <sup id="fnref:bruus2004"><a class="footnote-ref" href="#fn:bruus2004">2</a></sup> form:  </p>
-<div class="arithmatex">\[
-H = \sum_{\alpha, \beta;\, r,r' \in L} t^1_{rr', \alpha\beta}c^{\dagger}_{r,\beta}c_{r',\alpha} 
-+ \sum_{\alpha, \beta;\, r,r' \in U} t^2_{rr', \alpha\beta}d^{\dagger}_{r,\beta}d_{r',\alpha} 
-+ \sum_{\alpha, \beta;\, r,r'} t^{\perp}_{rr', \alpha\beta}c^{\dagger}_{r,\beta}d_{r',\alpha} + \text{h.c.}
-\]</div>
-<p>Here, <span class="arithmatex">\(c^{\dagger}_{r,\beta}\)</span> and <span class="arithmatex">\(c_{r',\alpha}\)</span> denote the electron creation and annihilation operators at lattice sites <span class="arithmatex">\(r\)</span> and <span class="arithmatex">\(r'\)</span> in the <strong>lower layer</strong> (<span class="arithmatex">\(L\)</span>), associated with orbitals <span class="arithmatex">\(\beta\)</span> and <span class="arithmatex">\(\alpha\)</span>, respectively. Likewise, <span class="arithmatex">\(d^{\dagger}_{r,\beta}\)</span> and <span class="arithmatex">\(d_{r',\alpha}\)</span> are the corresponding operators in the <strong>upper layer</strong> (<span class="arithmatex">\(U\)</span>).</p>
-<p>The terms <span class="arithmatex">\(t^1_{rr', \alpha\beta}\)</span> and <span class="arithmatex">\(t^2_{rr', \alpha\beta}\)</span> represent the <em>intralayer hopping amplitudes</em>, describing electron tunneling from orbital <span class="arithmatex">\(\alpha\)</span> at site <span class="arithmatex">\(r'\)</span> to orbital <span class="arithmatex">\(\beta\)</span> at site <span class="arithmatex">\(r\)</span> within the lower and upper layers, respectively. In the special case where <span class="arithmatex">\(r = r'\)</span> and <span class="arithmatex">\(\alpha = \beta\)</span>, these terms correspond to the <em>on-site potential</em>, the energy of an electron residing in a particular orbital. The <em>interlayer coupling</em> is described by <span class="arithmatex">\(t^{\perp}_{rr', \alpha\beta}\)</span>, which governs the hopping of an electron from orbital <span class="arithmatex">\(\alpha\)</span> at site <span class="arithmatex">\(r'\)</span> in the upper layer to orbital <span class="arithmatex">\(\beta\)</span> at site <span class="arithmatex">\(r\)</span> in the lower layer.</p>
-<p>For simplicity, consider only <strong>nearest-neighbour hopping</strong> with a single orbital per site (<strong>MoirePy</strong> can handle any arbitrary number of orbital systems). In such cases, the orbital indices <span class="arithmatex">\( \alpha \)</span> and <span class="arithmatex">\( \beta \)</span> can be omitted to simplify the notation. We can define the basis as:</p>
-<div class="arithmatex">\[
-\Psi^{\dagger} = (c^{\dagger}_{1}, c^{\dagger}_{2}, \dots, c^{\dagger}_{n}, d^{\dagger}_{1}, d^{\dagger}_{2}, \dots, d^{\dagger}_{n})
-\]</div>
-<p>Here, <span class="arithmatex">\( c^{\dagger}_{i} \)</span> (<span class="arithmatex">\( d^{\dagger}_{i} \)</span>) is the creation operator at site <span class="arithmatex">\( i \)</span> in the lower (upper) layer.</p>
-<p>Then, the Hamiltonian takes the block matrix form:</p>
-<div class="arithmatex">\[
-H = \Psi^{\dagger}
-\begin{pmatrix}
-h_{LL} &amp; h_{LU} \\
-h_{UL} &amp; h_{UU}
-\end{pmatrix}
-\Psi
-\]</div>
-<p>Here, <span class="arithmatex">\( h_{LL} \)</span> and <span class="arithmatex">\( h_{UU} \)</span> are the <em>first-quantized</em> <span class="arithmatex">\( n \times n \)</span> Hamiltonians of the lower and upper layers, respectively. The blocks <span class="arithmatex">\( h_{LU} \)</span> and <span class="arithmatex">\( h_{UL} \)</span> represent interlayer couplings.</p>
-<!-- 
-## References
+<h1 id="replicated-papers">Replicated Papers</h1>
+<p>Here are a couple of papers that have been replicated using MoirePy. Click the links in the table to view the notebooks as interactive web pages, or use the icons to open the original papers, view on arXiv, download the notebooks, or explore them on GitHub and Colab.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">title</th>
+<th style="text-align: center;">preview_image</th>
+<th style="text-align: left;">original_link</th>
+<th style="text-align: left;">arxiv_link</th>
+<th style="text-align: center;">links</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Electronic Spectrum Of Twisted Bilayer Graphene</td>
+<td style="text-align: center;">plot_1.webp</td>
+<td style="text-align: left;">https://journals.aps.org/prb/abstract/10.1103/PhysRevB.92.075402</td>
+<td style="text-align: left;">https://arxiv.org/abs/1407.2477</td>
+<td style="text-align: center;">replications/nori.ipynb</td>
+</tr>
+<tr>
+<td style="text-align: left;">Optical Absorption In Twisted Bilayer Graphene</td>
+<td style="text-align: center;">plot_1.webp</td>
+<td style="text-align: left;">https://journals.aps.org/prb/abstract/10.1103/PhysRevB.87.205404</td>
+<td style="text-align: left;">https://arxiv.org/abs/1302.5218</td>
+<td style="text-align: center;">replications/koshino.ipynb</td>
+</tr>
+</tbody>
+</table>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        let previewOverlay = document.getElementById('title-preview-overlay');
+        if (!previewOverlay) {
+            previewOverlay = document.createElement('div');
+            previewOverlay.id = 'title-preview-overlay';
+            previewOverlay.innerHTML = '<img alt="Preview image" />';
+            document.body.appendChild(previewOverlay);
+        }
+        const previewImg = previewOverlay.querySelector('img');
 
-1. Neil Ashcroft, and David Mermin, Solid State Physics, Saunders College Publishing, 1976.
+        const hidePreview = () => {
+            previewOverlay.style.display = 'none';
+        };
 
-2. H. Bruus and K. Flensberg, Many-Body Quantum Theory in Condensed Matter Physics: An Introduction, OUP Oxford, 2004. -->
-<div class="footnote">
-<hr />
-<ol>
-<li id="fn:ashcroft1976">
-<p>Neil W. Ashcroft and N. David Mermin. <em>Solid State Physics</em>. Saunders College Publishing, 1976.&#160;<a class="footnote-backref" href="#fnref:ashcroft1976" title="Jump back to footnote 1 in the text">&#8617;</a></p>
-</li>
-<li id="fn:bruus2004">
-<p>Henrik Bruus and Karsten Flensberg. <em>Many-Body Quantum Theory in Condensed Matter Physics: An Introduction</em>. Oxford University Press, Oxford, 2004.&#160;<a class="footnote-backref" href="#fnref:bruus2004" title="Jump back to footnote 2 in the text">&#8617;</a></p>
-</li>
-</ol>
-</div>
+        const placePreview = (clientX, clientY) => {
+            const pad = 14;
+            const w = previewOverlay.offsetWidth || 650;
+            const h = previewOverlay.offsetHeight || 180;
+            let x = clientX + pad;
+            let y = clientY + pad;
+            if (x + w + pad > window.innerWidth) x = clientX - w - pad;
+            if (y + h + pad > window.innerHeight) y = clientY - h - pad;
+            previewOverlay.style.left = `${Math.max(8, x)}px`;
+            previewOverlay.style.top = `${Math.max(8, y)}px`;
+        };
+
+        document.querySelectorAll('table').forEach(table => {
+            table.classList.add('replications-table');
+            const headerCells = table.querySelectorAll('thead tr th');
+            if (headerCells.length < 5) return;
+            headerCells[0].textContent = 'Title';
+            headerCells[4].textContent = 'Links';
+            headerCells[4].style.textAlign = 'center';
+            headerCells[3].remove();
+            headerCells[2].remove();
+            headerCells[1].remove();
+
+            table.querySelectorAll('tbody tr').forEach(row => {
+                if (row.cells.length < 5) return;
+
+                const title = row.cells[0].textContent.trim();
+                const previewImage = row.cells[1].textContent.trim();
+                const originalLink = row.cells[2].textContent.trim();
+                const arxivLink = row.cells[3].textContent.trim();
+                const path = row.cells[4].textContent.trim();
+                const notebookStem = path.split('/').pop().replace(/\.ipynb$/i, '');
+                const websitePath = `../${path.replace(/\.ipynb$/i, "/")}`;
+                const downloadLink = `https://raw.githubusercontent.com/jabed-umar/MoirePy/main/docs/${path}`;
+                const previewImagePath = `../images/${notebookStem}/${previewImage}`;
+
+                row.cells[0].innerHTML =
+                    `<span class="title-preview-trigger" tabindex="0" data-preview="${previewImagePath}" data-title="${title}">${title}</span>`;
+
+                row.cells[4].innerHTML =
+                    '<div class="link-icons">' +
+                    `<a class="icon-link" target="_blank" href="${originalLink}" aria-label="Original paper" title="Open original paper">` +
+                    '<span class="icon-svg icon-globe2" role="img" aria-label="Original paper"></span>' +
+                    '<span class="sr-only">Open original paper</span>' +
+                    '</a>' +
+                    `<a class="icon-link" target="_blank" href="${arxivLink}" aria-label="arXiv" title="Open paper on arXiv">` +
+                    '<img src="../images/arxiv-logo.svg" width="16" alt="arXiv" />' +
+                    '<span class="sr-only">Open paper on arXiv</span>' +
+                    '</a>' +
+                    `<a class="icon-link" href="${websitePath}" aria-label="Website" title="View notebook as website">` +
+                    '<span class="icon-svg icon-window" role="img" aria-label="Website"></span>' +
+                    '<span class="sr-only">View notebook as website</span>' +
+                    '</a>' +
+                    `<a class="icon-link" target="_blank" href="${downloadLink}" aria-label="Download notebook" title="Download notebook (.ipynb)">` +
+                    '<span class="icon-svg icon-download" role="img" aria-label="Download notebook"></span>' +
+                    '<span class="sr-only">Download notebook (.ipynb)</span>' +
+                    '</a>' +
+                    `<a class="icon-link" target="_blank" href="https://github.com/jabed-umar/MoirePy/blob/main/docs/${path}" aria-label="GitHub" title="Open notebook on GitHub">` +
+                    '<img src="https://cdn.simpleicons.org/github/7C3AED" width="18" alt="GitHub" />' +
+                    '<span class="sr-only">Open notebook on GitHub</span>' +
+                    '</a>' +
+                    `<a class="icon-link" target="_blank" href="https://colab.research.google.com/github/jabed-umar/MoirePy/blob/main/docs/${path}" aria-label="Colab" title="Open notebook on Google Colab">` +
+                    '<img src="https://cdn.simpleicons.org/googlecolab" width="22" alt="Colab" />' +
+                    '<span class="sr-only">Open notebook on Google Colab</span>' +
+                    '</a>' +
+                    '</div>';
+
+                const trigger = row.cells[0].querySelector('.title-preview-trigger');
+                if (trigger) {
+                    trigger.addEventListener('mouseenter', (e) => {
+                        previewImg.src = trigger.dataset.preview;
+                        previewImg.alt = `${trigger.dataset.title} preview`;
+                        previewOverlay.style.display = 'block';
+                        placePreview(e.clientX, e.clientY);
+                    });
+                    trigger.addEventListener('mousemove', (e) => {
+                        if (previewOverlay.style.display === 'block') {
+                            placePreview(e.clientX, e.clientY);
+                        }
+                    });
+                    trigger.addEventListener('mouseleave', hidePreview);
+                    trigger.addEventListener('focus', () => {
+                        const rect = trigger.getBoundingClientRect();
+                        previewImg.src = trigger.dataset.preview;
+                        previewImg.alt = `${trigger.dataset.title} preview`;
+                        previewOverlay.style.display = 'block';
+                        placePreview(rect.right, rect.bottom);
+                    });
+                    trigger.addEventListener('blur', hidePreview);
+                }
+
+                row.cells[3].remove();
+                row.cells[2].remove();
+                row.cells[1].remove();
+            });
+        });
+
+        window.addEventListener('scroll', hidePreview, { passive: true });
+        window.addEventListener('resize', hidePreview);
+    });
+</script>
 
 
 
@@ -1473,10 +1579,10 @@ h_{UL} &amp; h_{UU}
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.sections"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
       
         <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
       

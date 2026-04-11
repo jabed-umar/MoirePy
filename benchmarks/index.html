@@ -13,10 +13,10 @@
         <link rel="canonical" href="https://jabed-umar.github.io/MoirePy/benchmarks/">
       
       
-        <link rel="prev" href="../examples/">
+        <link rel="prev" href="../replications/">
       
       
-        <link rel="next" href="../theory/theory_intro/">
+        <link rel="next" href="../theory/search_algorithm_kdtree/">
       
       
         
@@ -27,7 +27,7 @@
     
     
       
-        <title>Benchmarks and Performance Tips - MoirePy – Python Library for Moiré Lattice Simulation</title>
+        <title>Benchmarks - MoirePy – Python Library for Moiré Lattice Simulation</title>
       
     
     
@@ -56,6 +56,8 @@
       <link rel="stylesheet" href="../assets/_mkdocstrings.css">
     
       <link rel="stylesheet" href="../assets/style.css">
+    
+      <link rel="stylesheet" href="../assets/replications.css">
     
     <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -117,7 +119,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Benchmarks and Performance Tips
+              Benchmarks
             
           </span>
         </div>
@@ -404,7 +406,63 @@
   <span class="md-ellipsis">
     
   
-    Simulating Lattices in Open vs. Periodic Boundary Conditions
+    Lattices in Open vs. Periodic Boundary Conditions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting_started/multiple_orbitals/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Multiple-Orbital Systems
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting_started/non_hermitian/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Non-Hermitian Systems
   
 
     
@@ -513,7 +571,7 @@
   <span class="md-ellipsis">
     
   
-    Tutorials and Benchmarks
+    Examples and Benchmarks
   
 
     
@@ -529,7 +587,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Tutorials and Benchmarks
+    Examples and Benchmarks
   
 
           </label>
@@ -542,14 +600,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../examples/" class="md-nav__link">
+      <a href="../replications/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Tutorials and Replicated Papers
+    Replicated Papers
   
 
     
@@ -579,6 +637,24 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Benchmarks
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -586,7 +662,7 @@
   <span class="md-ellipsis">
     
   
-    Benchmarks and Performance Tips
+    Benchmarks
   
 
     
@@ -595,6 +671,58 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#generate-lattice-points-connections-and-hamiltonian" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Generate Lattice Points, Connections, and Hamiltonian
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#subsequent-hamiltonian-generation-after-connections-are-made" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Subsequent Hamiltonian Generation after connections are made
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#systems" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Systems
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -638,7 +766,7 @@
   <span class="md-ellipsis">
     
   
-    Theory
+    Theory of Algorithms
   
 
     
@@ -654,67 +782,11 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Theory
+    Theory of Algorithms
   
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../theory/theory_intro/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Theoretical Background
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../theory/tight_binding_ham/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Tight Binding Formulation
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
             
               
                 
@@ -1365,6 +1437,47 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#generate-lattice-points-connections-and-hamiltonian" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Generate Lattice Points, Connections, and Hamiltonian
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#subsequent-hamiltonian-generation-after-connections-are-made" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Subsequent Hamiltonian Generation after connections are made
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#systems" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Systems
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -1384,6 +1497,248 @@
 
 
 <h1 id="moirepy-benchmarks">MoirePy Benchmarks</h1>
+<p>This page presents interactive benchmark results for MoirePy across multiple machines, using the same benchmark protocol and plotting format so comparisons stay fair and readable. You can inspect <strong>full-pipeline (lattice points + connections + hamiltonian)</strong> time and <strong>Hamiltonian-only</strong> time as lattice size grows. The table below each plot summarizes platform metadata and headline timings at the largest sampled size. As more systems are added, this page becomes a living performance map of real-world hardware. If you want to add your machine, see the <a href="../benchmark_contribution/">Benchmark Contribution Guide</a>.</p>
+<details class="info">
+<summary>How to use the interactive plots</summary>
+<ul>
+<li>Drag to zoom</li>
+<li>Double-click to reset zoom</li>
+<li>Toggle systems using checkboxes</li>
+<li>Hover to inspect values</li>
+</ul>
+</details>
+<div id="bench-status" style="margin: 0.5rem 0 1rem 0;"></div>
+
+<div id="bench-controls" style="display:flex; flex-wrap:wrap; gap:0.75rem; margin:0.75rem 0 1.25rem 0;"></div>
+
+<h2 id="generate-lattice-points-connections-and-hamiltonian">Generate Lattice Points, Connections, and Hamiltonian</h2>
+<div id="chart-exp1" style="width:100%; min-height:360px;"></div>
+
+<h2 id="subsequent-hamiltonian-generation-after-connections-are-made">Subsequent Hamiltonian Generation after connections are made</h2>
+<div id="chart-exp2" style="width:100%; min-height:360px;"></div>
+
+<h2 id="systems">Systems</h2>
+<table id="bench-systems">
+  <thead>
+    <tr>
+      <th>Label</th>
+      <th>CPU</th>
+      <th>Platform</th>
+      <th>N</th>
+      <th>Repeat</th>
+      <th>Max points</th>
+      <th>Exp1 @ max (ms)</th>
+      <th>Exp2 @ max (ms)</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<p><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uplot@1.6.31/dist/uPlot.min.css"></p>
+<script src="https://cdn.jsdelivr.net/npm/uplot@1.6.31/dist/uPlot.iife.min.js"></script>
+
+<script>
+const DATASETS = [
+  { label: "i5 Gen12", path: "../benchmark/i5_gen12/benchmark_results.json", color: "#1472e6", enabled: true },
+  { label: "i3 Gen4", path: "../benchmark/i3_gen4/benchmark_results.json", color: "#e95d2a", enabled: false },
+  { label: "Raspberry Pi 5", path: "../benchmark/pi5/benchmark_results.json", color: "#0f9d58", enabled: false },
+];
+
+const statusEl = document.getElementById("bench-status");
+const controlsEl = document.getElementById("bench-controls");
+const tableBody = document.querySelector("#bench-systems tbody");
+const exp1Host = document.getElementById("chart-exp1");
+const exp2Host = document.getElementById("chart-exp2");
+
+let exp1Plot = null;
+let exp2Plot = null;
+let loaded = [];
+
+const fmt = (v, digits = 3) => (v == null ? "-" : Number(v).toFixed(digits));
+
+function setStatus(text, isError = false) {
+  statusEl.textContent = text;
+  statusEl.style.color = isError ? "#d83a3a" : "inherit";
+}
+
+async function loadAll() {
+  setStatus("Loading benchmark datasets...");
+
+  const results = await Promise.all(
+    DATASETS.map(async (ds) => {
+      try {
+        const res = await fetch(ds.path, { cache: "no-store" });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const json = await res.json();
+        return { ...ds, json, ok: true };
+      } catch (err) {
+        return { ...ds, ok: false, error: String(err) };
+      }
+    })
+  );
+
+  const failed = results.filter((r) => !r.ok);
+  loaded = results.filter((r) => r.ok);
+
+  if (loaded.length === 0) {
+    setStatus("Failed to load all benchmark JSON files.", true);
+    return;
+  }
+
+  if (failed.length > 0) {
+    setStatus(`Loaded ${loaded.length} dataset(s). Failed: ${failed.map((f) => f.label).join(", ")}`, true);
+  } else {
+    setStatus(`Loaded ${loaded.length} benchmark dataset(s).`);
+  }
+
+  renderControls();
+  renderTable();
+  renderCharts();
+}
+
+function renderControls() {
+  controlsEl.innerHTML = "";
+
+  loaded.forEach((ds, i) => {
+    const id = `bench-toggle-${i}`;
+    const wrapper = document.createElement("label");
+    wrapper.setAttribute("for", id);
+    wrapper.style.display = "inline-flex";
+    wrapper.style.alignItems = "center";
+    wrapper.style.gap = "0.4rem";
+    wrapper.style.padding = "0.35rem 0.55rem";
+    wrapper.style.border = "1px solid #d7d7d7";
+    wrapper.style.borderRadius = "0.45rem";
+    wrapper.style.cursor = "pointer";
+
+    const cb = document.createElement("input");
+    cb.type = "checkbox";
+    cb.id = id;
+    cb.checked = Boolean(ds.enabled);
+    cb.dataset.index = String(i);
+    cb.addEventListener("change", renderCharts);
+
+    const swatch = document.createElement("span");
+    swatch.style.display = "inline-block";
+    swatch.style.width = "0.7rem";
+    swatch.style.height = "0.7rem";
+    swatch.style.borderRadius = "999px";
+    swatch.style.background = ds.color;
+
+    const text = document.createElement("span");
+    text.textContent = ds.label;
+
+    wrapper.appendChild(cb);
+    wrapper.appendChild(swatch);
+    wrapper.appendChild(text);
+    controlsEl.appendChild(wrapper);
+  });
+}
+
+function getEnabled() {
+  const boxes = controlsEl.querySelectorAll("input[type='checkbox']");
+  return Array.from(boxes)
+    .filter((b) => b.checked)
+    .map((b) => loaded[Number(b.dataset.index)]);
+}
+
+function buildAlignedSeries(enabled, key) {
+  const xSet = new Set();
+  enabled.forEach((ds) => ds.json.results.forEach((r) => xSet.add(r.cells_times_2)));
+  const xVals = Array.from(xSet).sort((a, b) => a - b);
+
+  const ys = enabled.map((ds) => {
+    const map = new Map(ds.json.results.map((r) => [r.cells_times_2, r[key]]));
+    return xVals.map((x) => (map.has(x) ? map.get(x) : null));
+  });
+
+  return [xVals, ...ys];
+}
+
+function baseOpts(title, enabled, hostEl) {
+  const width = Math.max(640, hostEl.clientWidth || 640);
+
+  return {
+    title,
+    width,
+    height: 360,
+    scales: {
+      x: { time: false },
+      y: { auto: true },
+    },
+    axes: [
+      { label: "Number of lattice points" },
+      { label: "Time taken (ms)" },
+    ],
+    cursor: { drag: { x: true, y: true } },
+    legend: { show: true },
+    series: [
+      { label: "points" },
+      ...enabled.map((ds) => ({ label: ds.label, stroke: ds.color, width: 2 })),
+    ],
+  };
+}
+
+function renderCharts() {
+  const enabled = getEnabled();
+
+  if (enabled.length === 0) {
+    if (exp1Plot) {
+      exp1Plot.destroy();
+      exp1Plot = null;
+    }
+    if (exp2Plot) {
+      exp2Plot.destroy();
+      exp2Plot = null;
+    }
+    exp1Host.innerHTML = "<p>Select at least one dataset.</p>";
+    exp2Host.innerHTML = "<p>Select at least one dataset.</p>";
+    return;
+  }
+
+  exp1Host.innerHTML = "";
+  exp2Host.innerHTML = "";
+
+  const dataExp1 = buildAlignedSeries(enabled, "experiment_1_ms");
+  const dataExp2 = buildAlignedSeries(enabled, "experiment_2_ms");
+
+  if (exp1Plot) exp1Plot.destroy();
+  if (exp2Plot) exp2Plot.destroy();
+
+  exp1Plot = new uPlot(baseOpts("Experiment 1: Full Pipeline", enabled, exp1Host), dataExp1, exp1Host);
+  exp2Plot = new uPlot(baseOpts("Experiment 2: Hamiltonian Only", enabled, exp2Host), dataExp2, exp2Host);
+}
+
+function renderTable() {
+  tableBody.innerHTML = "";
+
+  loaded.forEach((ds) => {
+    const config = ds.json.config || {};
+    const results = ds.json.results || [];
+    const last = results[results.length - 1] || {};
+
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${ds.label}</td>
+      <td>${config.cpu_name || "-"}</td>
+      <td>${config.platform_system || "-"} ${config.platform_machine || ""}</td>
+      <td>${config.n ?? "-"}</td>
+      <td>${config.repeat ?? "-"}</td>
+      <td>${last.cells_times_2 ?? "-"}</td>
+      <td>${fmt(last.experiment_1_ms)}</td>
+      <td>${fmt(last.experiment_2_ms)}</td>
+    `;
+    tableBody.appendChild(tr);
+  });
+}
+
+window.addEventListener("resize", () => {
+  if (!exp1Plot && !exp2Plot) return;
+  renderCharts();
+});
+
+loadAll();
+</script>
 
 
 

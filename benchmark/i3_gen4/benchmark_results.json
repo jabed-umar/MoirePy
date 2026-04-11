@@ -1,0 +1,138 @@
+{
+  "config": {
+    "n": 25,
+    "repeat": 100,
+    "cpu_name": "Intel(R) Core(TM) i3-4130 CPU @ 3.40GHz",
+    "platform_system": "Linux",
+    "platform_machine": "x86_64",
+    "x_axis": "cells * 2",
+    "y_axis": "time taken (ms), averaged over repeat runs"
+  },
+  "results": [
+    {
+      "cells_times_2": 28,
+      "experiment_1_ms": 0.5365657806396484,
+      "experiment_2_ms": 0.07951021194458008
+    },
+    {
+      "cells_times_2": 4276,
+      "experiment_1_ms": 25.864977836608887,
+      "experiment_2_ms": 1.4399051666259766
+    },
+    {
+      "cells_times_2": 8548,
+      "experiment_1_ms": 51.23281002044678,
+      "experiment_2_ms": 2.8744959831237793
+    },
+    {
+      "cells_times_2": 12796,
+      "experiment_1_ms": 77.47727870941162,
+      "experiment_2_ms": 5.1049113273620605
+    },
+    {
+      "cells_times_2": 17092,
+      "experiment_1_ms": 102.60781049728394,
+      "experiment_2_ms": 6.553564071655273
+    },
+    {
+      "cells_times_2": 21364,
+      "experiment_1_ms": 127.89171695709229,
+      "experiment_2_ms": 8.966050148010254
+    },
+    {
+      "cells_times_2": 25612,
+      "experiment_1_ms": 160.3842306137085,
+      "experiment_2_ms": 10.482914447784424
+    },
+    {
+      "cells_times_2": 29884,
+      "experiment_1_ms": 197.29045152664185,
+      "experiment_2_ms": 13.450653553009033
+    },
+    {
+      "cells_times_2": 34156,
+      "experiment_1_ms": 212.52169847488403,
+      "experiment_2_ms": 15.022993087768555
+    },
+    {
+      "cells_times_2": 38404,
+      "experiment_1_ms": 233.4516739845276,
+      "experiment_2_ms": 17.18510150909424
+    },
+    {
+      "cells_times_2": 42652,
+      "experiment_1_ms": 261.3566064834595,
+      "experiment_2_ms": 18.581717014312744
+    },
+    {
+      "cells_times_2": 46924,
+      "experiment_1_ms": 302.5419569015503,
+      "experiment_2_ms": 21.085784435272217
+    },
+    {
+      "cells_times_2": 51196,
+      "experiment_1_ms": 328.20470094680786,
+      "experiment_2_ms": 23.116207122802734
+    },
+    {
+      "cells_times_2": 55468,
+      "experiment_1_ms": 354.03462409973145,
+      "experiment_2_ms": 24.514241218566895
+    },
+    {
+      "cells_times_2": 59716,
+      "experiment_1_ms": 389.4610095024109,
+      "experiment_2_ms": 27.00392246246338
+    },
+    {
+      "cells_times_2": 63964,
+      "experiment_1_ms": 407.3591876029968,
+      "experiment_2_ms": 28.272969722747803
+    },
+    {
+      "cells_times_2": 68236,
+      "experiment_1_ms": 429.0400218963623,
+      "experiment_2_ms": 30.755751132965088
+    },
+    {
+      "cells_times_2": 72508,
+      "experiment_1_ms": 452.7848553657532,
+      "experiment_2_ms": 33.13102960586548
+    },
+    {
+      "cells_times_2": 76756,
+      "experiment_1_ms": 475.38724184036255,
+      "experiment_2_ms": 35.1392936706543
+    },
+    {
+      "cells_times_2": 81076,
+      "experiment_1_ms": 497.61115312576294,
+      "experiment_2_ms": 37.58167266845703
+    },
+    {
+      "cells_times_2": 85276,
+      "experiment_1_ms": 529.0556788444519,
+      "experiment_2_ms": 40.01925468444824
+    },
+    {
+      "cells_times_2": 89572,
+      "experiment_1_ms": 591.8375301361084,
+      "experiment_2_ms": 41.13562345504761
+    },
+    {
+      "cells_times_2": 93868,
+      "experiment_1_ms": 622.8932881355286,
+      "experiment_2_ms": 44.40860033035278
+    },
+    {
+      "cells_times_2": 98116,
+      "experiment_1_ms": 647.7253866195679,
+      "experiment_2_ms": 46.01309299468994
+    },
+    {
+      "cells_times_2": 102364,
+      "experiment_1_ms": 680.554826259613,
+      "experiment_2_ms": 48.34486961364746
+    }
+  ]
+}

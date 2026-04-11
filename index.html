@@ -55,6 +55,8 @@
     
       <link rel="stylesheet" href="assets/style.css">
     
+      <link rel="stylesheet" href="assets/replications.css">
+    
     <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
@@ -554,7 +556,63 @@
   <span class="md-ellipsis">
     
   
-    Simulating Lattices in Open vs. Periodic Boundary Conditions
+    Lattices in Open vs. Periodic Boundary Conditions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="getting_started/multiple_orbitals/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Multiple-Orbital Systems
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="getting_started/non_hermitian/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Non-Hermitian Systems
   
 
     
@@ -661,7 +719,7 @@
   <span class="md-ellipsis">
     
   
-    Tutorials and Benchmarks
+    Examples and Benchmarks
   
 
     
@@ -677,7 +735,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Tutorials and Benchmarks
+    Examples and Benchmarks
   
 
           </label>
@@ -690,14 +748,14 @@
   
   
     <li class="md-nav__item">
-      <a href="examples/" class="md-nav__link">
+      <a href="replications/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Tutorials and Replicated Papers
+    Replicated Papers
   
 
     
@@ -725,7 +783,7 @@
   <span class="md-ellipsis">
     
   
-    Benchmarks and Performance Tips
+    Benchmarks
   
 
     
@@ -776,7 +834,7 @@
   <span class="md-ellipsis">
     
   
-    Theory
+    Theory of Algorithms
   
 
     
@@ -792,67 +850,11 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Theory
+    Theory of Algorithms
   
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="theory/theory_intro/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Theoretical Background
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="theory/tight_binding_ham/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Tight Binding Formulation
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
             
               
                 
@@ -1701,23 +1703,25 @@
 <h3 id="experiment-1-full-pipeline">Experiment 1: Full Pipeline</h3>
 <p><img alt="Experiment 1: Full pipeline benchmark" src="https://jabed-umar.github.io/MoirePy/benchmark/experiment1_total_pipeline.webp" /></p>
 <p>This includes lattice generation plus Hamiltonian assembly.
-Even at around <strong>160k lattice points</strong>, the full pipeline is about <strong>620 ms</strong>. For context, configurations near the magic angle (<span class="arithmatex">\(\sim 1.1^\circ\)</span>) typically have just around <strong>5-6k lattice points</strong>.</p>
+Even at around <strong>100k lattice points</strong>, the full pipeline is about <strong>400 ms</strong>. For context, configurations near the magic angle (<span class="arithmatex">\(\sim 1.1^\circ\)</span>) typically have just around <strong>5-6k lattice points</strong>.</p>
 <h3 id="experiment-2-subsequent-hamiltonian-generation">Experiment 2: Subsequent Hamiltonian Generation</h3>
 <p><img alt="Experiment 2: Hamiltonian-only benchmark" src="https://jabed-umar.github.io/MoirePy/benchmark/experiment2_hamiltonian_only.webp" /></p>
 <p>After setup, Hamiltonian generation is much faster.
-At around <strong>160k lattice points</strong>, it is about <strong>15 ms</strong>.
+At around <strong>100k lattice points</strong>, it is about <strong>30 ms</strong>.
 This is the speed profile we optimize for: heavy setup once, then fast repeated builds.
 Memory usage in these runs is negligible relative to typical laptop RAM.</p>
 <p>For more comprehensive performance benchmarks, visit this: <a href="https://jabed-umar.github.io/MoirePy/benchmarks/">BENCHMARK</a></p>
 <hr />
 <h2 id="contributing">Contributing</h2>
 <p>Contributions are welcome.</p>
+<p>Please read the full contribution guide at <a href="contributing.md">contributing.md</a>.</p>
+<p>Highlights:</p>
 <ul>
-<li>Report bugs or request features via issues</li>
-<li>Submit pull requests for improvements</li>
-<li>Add examples, tutorials, or benchmarks</li>
+<li>Join our <a href="https://discord.gg/EzRzMXgzfe">Discord server</a> to coordinate and discuss ideas.</li>
+<li>Choose your path: <strong>Docs Contributor</strong> (examples, blogs, docs) or <strong>Developer Contributor</strong> (Rust core, Python API, tests/CI).</li>
+<li>Start from issues and submit focused pull requests.</li>
+<li>Follow project philosophy: keep implementations simple, benchmark in practice, and optimize for user experience.</li>
 </ul>
-<p>A detailed contributing guide will be added soon.</p>
 <hr />
 <h2 id="citation">Citation</h2>
 <p>If you use this work in research:</p>

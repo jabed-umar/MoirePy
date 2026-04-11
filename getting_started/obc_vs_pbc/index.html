@@ -16,7 +16,7 @@
         <link rel="prev" href="../k_space_hamiltonian/">
       
       
-        <link rel="next" href="../prepare_layers/">
+        <link rel="next" href="../multiple_orbitals/">
       
       
         
@@ -27,7 +27,7 @@
     
     
       
-        <title>Simulating Lattices in Open vs. Periodic Boundary Conditions - MoirePy – Python Library for Moiré Lattice Simulation</title>
+        <title>Lattices in Open vs. Periodic Boundary Conditions - MoirePy – Python Library for Moiré Lattice Simulation</title>
       
     
     
@@ -56,6 +56,8 @@
       <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
     
       <link rel="stylesheet" href="../../assets/style.css">
+    
+      <link rel="stylesheet" href="../../assets/replications.css">
     
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -117,7 +119,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Simulating Lattices in Open vs. Periodic Boundary Conditions
+              Lattices in Open vs. Periodic Boundary Conditions
             
           </span>
         </div>
@@ -415,7 +417,7 @@
   <span class="md-ellipsis">
     
   
-    Simulating Lattices in Open vs. Periodic Boundary Conditions
+    Lattices in Open vs. Periodic Boundary Conditions
   
 
     
@@ -433,7 +435,7 @@
   <span class="md-ellipsis">
     
   
-    Simulating Lattices in Open vs. Periodic Boundary Conditions
+    Lattices in Open vs. Periodic Boundary Conditions
   
 
     
@@ -525,6 +527,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#references" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        References
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#next-steps" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -539,6 +552,62 @@
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../multiple_orbitals/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Multiple-Orbital Systems
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../non_hermitian/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Non-Hermitian Systems
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -637,7 +706,7 @@
   <span class="md-ellipsis">
     
   
-    Tutorials and Benchmarks
+    Examples and Benchmarks
   
 
     
@@ -653,7 +722,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Tutorials and Benchmarks
+    Examples and Benchmarks
   
 
           </label>
@@ -666,14 +735,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../examples/" class="md-nav__link">
+      <a href="../../replications/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Tutorials and Replicated Papers
+    Replicated Papers
   
 
     
@@ -701,7 +770,7 @@
   <span class="md-ellipsis">
     
   
-    Benchmarks and Performance Tips
+    Benchmarks
   
 
     
@@ -752,7 +821,7 @@
   <span class="md-ellipsis">
     
   
-    Theory
+    Theory of Algorithms
   
 
     
@@ -768,67 +837,11 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Theory
+    Theory of Algorithms
   
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../theory/theory_intro/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Theoretical Background
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../theory/tight_binding_ham/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Tight Binding Formulation
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
             
               
                 
@@ -1552,6 +1565,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#references" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        References
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#next-steps" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1595,7 +1619,7 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">moirepy</span><span class="w"> </span><span class="kn">import</span> <span class="n">BilayerMoireLattice</span><span class="p">,</span> <span class="n">HexagonalLayer</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code><span class="c1"># Parameters for a ~9.43 degree twist</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># Parameters for around ~9.43 degree twist</span>
 <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s2">&quot;latticetype&quot;</span><span class="p">:</span> <span class="n">HexagonalLayer</span><span class="p">,</span>
     <span class="s2">&quot;ll1&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;ll2&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s2">&quot;ul1&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s2">&quot;ul2&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
@@ -1663,7 +1687,7 @@
 </code></pre></div>
 <p><img alt="Image" src="../../images/obc_vs_pbc/plot_1.webp" /></p>
 <h2 id="5-spectrum-comparison">5. Spectrum Comparison</h2>
-<p>The choice of boundary conditions significantly affects the energy eigenvalues. OBC introduces "edge states" that may appear in gaps where the bulk (PBC) system has no states.</p>
+<p>The choice of boundary conditions significantly affects the energy eigenvalues. For example in a toplogically non trivial system [1] OBC introduces "edge states" that may appear in gaps where the bulk (PBC) system has no states.</p>
 <div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_spectrum</span><span class="p">(</span><span class="n">ham</span><span class="p">):</span>
     <span class="n">vals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigvalsh</span><span class="p">(</span><span class="n">ham</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">vals</span><span class="p">)</span>
@@ -1688,12 +1712,16 @@
 <li>Compared Hamiltonians and resulting spectra  </li>
 </ul>
 <p>This demonstrates how boundary conditions control whether you simulate a finite system or an infinite periodic system.</p>
+<h2 id="references">References</h2>
+<ol>
+<li>Physics with Coffee and Doughnuts: Understanding the Physics Behind Topological Insulators Through Su-Schrieffer-Heeger Model, Batra, Navketan and Sheet, Goutam, 10.1007/s12045-020-0995-x</li>
+</ol>
 <h2 id="next-steps">Next Steps</h2>
 <ol>
 <li><strong><a href="../k_space_hamiltonian/">K-Space &amp; Band Structures</a></strong>: Work in momentum space for periodic systems.  </li>
 <li><strong><a href="../prepare_layers/">Defining Custom Layers</a></strong>: Build your own lattice geometries.  </li>
 <li><strong><a href="../custom_hoppings/">Designing Custom Hopping</a></strong>: Add realistic physics.  </li>
-<li><strong><a href="../../examples/">Tutorials and Replicated Papers</a></strong>: See full physical results.  </li>
+<li><strong><a href="../examples.md">Tutorials and Replicated Papers</a></strong>: See full physical results.  </li>
 </ol>
 
 

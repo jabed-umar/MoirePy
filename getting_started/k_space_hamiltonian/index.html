@@ -57,6 +57,8 @@
     
       <link rel="stylesheet" href="../../assets/style.css">
     
+      <link rel="stylesheet" href="../../assets/replications.css">
+    
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
@@ -547,7 +549,63 @@
   <span class="md-ellipsis">
     
   
-    Simulating Lattices in Open vs. Periodic Boundary Conditions
+    Lattices in Open vs. Periodic Boundary Conditions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../multiple_orbitals/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Multiple-Orbital Systems
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../non_hermitian/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Non-Hermitian Systems
   
 
     
@@ -654,7 +712,7 @@
   <span class="md-ellipsis">
     
   
-    Tutorials and Benchmarks
+    Examples and Benchmarks
   
 
     
@@ -670,7 +728,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Tutorials and Benchmarks
+    Examples and Benchmarks
   
 
           </label>
@@ -683,14 +741,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../examples/" class="md-nav__link">
+      <a href="../../replications/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Tutorials and Replicated Papers
+    Replicated Papers
   
 
     
@@ -718,7 +776,7 @@
   <span class="md-ellipsis">
     
   
-    Benchmarks and Performance Tips
+    Benchmarks
   
 
     
@@ -769,7 +827,7 @@
   <span class="md-ellipsis">
     
   
-    Theory
+    Theory of Algorithms
   
 
     
@@ -785,67 +843,11 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Theory
+    Theory of Algorithms
   
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../theory/theory_intro/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Theoretical Background
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../theory/tight_binding_ham/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Tight Binding Formulation
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
             
               
                 
@@ -1651,12 +1653,38 @@
 <p class="admonition-title">Note</p>
 <p>we convert it to a dense array and take only the real part because the system size is small and the hamiltonian is purely real in this case. For larger systems, it is recommended to work with sparse matrices to save memory and computational resources. While the real-space hopping matrix is real, the k-space Hamiltonian is Hermitian and complex in general.</p>
 </div>
-<div class="highlight"><pre><span></span><code><span class="n">k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">])</span>
-<span class="n">Hk</span> <span class="o">=</span> <span class="n">real_ham</span> <span class="o">*</span> <span class="n">lattice</span><span class="o">.</span><span class="n">get_phase</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Matrix shape: </span><span class="si">{</span><span class="n">Hk</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="c1">## Get Moire Lattice Vectors</span>
+<span class="n">mlv1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">lattice</span><span class="o">.</span><span class="n">mlv1</span><span class="p">)</span>  <span class="c1"># 1st moire lattice vector</span>
+<span class="n">mlv2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">lattice</span><span class="o">.</span><span class="n">mlv2</span><span class="p">)</span>  <span class="c1"># 2nd moire lattice vector</span>
+<span class="c1">## Compute the 2D cross product (area of the parallelogram)</span>
+<span class="n">moire_area</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">mlv1</span><span class="p">,</span> <span class="n">mlv2</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Moire Unit cell Area: </span><span class="si">{</span><span class="n">moire_area</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
 <span class="c1"># Output:</span>
-<span class="c1"># Matrix shape: (28, 28)</span>
+<span class="c1"># Moire Unit cell Area: 6.06</span>
+
+<span class="c1"># Output:</span>
+<span class="c1"># /tmp/ipykernel_10746/3871110008.py:5: DeprecationWarning: Arrays of 2-dimensional vectors are deprecated. Use arrays of 3-dimensional vectors instead. (deprecated in NumPy 2.0)</span>
+<span class="c1">#   moire_area = abs(np.cross(mlv1, mlv2))</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="c1"># Prefactor (2π / Area)</span>
+<span class="n">prefactor</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">/</span> <span class="n">moire_area</span>
+
+<span class="c1"># Compute K-space lattice vectors</span>
+<span class="n">k1</span> <span class="o">=</span> <span class="n">prefactor</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">mlv2</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="o">-</span><span class="n">mlv2</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>  <span class="c1"># (lv2_y, -lv2_x)</span>
+<span class="n">k2</span> <span class="o">=</span> <span class="n">prefactor</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="n">mlv1</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">mlv1</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>  <span class="c1"># (-lv1_y, lv1_x)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;1st Moire Reciprocal Lattice Vector: &quot;</span><span class="p">,</span> <span class="n">k1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;2nd Moire Reciprocal Lattice Vector: &quot;</span><span class="p">,</span> <span class="n">k2</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Moire Reciprocal Lattice Area: &quot;</span><span class="p">,</span> <span class="nb">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">k1</span><span class="p">,</span> <span class="n">k2</span><span class="p">)))</span>
+
+<span class="c1"># Output:</span>
+<span class="c1"># 1st Moire Reciprocal Lattice Vector:  [2.6927937  0.51822839]</span>
+<span class="c1"># 2nd Moire Reciprocal Lattice Vector:  [-1.7951958   2.07291356]</span>
+<span class="c1"># Moire Reciprocal Lattice Area:  6.512250008873207</span>
+
+<span class="c1"># Output:</span>
+<span class="c1"># /tmp/ipykernel_10746/824813082.py:9: DeprecationWarning: Arrays of 2-dimensional vectors are deprecated. Use arrays of 3-dimensional vectors instead. (deprecated in NumPy 2.0)</span>
+<span class="c1">#   print(&quot;Moire Reciprocal Lattice Area: &quot;, abs(np.cross(k1, k2)))</span>
 </code></pre></div>
 <div class="admonition warning">
 <p class="admonition-title">Manual Hermiticity</p>
@@ -1672,11 +1700,12 @@
 <h2 id="3-band-structure-calculation-the-physics-payoff">3. Band Structure Calculation (The Physics Payoff)</h2>
 <p>The primary use of k-space is to visualize how energy levels evolve across the <strong>Moiré Brillouin Zone (MBZ)</strong>.</p>
 <h3 id="step-1-define-the-path">Step 1: Define the Path</h3>
-<p>We sample the zone by interpolating between High-Symmetry points (<span class="arithmatex">\(\Gamma\)</span>, <span class="arithmatex">\(K\)</span>, <span class="arithmatex">\(M\)</span>) in the MBZ. This path captures the essential physics of the system.</p>
+<p>We sample the zone by interpolating between High-Symmetry points (<span class="arithmatex">\(\Gamma\)</span>, <span class="arithmatex">\(K\)</span>, <span class="arithmatex">\(Kp\)</span> <span class="arithmatex">\(M\)</span>) in the MBZ. This path captures the essential physics of the system.</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Defined using the reciprocal lattice vectors of the moire system</span>
 <span class="n">G</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
-<span class="n">K</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">lattice</span><span class="o">.</span><span class="n">mlv1</span> <span class="o">+</span> <span class="n">lattice</span><span class="o">.</span><span class="n">mlv2</span><span class="p">)</span> 
-<span class="n">M</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">lattice</span><span class="o">.</span><span class="n">mlv1</span>
+<span class="n">K</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="n">k1</span> <span class="o">+</span> <span class="mi">2</span><span class="o">/</span><span class="mi">3</span> <span class="o">*</span> <span class="n">k2</span>
+<span class="n">Kp</span> <span class="o">=</span> <span class="mi">2</span><span class="o">/</span><span class="mi">3</span> <span class="o">*</span> <span class="n">k1</span> <span class="o">+</span> <span class="mi">1</span><span class="o">/</span><span class="mi">3</span> <span class="o">*</span> <span class="n">k2</span>
+<span class="n">M</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">k1</span>
 
 <span class="k">def</span><span class="w"> </span><span class="nf">get_path</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">steps</span><span class="o">=</span><span class="mi">50</span><span class="p">):</span>
     <span class="n">path</span> <span class="o">=</span> <span class="p">[]</span>
@@ -1685,7 +1714,7 @@
             <span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">points</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">t</span><span class="p">)</span> <span class="o">+</span> <span class="n">points</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">t</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
 
-<span class="n">k_path</span> <span class="o">=</span> <span class="n">get_path</span><span class="p">([</span><span class="n">G</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">G</span><span class="p">])</span>
+<span class="n">k_path</span> <span class="o">=</span> <span class="n">get_path</span><span class="p">([</span><span class="n">G</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="n">Kp</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">G</span><span class="p">])</span>
 </code></pre></div>
 <h3 id="step-2-find-eigenvalues-of-hamiltonian-at-each-k-point">Step 2: Find eigenvalues of hamiltonian at each k-point</h3>
 <p>Since k-space Hamiltonians represent a single unit cell, they are much smaller than real-space matrices. We can use dense solvers like <code>np.linalg.eigvalsh</code> for high precision.</p>
@@ -1708,17 +1737,18 @@
 <span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
 
-<span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">150</span><span class="p">],</span> <span class="p">[</span><span class="sa">r</span><span class="s1">&#39;$\Gamma$&#39;</span><span class="p">,</span> <span class="s1">&#39;K&#39;</span><span class="p">,</span> <span class="s1">&#39;M&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;$\Gamma$&#39;</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">150</span><span class="p">],</span> <span class="p">[</span><span class="sa">r</span><span class="s1">&#39;$\Gamma$&#39;</span><span class="p">,</span> <span class="s1">&#39;K&#39;</span><span class="p">,</span> <span class="s2">&quot;Kp&quot;</span><span class="p">,</span> <span class="s1">&#39;M&#39;</span><span class="p">])</span>
 <span class="c1"># plt.ylim(-4, 4)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Energy (t)&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Moiré Band Structure&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </code></pre></div>
 <p><img alt="Image" src="../../images/k_space_hamiltonian/plot_1.webp" /></p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Using constant hopping (<span class="arithmatex">\(t=1\)</span>) over a large supercell results in a dense, folded band structure. To see the isolated flat bands characteristic of the Magic Angle, refer to the Replicated Papers section where we implement distance-dependent (exponential) hopping.</p>
+<p>Using constant hopping (<span class="arithmatex">\(t=1\)</span>) over a large supercell results in a dense, folded band structure. To see the isolated flat bands characteristic of the Magic Angle, refer to the Replicated Papers section where we implement distance-dependent (exponential) hopping. what is this bro .... </p>
 </div>
 <h2 id="summary">Summary</h2>
 <ul>
@@ -1732,7 +1762,7 @@
 <li><strong><a href="../obc_vs_pbc/">OBC vs PBC</a></strong>: Understand how boundary conditions affect the Hamiltonian.  </li>
 <li><strong><a href="../prepare_layers/">Defining Custom Layers</a></strong>: Go beyond built-in lattices.  </li>
 <li><strong><a href="../custom_hoppings/">Designing Custom Hopping</a></strong>: Introduce realistic physics.  </li>
-<li><strong><a href="../../examples/">Tutorials and Replicated Papers</a></strong>: See full physical results.  </li>
+<li><strong><a href="../examples.md">Tutorials and Replicated Papers</a></strong>: See full physical results.  </li>
 </ol>
 
 
