@@ -1,0 +1,31 @@
+name: "🚀 Submit Benchmark Results"
+description: "Upload your JSON results file here"
+title: "[Benchmark]: <Your System Name>"
+labels: ["benchmark-submission"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for contributing! Please run the benchmark as described in [Benchmark Contribution Guide](https://jabed-umar.github.io/MoirePy/benchmark_contribution.md) and upload the generated `benchmark_results.json` file below.
+
+  - type: input
+    id: system_name
+    attributes:
+      label: System/Hardware Name
+      placeholder: e.g., i5 12th Gen, m4 MacBook Pro, etc.
+    validations:
+      required: true
+
+  - type: upload
+    id: json_file
+    attributes:
+      label: Upload Benchmark JSON
+      description: Drag and drop your generated `benchmark_results.json` file here.
+    validations:
+      required: true
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: Extra Notes
+      placeholder: Any specific setup details (OS version, cooling, overclocking, etc.) that might be relevant for interpreting the results.
