@@ -74,11 +74,11 @@ nav:
   - Getting Started:
     - Quickstart TBG in 5 Minutes: getting_started/quickstart_tbg.md
     - K-Space Hamiltonian Generation: getting_started/k_space_hamiltonian.md
+    - Designing Custom Hopping: getting_started/custom_hoppings.md
+    - Defining Custom Layers: getting_started/prepare_layers.md
     - Lattices in Open vs. Periodic Boundary Conditions: getting_started/obc_vs_pbc.md
     - Multiple-Orbital Systems: getting_started/multiple_orbitals.md
     - Non-Hermitian Systems: getting_started/non_hermitian.md
-    - Defining Custom Layers: getting_started/prepare_layers.md
-    - Designing Custom Hopping: getting_started/custom_hoppings.md
   - Examples and Benchmarks:
     - Replicated Papers: replications.md
     - Benchmarks: benchmarks.md

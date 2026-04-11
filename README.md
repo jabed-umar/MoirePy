@@ -101,7 +101,7 @@ For more comprehensive performance benchmarks, visit this: [BENCHMARK](https://j
 
 Contributions are welcome.
 
-Please read the full contribution guide at [contributing.md](contributing.md).
+Please read the full contribution guide at [contributing.md](https://jabed-umar.github.io/MoirePy/contributing.md).
 
 Highlights:
 
@@ -120,7 +120,7 @@ If you use this work in research:
 @software{MoirePy2025,
   author = {Mukhopadhyay, Aritra and Umar, Jabed},
   license = {MIT},
-  title = {{MoirePy: Python package for efficient atomistic simulation of moiré lattices}},
+  title = {{MoirePy: A Python-Rust Framework for Efficient Simulation of Moiré Lattices}},
   url = {https://github.com/jabed-umar/MoirePy}
 }
 ```
