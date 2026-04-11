@@ -61,6 +61,12 @@ extra:
     - getting_started/multiple_orbitals.ipynb
     - getting_started/non_hermitian.ipynb
 
+    - docs/examples/nori.ipynb
+    - docs/examples/koshino.ipynb
+
+    - docs/examples/tight_binding_ham.ipynb
+    - docs/examples/dos_calculation.ipynb
+
 
 nav:
   - Home: index.md
@@ -73,14 +79,14 @@ nav:
     - Defining Custom Layers: getting_started/prepare_layers.md
     - Designing Custom Hopping: getting_started/custom_hoppings.md
   - Tutorials and Benchmarks:
-    - Tutorials and Replicated Papers: examples.md
+    - Examples and Replicated Papers: examples.md
     - Benchmarks: benchmarks.md
   - "Theory: Algorithms":
     - Searching Algorithm & KDTree: theory/search_algorithm_kdtree.md
     - Angle Calculation Logic: theory/angle_calculation_process.md
     - Angle Value Calculator: theory/avc.md
-  - "Theory: Physics":
-    - Tight Binding Formulation: theory_physics/tight_binding_ham.md
+  # - "Theory: Physics":
+  #   - Tight Binding Formulation: theory_physics/tight_binding_ham.md
   - API Reference:
     - Overview: api/index.md
     - Core Classes:

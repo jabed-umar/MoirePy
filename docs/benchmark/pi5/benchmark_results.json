@@ -2,7 +2,7 @@
   "config": {
     "n": 25,
     "repeat": 100,
-    "cpu_name": "Cortex-A76 (raspberry pi 5)",
+    "cpu_name": "Cortex-A76",
     "platform_system": "Linux",
     "platform_machine": "aarch64",
     "x_axis": "cells * 2",

@@ -63,7 +63,7 @@ We benchmarked MoirePy on twisted bilayer graphene systems of increasing size on
 
 ![Subsequent Hamiltonian generation benchmark. After initial lattice setup, regenerating the Hamiltonian at 100k sites takes only 12 ms.\label{fig:exp2}](benchmark/experiment2_hamiltonian_only.pdf){ width=80% }
 
-\autoref{fig:exp2} isolates subsequent Hamiltonian generation after the geometry has been constructed. This is the relevant metric for parameter sweeps where hopping values change but geometry stays fixed. At 100k sites, regeneration takes approximately 12 ms. Where as general use cases involving a few thousand sites is completed in under 0.25 ms.
+\autoref{fig:exp2} isolates subsequent Hamiltonian generation after the geometry has been constructed. This is the relevant metric for parameter sweeps where hopping values change but geometry stays fixed. At 100k sites, regeneration takes approximately 12 ms. Where as general use cases involving a few thousand sites is completed in under 1 ms.
 
 These results demonstrate that MoirePy handles systems well beyond magic-angle scales while keeping iteration times short enough for interactive exploration on commodity hardware.
 

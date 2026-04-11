@@ -17,3 +17,9 @@ target
 *.so
 
 neomoirepy
+
+docs/benchmark/*.csv
+
+
+paper/jats
+paper/paper.pdf
