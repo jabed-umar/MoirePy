@@ -47,6 +47,7 @@ plugins:
 
 extra_css:
   - assets/style.css
+  - assets/replications.css
 
 # extra_javascript:
 #   - assets/script_find_theta.js
@@ -81,7 +82,7 @@ nav:
   - Examples and Benchmarks:
     - Replicated Papers: replications.md
     - Benchmarks: benchmarks.md
-  - "Theory: Algorithms":
+  - Theory of Algorithms:
     - Searching Algorithm & KDTree: theory/search_algorithm_kdtree.md
     - Angle Calculation Logic: theory/angle_calculation_process.md
     - Angle Value Calculator: theory/avc.md

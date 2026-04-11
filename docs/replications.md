@@ -1,102 +1,68 @@
-<style>
-    table td, table th {
-        max-width: 500px !important;
-        overflow-wrap: break-word !important;
-        word-wrap: break-word !important;
-        white-space: normal !important;
-    }
-
-    .icon-link img,
-    .icon-link .icon-svg {
-        transition: transform 0.15s ease, opacity 0.15s ease;
-    }
-
-    .icon-link:hover img,
-    .icon-link:hover .icon-svg {
-        transform: translateY(-1px) scale(1.08);
-        opacity: 0.9;
-    }
-
-    .icon-svg {
-        display: inline-block;
-        width: 18px;
-        height: 18px;
-        vertical-align: text-bottom;
-    }
-
-    .icon-globe2 {
-        background-color: #2563EB;
-        -webkit-mask: url('https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/icons/globe2.svg') center / contain no-repeat;
-        mask: url('https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/icons/globe2.svg') center / contain no-repeat;
-    }
-
-    .icon-window {
-        background-color: #0EA5E9;
-        -webkit-mask: url('https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/icons/box-arrow-up-right.svg') center / contain no-repeat;
-        mask: url('https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/icons/box-arrow-up-right.svg') center / contain no-repeat;
-    }
-
-    .icon-download {
-        background-color: #059669;
-        -webkit-mask: url('https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/icons/download.svg') center / contain no-repeat;
-        mask: url('https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/icons/download.svg') center / contain no-repeat;
-    }
-
-    .link-icons {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-    .sr-only {
-        position: absolute !important;
-        width: 1px;
-        height: 1px;
-        padding: 0;
-        margin: -1px;
-        overflow: hidden;
-        clip: rect(0, 0, 0, 0);
-        white-space: nowrap;
-        border: 0;
-    }
-</style>
-
-
-# Examples
+# Replicated Papers
 
 Here are a couple of papers that have been replicated using MoirePy. Click the links in the table to view the notebooks as interactive web pages, or use the icons to open the original papers, view on arXiv, download the notebooks, or explore them on GitHub and Colab.
 
+| title                                           | preview_image | original_link                                                    | arxiv_link                      |           links            |
+| :---------------------------------------------- | :-----------: | :--------------------------------------------------------------- | :------------------------------ | :------------------------: |
+| Electronic Spectrum Of Twisted Bilayer Graphene |  plot_1.webp  | https://journals.aps.org/prb/abstract/10.1103/PhysRevB.92.075402 | https://arxiv.org/abs/1407.2477 |  replications/nori.ipynb   |
+| Optical Absorption In Twisted Bilayer Graphene  |  plot_1.webp  | https://journals.aps.org/prb/abstract/10.1103/PhysRevB.87.205404 | https://arxiv.org/abs/1302.5218 | replications/koshino.ipynb |
 
-| title                                           | original_link                                                    | arxiv_link                      |           links            |
-| :---------------------------------------------- | :--------------------------------------------------------------- | :------------------------------ | :------------------------: |
-| Electronic Spectrum Of Twisted Bilayer Graphene | https://journals.aps.org/prb/abstract/10.1103/PhysRevB.92.075402 | https://arxiv.org/abs/1407.2477 |  replications/nori.ipynb   |
-| Optical Absorption In Twisted Bilayer Graphene  | https://journals.aps.org/prb/abstract/10.1103/PhysRevB.87.205404 | https://arxiv.org/abs/1302.5218 | replications/koshino.ipynb |
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
+        let previewOverlay = document.getElementById('title-preview-overlay');
+        if (!previewOverlay) {
+            previewOverlay = document.createElement('div');
+            previewOverlay.id = 'title-preview-overlay';
+            previewOverlay.innerHTML = '<img alt="Preview image" />';
+            document.body.appendChild(previewOverlay);
+        }
+        const previewImg = previewOverlay.querySelector('img');
+
+        const hidePreview = () => {
+            previewOverlay.style.display = 'none';
+        };
+
+        const placePreview = (clientX, clientY) => {
+            const pad = 14;
+            const w = previewOverlay.offsetWidth || 650;
+            const h = previewOverlay.offsetHeight || 180;
+            let x = clientX + pad;
+            let y = clientY + pad;
+            if (x + w + pad > window.innerWidth) x = clientX - w - pad;
+            if (y + h + pad > window.innerHeight) y = clientY - h - pad;
+            previewOverlay.style.left = `${Math.max(8, x)}px`;
+            previewOverlay.style.top = `${Math.max(8, y)}px`;
+        };
+
         document.querySelectorAll('table').forEach(table => {
+            table.classList.add('replications-table');
             const headerCells = table.querySelectorAll('thead tr th');
-            if (headerCells.length < 4) return;
+            if (headerCells.length < 5) return;
             headerCells[0].textContent = 'Title';
-            headerCells[3].textContent = 'Links';
-            headerCells[3].style.textAlign = 'center';
+            headerCells[4].textContent = 'Links';
+            headerCells[4].style.textAlign = 'center';
+            headerCells[3].remove();
             headerCells[2].remove();
             headerCells[1].remove();
 
             table.querySelectorAll('tbody tr').forEach(row => {
-                if (row.cells.length < 4) return;
+                if (row.cells.length < 5) return;
 
                 const title = row.cells[0].textContent.trim();
-                const originalLink = row.cells[1].textContent.trim();
-                const arxivLink = row.cells[2].textContent.trim();
-                const path = row.cells[3].textContent.trim();
+                const previewImage = row.cells[1].textContent.trim();
+                const originalLink = row.cells[2].textContent.trim();
+                const arxivLink = row.cells[3].textContent.trim();
+                const path = row.cells[4].textContent.trim();
+                const notebookStem = path.split('/').pop().replace(/\.ipynb$/i, '');
                 const websitePath = `../${path.replace(/\.ipynb$/i, "/")}`;
                 const downloadLink = `https://raw.githubusercontent.com/jabed-umar/MoirePy/main/docs/${path}`;
+                const previewImagePath = `../images/${notebookStem}/${previewImage}`;
 
                 row.cells[0].innerHTML =
-                    `${title}`;
+                    `<span class="title-preview-trigger" tabindex="0" data-preview="${previewImagePath}" data-title="${title}">${title}</span>`;
 
-                row.cells[3].innerHTML =
+                row.cells[4].innerHTML =
                     '<div class="link-icons">' +
                     `<a class="icon-link" target="_blank" href="${originalLink}" aria-label="Original paper" title="Open original paper">` +
                     '<span class="icon-svg icon-globe2" role="img" aria-label="Original paper"></span>' +
@@ -124,9 +90,37 @@ Here are a couple of papers that have been replicated using MoirePy. Click the l
                     '</a>' +
                     '</div>';
 
+                const trigger = row.cells[0].querySelector('.title-preview-trigger');
+                if (trigger) {
+                    trigger.addEventListener('mouseenter', (e) => {
+                        previewImg.src = trigger.dataset.preview;
+                        previewImg.alt = `${trigger.dataset.title} preview`;
+                        previewOverlay.style.display = 'block';
+                        placePreview(e.clientX, e.clientY);
+                    });
+                    trigger.addEventListener('mousemove', (e) => {
+                        if (previewOverlay.style.display === 'block') {
+                            placePreview(e.clientX, e.clientY);
+                        }
+                    });
+                    trigger.addEventListener('mouseleave', hidePreview);
+                    trigger.addEventListener('focus', () => {
+                        const rect = trigger.getBoundingClientRect();
+                        previewImg.src = trigger.dataset.preview;
+                        previewImg.alt = `${trigger.dataset.title} preview`;
+                        previewOverlay.style.display = 'block';
+                        placePreview(rect.right, rect.bottom);
+                    });
+                    trigger.addEventListener('blur', hidePreview);
+                }
+
+                row.cells[3].remove();
                 row.cells[2].remove();
                 row.cells[1].remove();
             });
         });
+
+        window.addEventListener('scroll', hidePreview, { passive: true });
+        window.addEventListener('resize', hidePreview);
     });
 </script>
