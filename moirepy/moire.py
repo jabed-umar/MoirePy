@@ -1,11 +1,16 @@
 import numpy as np
 from scipy.sparse import coo_matrix, csr_matrix
 import matplotlib.pyplot as plt
+import importlib
 
 from .layers import Layer
 from .utils import get_rotation_matrix, are_coeffs_integers
-from . import moirepy_rust as rbck
 from .utils import LatticeAlreadyFinalisedError
+
+
+def _get_rust_backend():
+    """Import the compiled Rust extension lazily to avoid package init cycles."""
+    return importlib.import_module("moirepy.moirepy_rust")
 
 class BilayerMoireLattice:
     """Bilayer moire lattice wrapper with Rust-backed geometry and Hamiltonian assembly.
@@ -96,6 +101,7 @@ class BilayerMoireLattice:
         self.upper_lattice.generate_points(mlv1, mlv2, n1, n2)
 
         # 4. Instantiate and store the Rust backend
+        rbck = _get_rust_backend()
 
         self._rust_class = rbck.BilayerMoire(
             self.lower_lattice._rust_lattice, # Passing Rust handles directly
