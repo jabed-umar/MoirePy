@@ -32,7 +32,7 @@ classifiers = [
     "Topic :: Scientific/Engineering :: Chemistry",
     "Topic :: Scientific/Engineering :: Mathematics",
     "Topic :: Scientific/Engineering :: Physics",
-]
+]   
 requires-python = ">=3.11"
 dynamic = ["version"]
 dependencies = [
@@ -42,10 +42,32 @@ dependencies = [
     "tqdm",
 ]
 
+[project.optional-dependencies]
+test = [
+    "pytest",
+    "testbook",
+    "ipykernel",
+    "maturin",
+]
+docs = [
+    "notebook",
+    "mkdocstrings",
+    "mkdocstrings-python",
+    # "mkdocs-jupyter",
+    "mkdocs-bibtex",
+    "mkdocs-material",
+    # "mkdocs-kpn",
+    # "mkdocs-terminal",
+]
+
 [project.urls]
 "Documentation" = "https://jabed-umar.github.io/MoirePy/"
 "Source Code" = "https://github.com/jabed-umar/MoirePy"
 "Bug Tracker" = "https://github.com/jabed-umar/MoirePy/issues"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["*.py"]
 
 [tool.maturin]
 module-name = "moirepy.moirepy_rust"

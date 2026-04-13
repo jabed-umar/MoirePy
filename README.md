@@ -101,7 +101,7 @@ For more comprehensive performance benchmarks, visit this: [BENCHMARK](https://j
 
 Contributions are welcome.
 
-Please read the full contribution guide at [contributing.md](https://jabed-umar.github.io/MoirePy/contributing.md).
+Please read the full contribution guide at [contributing.md](https://github.com/jabed-umar/MoirePy/blob/main/contributing.md).
 
 Highlights:
 
