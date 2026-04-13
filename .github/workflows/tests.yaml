@@ -40,12 +40,16 @@ jobs:
         toolchain: stable
         override: true
 
-    - name: Install dependencies and build
+    - name: Create Virtual Environment and Install
       run: |
         python -m pip install --upgrade pip
-        pip install ".[test]"
+        pip install virtualenv
+        virtualenv .venv
+        .venv/bin/pip install ".[test]"
 
     - name: Run tests
       run: |
-        # Use Agg backend to avoid GUI errors
-        MPLBACKEND=Agg pytest tests/
+        # Kill Shadowing: move source away so Python is forced to use site-packages
+        mv moirepy _moirepy_shadow
+        MPLBACKEND=Agg .venv/bin/pytest tests/
+        mv _moirepy_shadow moirepy

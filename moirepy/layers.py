@@ -1,13 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import importlib
 
 from .utils import LatticeAlreadyFinalisedError
-
-
-def _get_rust_backend():
-    """Import the compiled Rust extension lazily to avoid package init cycles."""
-    return importlib.import_module("moirepy.moirepy_rust")
+from . import moirepy_rust as rbck  # import rust backend
 
 
 class Layer:
@@ -94,7 +89,6 @@ class Layer:
                 """
             )
 
-        rbck = _get_rust_backend()
         self._rust_lattice = rbck.Layer(
             lv1=lv1.tolist(),
             lv2=lv2.tolist(),
