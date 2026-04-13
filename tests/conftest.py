@@ -8,21 +8,23 @@ ALLOWED_TESTS = {
 
 def pytest_ignore_collect(collection_path, config):
     """Tell pytest which files to ignore."""
-    rel_path = os.path.relpath(str(collection_path), os.getcwd())
+    # Ensure we use absolute paths to compare reliably
+    abs_path = os.path.abspath(str(collection_path))
+    HERE = os.path.dirname(os.path.abspath(__file__))
     
     # We only care about files inside the 'tests/' directory
-    if rel_path.startswith("tests"):
-        name = os.path.basename(rel_path)
+    if abs_path.startswith(HERE):
+        name = os.path.basename(abs_path)
         
         # 1. Never ignore conftest.py or the data folder itself
         if name in ("conftest.py", "data", "__init__.py"):
             return False
-
+            
         # 2. If it's a file, check if it's on the whitelist
-        if os.path.isfile(collection_path):
+        if os.path.isfile(abs_path):
             if name not in ALLOWED_TESTS:
                 return True # Kick it out
-
+                
     return False
 
 # --- CLI Options ---

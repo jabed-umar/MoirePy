@@ -68,6 +68,7 @@ docs = [
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 python_files = ["*.py"]
+addopts = "--import-mode=append"
 
 [tool.maturin]
 module-name = "moirepy.moirepy_rust"

@@ -3,8 +3,10 @@ import numpy as np
 import os
 from testbook import testbook
 
-NB_PATH = "docs/getting_started/quickstart_tbg.ipynb"
-DATA_DIR = "tests/data/quickstart_tbg"
+# Absolute-ish paths relative to this file
+HERE = os.path.dirname(os.path.abspath(__file__))
+NB_PATH = os.path.abspath(os.path.join(HERE, "..", "docs", "getting_started", "quickstart_tbg.ipynb"))
+DATA_DIR = os.path.join(HERE, "data", "quickstart_tbg")
 EVALS_FILE = os.path.join(DATA_DIR, "evals.bin")
 
 @testbook(NB_PATH, execute=True)
