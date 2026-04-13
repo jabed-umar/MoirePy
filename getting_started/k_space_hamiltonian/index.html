@@ -16,7 +16,7 @@
         <link rel="prev" href="../quickstart_tbg/">
       
       
-        <link rel="next" href="../obc_vs_pbc/">
+        <link rel="next" href="../custom_hoppings/">
       
       
         
@@ -542,6 +542,62 @@
   
   
     <li class="md-nav__item">
+      <a href="../custom_hoppings/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Designing Custom Hopping
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../prepare_layers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Defining Custom Layers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../obc_vs_pbc/" class="md-nav__link">
         
   
@@ -606,62 +662,6 @@
     
   
     Non-Hermitian Systems
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../prepare_layers/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Defining Custom Layers
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../custom_hoppings/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Designing Custom Hopping
   
 
     
@@ -1657,15 +1657,11 @@
 <span class="n">mlv1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">lattice</span><span class="o">.</span><span class="n">mlv1</span><span class="p">)</span>  <span class="c1"># 1st moire lattice vector</span>
 <span class="n">mlv2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">lattice</span><span class="o">.</span><span class="n">mlv2</span><span class="p">)</span>  <span class="c1"># 2nd moire lattice vector</span>
 <span class="c1">## Compute the 2D cross product (area of the parallelogram)</span>
-<span class="n">moire_area</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">mlv1</span><span class="p">,</span> <span class="n">mlv2</span><span class="p">))</span>
+<span class="n">moire_area</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">mlv1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">mlv2</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">mlv1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">mlv2</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Moire Unit cell Area: </span><span class="si">{</span><span class="n">moire_area</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
 <span class="c1"># Output:</span>
 <span class="c1"># Moire Unit cell Area: 6.06</span>
-
-<span class="c1"># Output:</span>
-<span class="c1"># /tmp/ipykernel_10746/3871110008.py:5: DeprecationWarning: Arrays of 2-dimensional vectors are deprecated. Use arrays of 3-dimensional vectors instead. (deprecated in NumPy 2.0)</span>
-<span class="c1">#   moire_area = abs(np.cross(mlv1, mlv2))</span>
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="c1"># Prefactor (2π / Area)</span>
 <span class="n">prefactor</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">/</span> <span class="n">moire_area</span>
@@ -1675,16 +1671,16 @@
 <span class="n">k2</span> <span class="o">=</span> <span class="n">prefactor</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="n">mlv1</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">mlv1</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>  <span class="c1"># (-lv1_y, lv1_x)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;1st Moire Reciprocal Lattice Vector: &quot;</span><span class="p">,</span> <span class="n">k1</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;2nd Moire Reciprocal Lattice Vector: &quot;</span><span class="p">,</span> <span class="n">k2</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Moire Reciprocal Lattice Area: &quot;</span><span class="p">,</span> <span class="nb">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">k1</span><span class="p">,</span> <span class="n">k2</span><span class="p">)))</span>
+<span class="n">k1_3d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">k1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">k2_3d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">k2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+<span class="n">area</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">k1_3d</span><span class="p">,</span> <span class="n">k2_3d</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Moire Reciprocal Lattice Area: &quot;</span><span class="p">,</span> <span class="n">area</span><span class="p">)</span>
 
 <span class="c1"># Output:</span>
 <span class="c1"># 1st Moire Reciprocal Lattice Vector:  [2.6927937  0.51822839]</span>
 <span class="c1"># 2nd Moire Reciprocal Lattice Vector:  [-1.7951958   2.07291356]</span>
 <span class="c1"># Moire Reciprocal Lattice Area:  6.512250008873207</span>
-
-<span class="c1"># Output:</span>
-<span class="c1"># /tmp/ipykernel_10746/824813082.py:9: DeprecationWarning: Arrays of 2-dimensional vectors are deprecated. Use arrays of 3-dimensional vectors instead. (deprecated in NumPy 2.0)</span>
-<span class="c1">#   print(&quot;Moire Reciprocal Lattice Area: &quot;, abs(np.cross(k1, k2)))</span>
 </code></pre></div>
 <div class="admonition warning">
 <p class="admonition-title">Manual Hermiticity</p>
@@ -1742,14 +1738,10 @@
 <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Energy (t)&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Moiré Band Structure&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </code></pre></div>
 <p><img alt="Image" src="../../images/k_space_hamiltonian/plot_1.webp" /></p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Using constant hopping (<span class="arithmatex">\(t=1\)</span>) over a large supercell results in a dense, folded band structure. To see the isolated flat bands characteristic of the Magic Angle, refer to the Replicated Papers section where we implement distance-dependent (exponential) hopping. what is this bro .... </p>
-</div>
 <h2 id="summary">Summary</h2>
 <ul>
 <li>We constructed the k-space Hamiltonian from the same lattice definition  </li>

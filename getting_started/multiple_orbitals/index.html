@@ -401,6 +401,62 @@
   
   
     <li class="md-nav__item">
+      <a href="../custom_hoppings/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Designing Custom Hopping
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../prepare_layers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Defining Custom Layers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../obc_vs_pbc/" class="md-nav__link">
         
   
@@ -567,62 +623,6 @@
     
   
     Non-Hermitian Systems
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../prepare_layers/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Defining Custom Layers
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../custom_hoppings/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Designing Custom Hopping
   
 
     
@@ -1541,7 +1541,8 @@
 
 
 <h1 id="simulating-multiple-orbital-systems">Simulating Multiple-Orbital Systems</h1>
-<p>This notebook shows a compact <code>k=2</code> setup where each hopping can be a <code>2x2</code> block.</p>
+<p>In this section, we will see how to generate the multiorbital Hamiltonian for a moiré system and compute its band structure. This is essential for understanding the interplay between orbital degrees of freedom and moiré-induced electronic structure. This notebook shows a compact <code>k=2</code> setup where each hopping can be a <code>2x2</code> block. </p>
+<p>!!! Here, k denotes the number of orbitals per site and should not be confused with the K-points in momentum space.</p>
 <h2 id="1-setup">1. Setup</h2>
 <p>We define the lattice once with <code>k=2</code> and reuse it in all later cells.</p>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>

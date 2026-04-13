@@ -395,6 +395,62 @@
   
   
     <li class="md-nav__item">
+      <a href="../../getting_started/custom_hoppings/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Designing Custom Hopping
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting_started/prepare_layers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Defining Custom Layers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../getting_started/obc_vs_pbc/" class="md-nav__link">
         
   
@@ -459,62 +515,6 @@
     
   
     Non-Hermitian Systems
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../getting_started/prepare_layers/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Defining Custom Layers
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../getting_started/custom_hoppings/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Designing Custom Hopping
   
 
     
@@ -1430,10 +1430,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#moire-graphene-and-van-hove-singularities" class="md-nav__link">
+  <a href="#case-1-study-of-dos-with-random-onsite-disorder" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Moire Graphene and Van-Hove Singularities
+        Case 1: Study of DoS with random onsite disorder!
       
     </span>
   </a>
@@ -1441,10 +1441,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#expectation-value-of-operator-calculation-using-kpm" class="md-nav__link">
+  <a href="#case-2-study-of-dos-under-gaussian-hopping" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Expectation value of Operator calculation using KPM
+        Case 2: Study of DoS under Gaussian hopping
       
     </span>
   </a>
@@ -1513,7 +1513,7 @@ D(E) = \frac{dN}{dE}
 <div class="arithmatex">\[
 \mu_n \approx \frac{1}{R} \sum_{r=1}^{R} \langle r | T_n(\tilde{H}) | r \rangle
 \]</div>
-<p>This is known as <strong>stochastic trace estimation</strong> (typically sclaes as <span class="arithmatex">\(\mathcal{O(n)}\)</span>), and it significantly reduces computational cost while maintaining accuracy for large matrices (as R is inversly proportional to the dimension of the Hamiltonian).</p>
+<p>Where R is the number of moment. This is known as <strong>stochastic trace estimation</strong> (typically sclaes as <span class="arithmatex">\(\mathcal{O(n)}\)</span>), and it significantly reduces computational cost while maintaining accuracy for large matrices (as R is inversly proportional to the dimension of the Hamiltonian).</p>
 <h4 id="4-apply-a-smoothing-kernel">4. <strong>Apply a Smoothing Kernel</strong></h4>
 <p>To mitigate Gibbs oscillations caused by truncating the polynomial series, a smoothing kernel (such as the <strong>Jackson kernel</strong>) is applied to the coefficients:</p>
 <div class="arithmatex">\[
@@ -1522,45 +1522,110 @@ D(E) = \frac{dN}{dE}
 <p>where <span class="arithmatex">\(g_n\)</span> are kernel weights that damp high-frequency components, leading to a smoother and more physically accurate approximation of the DOS.</p>
 <h3 id="practical-usage-with-kwant">Practical Usage with Kwant</h3>
 <p>To demonstrate KPM in practice, we will use the excellent Python library <strong><a href="https://kwant-project.org/">Kwant</a></strong> [2], which provides built-in functions for computing the DOS and related observables efficiently using methods like KPM.</p>
-<div class="highlight"><pre><span></span><code><span class="c1">##import the necesaary libraries</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
-<span class="c1">##import the lattice types (triangular, square, hexagonal etc)</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">moirepy</span><span class="w"> </span><span class="kn">import</span> <span class="n">BilayerMoireLattice</span><span class="p">,</span> <span class="n">TriangularLayer</span><span class="p">,</span> <span class="n">SquareLayer</span><span class="p">,</span> <span class="n">KagomeLayer</span><span class="p">,</span> <span class="n">HexagonalLayer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">moirepy</span><span class="w"> </span><span class="kn">import</span> <span class="n">BilayerMoireLattice</span><span class="p">,</span> <span class="n">HexagonalLayer</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code><span class="c1">#import kwant for calculations</span>
+<div class="highlight"><pre><span></span><code><span class="n">lattice</span> <span class="o">=</span> <span class="n">BilayerMoireLattice</span><span class="p">(</span>
+    <span class="n">latticetype</span><span class="o">=</span><span class="n">HexagonalLayer</span><span class="p">,</span>
+    <span class="n">ll1</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">ll2</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">ul1</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ul2</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">n1</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">n2</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="c1">## u need to reasonably large system for better convergence of DoS</span>
+    <span class="c1">## Dont worry as kpm is very efficient for large systems!!!</span>
+    <span class="n">pbc</span><span class="o">=</span><span class="kc">False</span>  
+<span class="p">)</span>
+
+<span class="c1"># Output:</span>
+<span class="c1"># twist angle = 0.3803 rad (21.7868 deg)</span>
+<span class="c1"># 1400 cells in upper lattice</span>
+<span class="c1"># 1400 cells in lower lattice</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="c1">#import kwant for calculations for DoS calculations</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">kwant</span>
 <span class="c1">#!pip install kwant</span>
-
-<span class="c1"># Output:</span>
-<span class="c1"># /home/jabed/miniconda3/envs/quant/lib/python3.10/site-packages/kwant/solvers/default.py:16: RuntimeWarning: MUMPS is not available, SciPy built-in solver will be used as a fallback. Performance can be very poor in this case.</span>
-<span class="c1">#   warnings.warn(&quot;MUMPS is not available, &quot;</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code><span class="c1">## Make the lattice (Lattice type, a(ll1), b(ll2), m(ul1), n(ul2), x_no, y_no)---  </span>
-<span class="c1">## don&#39;t put fractional values for x_no and y_no, which are number of moire unit cells</span>
-<span class="n">lattice</span> <span class="o">=</span> <span class="n">BilayerMoireLattice</span><span class="p">(</span><span class="n">TriangularLayer</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="c1">#Let&#39;s plot the lattice</span>
-<span class="n">lattice</span><span class="o">.</span><span class="n">plot_lattice</span><span class="p">()</span>
-<span class="c1">## make the hamiltonian (tuu, tdd, tud, tdu, tdd, mu1, mu2)</span>
-<span class="n">ham</span> <span class="o">=</span> <span class="n">lattice</span><span class="o">.</span><span class="n">generate_hamiltonian</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">)</span>
-
-<span class="c1"># Output:</span>
-<span class="c1"># twist angle = 0.1646 rad (9.4300 deg)</span>
-<span class="c1"># 37 points in lower lattice</span>
-<span class="c1"># 37 points in upper lattice</span>
+<h2 id="case-1-study-of-dos-with-random-onsite-disorder">Case 1: Study of DoS with random onsite disorder!</h2>
+<p>We will show the density of states (DoS) of the moiré system under random onsite potential. This study is very useful for understanding the effects of disorder on electronic properties, such as localization, gap filling, transport behavior in moiré materials and many more.</p>
+<div class="highlight"><pre><span></span><code><span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 </code></pre></div>
-<p><img alt="Image" src="../../images/dos_calculation/plot_1.webp" /></p>
-<div class="highlight"><pre><span></span><code><span class="n">spectrum</span> <span class="o">=</span> <span class="n">kwant</span><span class="o">.</span><span class="n">kpm</span><span class="o">.</span><span class="n">SpectralDensity</span><span class="p">(</span><span class="n">ham</span><span class="p">)</span>
-<span class="n">energies</span><span class="p">,</span> <span class="n">densities</span> <span class="o">=</span> <span class="n">spectrum</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">energies</span><span class="p">,</span> <span class="n">densities</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Spectral Density&#39;</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="n">lattice</span><span class="o">.</span><span class="n">generate_connections</span><span class="p">(</span><span class="n">inter_layer_radius</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">real_ham</span> <span class="o">=</span> <span class="n">lattice</span><span class="o">.</span><span class="n">generate_hamiltonian</span><span class="p">(</span>
+    <span class="n">tll</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">tuu</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">tul</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">tlu</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">tuself</span><span class="o">=</span><span class="n">w</span><span class="p">,</span> <span class="n">tlself</span><span class="o">=</span><span class="n">w</span>
+<span class="p">)</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span><span class="o">.</span><span class="n">real</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="c1">## estimate the spectral density of states</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">kwant</span><span class="o">.</span><span class="n">kpm</span><span class="o">.</span><span class="n">SpectralDensity</span><span class="p">(</span><span class="n">real_ham</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">num_vectors</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">num_moments</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
+<span class="c1"># By dafault it choose Jacson Kernel.</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;the strength of the onside disorder is w: </span><span class="si">{</span><span class="n">w</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">e</span><span class="p">,</span> <span class="n">rho</span> <span class="o">=</span> <span class="n">x</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">rho</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Energy&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Density of States&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Spectral Density of States&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="c1"># Output:</span>
+<span class="c1"># the strength of the onside disorder is w: -0.04769177819134929</span>
+</code></pre></div>
+<p><img alt="Image" src="../../images/dos_calculation/plot_1.webp" /></p>
+<h2 id="case-2-study-of-dos-under-gaussian-hopping">Case 2: Study of DoS under Gaussian hopping</h2>
+<div class="highlight"><pre><span></span><code><span class="c1">## Define the Gaussian-decay inter-layer hopping function</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">gaussian_inter</span><span class="p">(</span><span class="n">pos_i</span><span class="p">,</span> <span class="n">pos_j</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">type_i</span><span class="p">,</span> <span class="n">type_j</span><span class="p">,</span> <span class="n">lattice</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">rc</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gaussian-decay inter-layer hopping.&quot;&quot;&quot;</span>
+    <span class="c1"># R maps pos_j to its true physical coordinate inside the supercell</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">pos_i</span> <span class="o">-</span> <span class="p">(</span><span class="n">pos_j</span> <span class="o">+</span> <span class="n">R</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>  
+    <span class="k">return</span> <span class="n">t0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">r</span> <span class="o">/</span> <span class="n">rc</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> 
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="n">T0</span>      <span class="o">=</span>  <span class="mf">0.5</span>  <span class="c1"># inter-layer amplitude at r=0</span>
+<span class="n">RC</span>      <span class="o">=</span>  <span class="mf">1.0</span>  <span class="c1"># Gaussian decay length</span>
+
+<span class="n">ham</span> <span class="o">=</span> <span class="n">lattice</span><span class="o">.</span><span class="n">generate_hamiltonian</span><span class="p">(</span>
+    <span class="n">tll</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>           <span class="c1"># float: same hop for every intra-lower bond</span>
+    <span class="n">tuu</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>           <span class="c1"># float: same hop for every intra-upper bond</span>
+    <span class="n">tul</span><span class="o">=</span><span class="n">gaussian_inter</span><span class="p">,</span>    <span class="c1"># callable</span>
+    <span class="n">tlu</span><span class="o">=</span><span class="n">gaussian_inter</span><span class="p">,</span>    <span class="c1"># callable (tlu = tul dagger for a Hermitian system)</span>
+    <span class="n">tlself</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>            <span class="c1"># float: zero on-site energy</span>
+    <span class="n">tuself</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>            <span class="c1"># float: zero on-site energy</span>
+    <span class="n">extra_inputs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;t0&quot;</span><span class="p">:</span> <span class="n">T0</span><span class="p">,</span> <span class="s2">&quot;rc&quot;</span><span class="p">:</span> <span class="n">RC</span><span class="p">},</span>
+<span class="p">)</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_kpm_dos</span><span class="p">(</span><span class="n">rc</span><span class="p">):</span>
+    <span class="n">sys</span> <span class="o">=</span> <span class="n">lattice</span><span class="o">.</span><span class="n">generate_hamiltonian</span><span class="p">(</span>
+        <span class="n">tll</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">tuu</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">tul</span><span class="o">=</span><span class="n">gaussian_inter</span><span class="p">,</span> <span class="n">tlu</span><span class="o">=</span><span class="n">gaussian_inter</span><span class="p">,</span>
+        <span class="n">extra_inputs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;t0&quot;</span><span class="p">:</span> <span class="n">T0</span><span class="p">,</span> <span class="s2">&quot;rc&quot;</span><span class="p">:</span> <span class="n">rc</span><span class="p">},</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span>
+
+
+    <span class="n">spectrum</span> <span class="o">=</span> <span class="n">kwant</span><span class="o">.</span><span class="n">kpm</span><span class="o">.</span><span class="n">SpectralDensity</span><span class="p">(</span><span class="n">sys</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">num_vectors</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">num_moments</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span> 
+    <span class="c1">## adjust num_vectors and num_moments for better accuracy</span>
+    <span class="n">energies</span><span class="p">,</span> <span class="n">densities</span> <span class="o">=</span> <span class="n">spectrum</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">energies</span><span class="p">,</span> <span class="n">densities</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="k">for</span> <span class="n">rc</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+    <span class="p">[</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+    <span class="p">[</span><span class="sa">r</span><span class="s2">&quot;Short range ($r_c = 0.4$)&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;Long range ($r_c = 1.0$)&quot;</span><span class="p">],</span>
+<span class="p">):</span>
+    <span class="n">energies</span><span class="p">,</span> <span class="n">densities</span> <span class="o">=</span> <span class="n">get_kpm_dos</span><span class="p">(</span><span class="n">rc</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">energies</span><span class="p">,</span> <span class="n">densities</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Energy (eV)&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Density of States&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;KPM Density of States&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </code></pre></div>
 <p><img alt="Image" src="../../images/dos_calculation/plot_2.webp" /></p>
-<h3 id="moire-graphene-and-van-hove-singularities">Moire Graphene and Van-Hove Singularities</h3>
-<h3 id="expectation-value-of-operator-calculation-using-kpm">Expectation value of Operator calculation using KPM</h3>
+<p>It is clear that for different <code>rc</code> values the layers coupled differently and the peak structure changes visibly. </p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code>generate_hamiltonian</code> runs in <span class="arithmatex">\(O(N)\)</span> time once connections are established. You can call it repeatedly with different <code>rc</code> or <code>t0</code> values without rebuilding the lattice or re-running <code>generate_connections</code>.</p>
+</div>
+<p>Also this exmaple illustrate that you can use <code>kwant</code> library to compute the physical observable and analyse the physics of moire system. </p>
 <h2 id="references">References</h2>
 <ol>
 <li>

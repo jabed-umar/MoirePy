@@ -16,7 +16,7 @@
         <link rel="prev" href="../multiple_orbitals/">
       
       
-        <link rel="next" href="../prepare_layers/">
+        <link rel="next" href="../../replications/">
       
       
         
@@ -401,6 +401,62 @@
   
   
     <li class="md-nav__item">
+      <a href="../custom_hoppings/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Designing Custom Hopping
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../prepare_layers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Defining Custom Layers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../obc_vs_pbc/" class="md-nav__link">
         
   
@@ -597,62 +653,6 @@
   
 </nav>
       
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../prepare_layers/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Defining Custom Layers
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../custom_hoppings/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Designing Custom Hopping
-  
-
-    
-  </span>
-  
-  
-
-      </a>
     </li>
   
 
@@ -1585,8 +1585,7 @@
 
 
 <h1 id="simulating-non-hermitian-systems">Simulating Non-Hermitian Systems</h1>
-<p>This notebook shows a minimal non-Hermitian bilayer model in MoirePy.
-We intentionally break Hermiticity using asymmetric inter-layer hopping (<code>tlu != tul</code>) and inspect the complex spectrum.</p>
+<p>This notebook presents a minimal non-Hermitian bilayer model in <em>MoirePy</em>. Non-Hermiticity is introduced through an angle-dependent in-plane hopping amplitude. For simplicity, the inter-layer hopping (<code>t_lu = t_ul</code>) is taken to be symmetric in this example. However, there is no fundamental restriction within the framework, and fully general non-Hermitian systems can be constructed in the same way.</p>
 <h2 id="1-setup">1. Setup</h2>
 <p>We build one lattice instance with open boundary conditions and reuse it throughout.</p>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
@@ -1626,7 +1625,7 @@ We intentionally break Hermiticity using asymmetric inter-layer hopping (<code>t
     <span class="n">tll</span><span class="o">=</span><span class="n">anisotropic_hopping</span><span class="p">,</span>
     <span class="n">tuu</span><span class="o">=</span><span class="n">anisotropic_hopping</span><span class="p">,</span>
     <span class="n">tlu</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
-    <span class="n">tul</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
+    <span class="n">tul</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
     <span class="n">tlself</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
     <span class="n">tuself</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
 <span class="p">)</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span>

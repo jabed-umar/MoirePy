@@ -395,6 +395,62 @@
   
   
     <li class="md-nav__item">
+      <a href="../../getting_started/custom_hoppings/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Designing Custom Hopping
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting_started/prepare_layers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Defining Custom Layers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../getting_started/obc_vs_pbc/" class="md-nav__link">
         
   
@@ -459,62 +515,6 @@
     
   
     Non-Hermitian Systems
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../getting_started/prepare_layers/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Defining Custom Layers
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../getting_started/custom_hoppings/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Designing Custom Hopping
   
 
     
@@ -1358,73 +1358,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#let-us-now-look-at-a-few-examples-to-see-how-easily-we-can-construct-the-gaint-looking-tight-binding-hamiltonian-very-easily-using-moirepy" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Let us now look at a few examples to see how easily we can construct the gaint looking tight-binding Hamiltonian very easily using MoirePy.
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Let us now look at a few examples to see how easily we can construct the gaint looking tight-binding Hamiltonian very easily using MoirePy.">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#lets-make-the-hamiltonian" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Let's make the Hamiltonian
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Let&#39;s make the Hamiltonian">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#study-of-eigenvalues-and-eigenvectors" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Study of eigenvalues and eigenvectors
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#suppose-we-want-to-design-the-hopping-amplitudes-as-per-our-choice-not-constant-as-discussed-earlier-then-using-moirepy-we-can-define-that-very-easily" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Suppose we want to design the hopping amplitudes as per our choice (not constant, as discussed earlier) then using MoirePy, we can define that very easily.
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#lets-now-analyze-the-case-of-multiple-orbitals-per-site-case-for-simplicity-choose-k-2-using-moirepy" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Let's now analyze the case of multiple orbitals per site case (for simplicity choose, k = 2) using MoirePy.
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#references" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1456,6 +1389,7 @@
 
 
 <h1 id="tight-binding-moire-hamiltonian-construction">Tight Binding Moiré Hamiltonian Construction</h1>
+<p>In this section, we outline how a moiré tight-binding Hamiltonian is constructed from its second-quantized form to a block-matrix representation. The goal is to make clear how intralayer and interlayer hopping terms are organized and how they translate into the final Hamiltonian used for numerical calculations.</p>
 <p>The <strong>tight-binding Hamiltonian</strong>  <sup id="fnref:ashcroft1976"><a class="footnote-ref" href="#fn:ashcroft1976">1</a></sup> is a widely used model in solid-state physics and quantum chemistry to describe the electronic structure of solids — especially in crystals and layered materials. In this model, electrons are considered <em>localized</em> around atomic sites but can <em>hop</em> to neighbouring atoms. To describe such a Hamiltonian for a <strong>Moiré system</strong>, we use the second quantized <sup id="fnref:bruus2004"><a class="footnote-ref" href="#fn:bruus2004">2</a></sup> form:</p>
 <div class="arithmatex">\[
 H = \sum_{\alpha, \beta;\, r,r' \in L} t^1_{rr', \alpha\beta}c^{\dagger}_{r,\beta}c_{r',\alpha} 
@@ -1479,204 +1413,51 @@ h_{UL} &amp; h_{UU}
 \Psi
 \]</div>
 <p>Here, <span class="arithmatex">\(h_{LL}\)</span> and <span class="arithmatex">\(h_{UU}\)</span> are the <em>first-quantized</em> <span class="arithmatex">\(n \times n\)</span> Hamiltonians of the lower and upper layers, respectively. The blocks <span class="arithmatex">\(h_{LU}\)</span> and <span class="arithmatex">\(h_{UL}\)</span> represent interlayer couplings.</p>
-<h3 id="let-us-now-look-at-a-few-examples-to-see-how-easily-we-can-construct-the-gaint-looking-tight-binding-hamiltonian-very-easily-using-moirepy">Let us now look at a few examples to see how easily we can construct the gaint looking tight-binding Hamiltonian very easily using <strong>MoirePy</strong>.</h3>
-<div class="highlight"><pre><span></span><code><span class="c1">##import the necesaary libraries</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
-<span class="c1">##import the lattice types (triangular, square, hexagonal, etc)</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">moirepy</span><span class="w"> </span><span class="kn">import</span> <span class="n">BilayerMoireLattice</span><span class="p">,</span> <span class="n">TriangularLayer</span><span class="p">,</span> <span class="n">SquareLayer</span> 
-</code></pre></div>
-<div class="highlight"><pre><span></span><code><span class="c1">## Make the lattice (Lattice type, a(ll1), b(ll2), m(ul1), n(ul2), x_no, y_no)---  </span>
-<span class="c1">## don&#39;t put fractional values for x_no and y_no, which are number of moire unit cells</span>
-<span class="n">lattice</span> <span class="o">=</span> <span class="n">BilayerMoireLattice</span><span class="p">(</span><span class="n">TriangularLayer</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> 
-<span class="c1">##upper layer is not translated and pbc condition true by default.----</span>
-<span class="c1">##----&gt;&gt;&gt; For more on this angle calculation section, please refer to Angle value calculator and angle calculation process and angle_calculation.ipynb file.</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">moirepy</span><span class="w"> </span><span class="kn">import</span> <span class="n">BilayerMoireLattice</span><span class="p">,</span> <span class="n">SquareLayer</span>
+<span class="c1">## set up the bilayer moire lattice with specified parameters</span>
+
+<span class="n">ll1</span><span class="p">,</span> <span class="n">ll2</span><span class="p">,</span> <span class="n">ul1</span><span class="p">,</span> <span class="n">ul2</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span>
+
+<span class="n">lattice</span> <span class="o">=</span> <span class="n">BilayerMoireLattice</span><span class="p">(</span>
+    <span class="n">SquareLayer</span><span class="p">,</span> <span class="n">ll1</span><span class="p">,</span> <span class="n">ll2</span><span class="p">,</span> <span class="n">ul1</span><span class="p">,</span> <span class="n">ul2</span><span class="p">,</span>
+    <span class="n">n1</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">n2</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">lattice</span><span class="o">.</span><span class="n">generate_connections</span><span class="p">(</span><span class="n">inter_layer_radius</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
 
 <span class="c1"># Output:</span>
-<span class="c1"># twist angle = 0.1646 rad (9.4300 deg)</span>
-<span class="c1"># 37 points in lower lattice</span>
-<span class="c1"># 37 points in upper lattice</span>
+<span class="c1"># twist angle = 0.3948 rad (22.6199 deg)</span>
+<span class="c1"># 13 cells in upper lattice</span>
+<span class="c1"># 13 cells in lower lattice</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code><span class="c1">#Let&#39;s plot the lattice</span>
-<span class="n">lattice</span><span class="o">.</span><span class="n">plot_lattice</span><span class="p">()</span>
+<div class="highlight"><pre><span></span><code><span class="c1">## Generate the tight-binding Hamiltonian with specified hopping parameters</span>
+<span class="n">tb_ham</span> <span class="o">=</span> <span class="n">lattice</span><span class="o">.</span><span class="n">generate_hamiltonian</span><span class="p">(</span>
+    <span class="n">tll</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
+    <span class="n">tuu</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
+    <span class="n">tul</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+    <span class="n">tlu</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+    <span class="n">tuself</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+    <span class="n">tlself</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+    <span class="n">data_type</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span>  <span class="c1"># default is np.complex128</span>
+<span class="p">)</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span>  <span class="c1"># convert to dense array for visualization purposes</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Hamiltonian shape:&quot;</span><span class="p">,</span> <span class="n">tb_ham</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+<span class="c1"># Output:</span>
+<span class="c1"># Hamiltonian shape: (26, 26)</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="c1">## Visualize the Hamiltonian in the block form</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">tb_ham</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;viridis&#39;</span><span class="p">,</span> <span class="n">aspect</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Hamiltonian Matrix Elements&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Tight-Binding Hamiltonian Matrix&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Site Index&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Site Index&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </code></pre></div>
 <p><img alt="Image" src="../../images/tight_binding_ham/plot_1.webp" /></p>
-<h4 id="lets-make-the-hamiltonian">Let's make the Hamiltonian</h4>
-<div class="highlight"><pre><span></span><code><span class="c1">## make the hamiltonian (tuu, tdd, tud, tdu, tdd, mu1, mu2)</span>
-<span class="n">ham</span> <span class="o">=</span> <span class="n">lattice</span><span class="o">.</span><span class="n">generate_hamiltonian</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">)</span>
-<span class="c1">## Here, 1 (1.2) is hopping amplitude in upper (lower) layer, 0.1 is interlayer hopping amplitude, and 0 (0.01) is the onsite energy in upper (lower) layer.</span>
-                             <span class="c1">### Hurrah! We have made the hamiltonian. ####</span>
-</code></pre></div>
-<div class="highlight"><pre><span></span><code><span class="c1">## Suppose we want to extract the lower layer&#39;s hamiltonian only----</span>
-<span class="n">N</span> <span class="o">=</span> <span class="n">ham</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-<span class="n">lower_layer_ham</span> <span class="o">=</span> <span class="n">ham</span><span class="p">[:</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="p">,</span> <span class="p">:</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="p">]</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">lower_layer_ham</span><span class="p">)</span> 
-<span class="c1">## Let&#39;s plot the structure r connections of the lower layer----</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">lower_layer_ham</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Lower Layer Hamiltonian Structure&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">()</span>
-<span class="c1">## we can graphically see the connections in the lower layer.</span>
-
-<span class="c1"># Output:</span>
-<span class="c1"># [[0.01 1.2  0.   ... 0.   0.   0.  ]</span>
-<span class="c1">#  [1.2  0.01 1.2  ... 0.   0.   0.  ]</span>
-<span class="c1">#  [0.   1.2  0.01 ... 0.   0.   0.  ]</span>
-<span class="c1">#  ...</span>
-<span class="c1">#  [0.   0.   0.   ... 0.01 1.2  0.  ]</span>
-<span class="c1">#  [0.   0.   0.   ... 1.2  0.01 1.2 ]</span>
-<span class="c1">#  [0.   0.   0.   ... 0.   1.2  0.01]]</span>
-
-<span class="c1"># Output:</span>
-<span class="c1"># &lt;matplotlib.colorbar.Colorbar at 0x75b4acb27ed0&gt;</span>
-</code></pre></div>
-<p><img alt="Image" src="../../images/tight_binding_ham/plot_2.webp" /></p>
-<div class="highlight"><pre><span></span><code><span class="c1">## Similarly, we can extract the upper layer&#39;s hamiltonian----</span>
-<span class="c1">#upper_layer_ham = ham[N//2:, N//2:]</span>
-<span class="c1"># plt.imshow(upper_layer_ham)</span>
-<span class="c1"># plt.title(&quot;Upper Layer Hamiltonian Structure&quot;)</span>
-<span class="c1"># plt.colorbar()</span>
-<span class="c1">#print(upper_layer_ham)</span>
-</code></pre></div>
-<div class="highlight"><pre><span></span><code><span class="c1">## The interlayer hamiltonian can be extracted as follows----</span>
-<span class="c1"># interlayer_ham = ham[:N//2, N//2:]</span>
-<span class="c1"># plt.imshow(interlayer_ham)</span>
-<span class="c1"># plt.title(&quot;Interlayer Hamiltonian Structure&quot;)</span>
-<span class="c1"># plt.colorbar()</span>
-</code></pre></div>
-<h5 id="study-of-eigenvalues-and-eigenvectors">Study of eigenvalues and eigenvectors</h5>
-<div class="highlight"><pre><span></span><code><span class="c1">## find the eigenvalues and eigenvectors of the hamiltonian----</span>
-<span class="n">eigenvalues</span><span class="p">,</span> <span class="n">eigenvectors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eig</span><span class="p">(</span><span class="n">ham</span><span class="p">)</span>
-<span class="n">j</span> <span class="o">=</span> <span class="n">eigenvalues</span><span class="o">.</span><span class="n">real</span><span class="o">.</span><span class="n">argsort</span><span class="p">()</span> <span class="c1"># Sort the eigenvalues based on their real parts</span>
-<span class="n">eigenvalues</span> <span class="o">=</span> <span class="n">eigenvalues</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> 
-<span class="n">eigenvectors</span> <span class="o">=</span> <span class="n">eigenvectors</span><span class="p">[:,</span> <span class="n">j</span><span class="p">]</span> <span class="c1"># Sort the eigenvectors accordingly</span>
-<span class="c1">## Let&#39;s plot the eigenvalues</span>
-</code></pre></div>
-<div class="highlight"><pre><span></span><code><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">eigenvalues</span><span class="o">.</span><span class="n">real</span><span class="p">,</span> <span class="n">eigenvalues</span><span class="o">.</span><span class="n">imag</span><span class="p">,</span> <span class="s1">&#39;k.&#39;</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Re(E)&#39;</span><span class="p">)</span> 
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Im(E)&#39;</span><span class="p">)</span>
-<span class="c1">## All the eigenvalues will be real, which is expected for a Hermitian Hamiltonian.</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Eigenvalues of the Hamiltonian&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</code></pre></div>
-<p><img alt="Image" src="../../images/tight_binding_ham/plot_3.webp" /></p>
-<div class="highlight"><pre><span></span><code><span class="c1">## Lets plot the |eigenvectors|^2 (probability of a given state) of the Hamiltonian for a specific eigenvalue----</span>
-<span class="n">N</span> <span class="o">=</span> <span class="n">lattice</span><span class="o">.</span><span class="n">lower_lattice</span><span class="o">.</span><span class="n">points</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># Number of points in the lower layer</span>
-<span class="n">R</span> <span class="o">=</span>  <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">N</span><span class="p">)</span> <span class="c1"># Randomly select an energy state of the system</span>
-<span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">lattice</span><span class="o">.</span><span class="n">theta</span> <span class="o">*</span> <span class="mi">180</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span> <span class="c1"># Convert angle to degrees (rounded to 5 decimal places)</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">7</span><span class="p">))</span>
-<span class="n">nx</span> <span class="o">=</span> <span class="n">lattice</span><span class="o">.</span><span class="n">nx</span>
-<span class="n">ny</span> <span class="o">=</span> <span class="n">lattice</span><span class="o">.</span><span class="n">ny</span>
-<span class="n">mlv1</span> <span class="o">=</span> <span class="n">lattice</span><span class="o">.</span><span class="n">mlv1</span>
-<span class="n">mlv2</span> <span class="o">=</span> <span class="n">lattice</span><span class="o">.</span><span class="n">mlv2</span>
-
-<span class="c1"># Draw large unit cell</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="n">nx</span><span class="o">*</span><span class="n">mlv1</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">nx</span><span class="o">*</span><span class="n">mlv1</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="n">ny</span><span class="o">*</span><span class="n">mlv2</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">ny</span><span class="o">*</span><span class="n">mlv2</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">nx</span><span class="o">*</span><span class="n">mlv1</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">nx</span><span class="o">*</span><span class="n">mlv1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">ny</span><span class="o">*</span><span class="n">mlv2</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> 
-         <span class="p">[</span><span class="n">nx</span><span class="o">*</span><span class="n">mlv1</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">nx</span><span class="o">*</span><span class="n">mlv1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">ny</span><span class="o">*</span><span class="n">mlv2</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">ny</span><span class="o">*</span><span class="n">mlv2</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">nx</span><span class="o">*</span><span class="n">mlv1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">ny</span><span class="o">*</span><span class="n">mlv2</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> 
-         <span class="p">[</span><span class="n">ny</span><span class="o">*</span><span class="n">mlv2</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">nx</span><span class="o">*</span><span class="n">mlv1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">ny</span><span class="o">*</span><span class="n">mlv2</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-
-<span class="c1"># Draw base unit cell</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="n">mlv1</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">mlv1</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="s1">&#39;k--&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="n">mlv2</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">mlv2</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="s1">&#39;k--&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">mlv1</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">mlv1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">mlv2</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> 
-         <span class="p">[</span><span class="n">mlv1</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">mlv1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">mlv2</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="s1">&#39;k--&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">mlv2</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">mlv1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">mlv2</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> 
-         <span class="p">[</span><span class="n">mlv2</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">mlv1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">mlv2</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="s1">&#39;k--&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-
-<span class="c1"># Plot upper and lower lattice points</span>
-<span class="n">sc1</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">lattice</span><span class="o">.</span><span class="n">upper_lattice</span><span class="o">.</span><span class="n">points</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> 
-                  <span class="n">lattice</span><span class="o">.</span><span class="n">upper_lattice</span><span class="o">.</span><span class="n">points</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span>
-                  <span class="n">c</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">eigenvectors</span><span class="p">[:</span><span class="n">N</span><span class="p">,</span> <span class="n">R</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;Reds&#39;</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Upper&#39;</span><span class="p">)</span>
-<span class="n">sc2</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">lattice</span><span class="o">.</span><span class="n">lower_lattice</span><span class="o">.</span><span class="n">points</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> 
-                  <span class="n">lattice</span><span class="o">.</span><span class="n">lower_lattice</span><span class="o">.</span><span class="n">points</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span>
-                  <span class="n">c</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">eigenvectors</span><span class="p">[</span><span class="n">N</span><span class="p">:,</span> <span class="n">R</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;Reds&#39;</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Lower&#39;</span><span class="p">)</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="s1">&#39;equal&#39;</span><span class="p">,</span> <span class="n">adjustable</span><span class="o">=</span><span class="s1">&#39;box&#39;</span><span class="p">)</span>
-
-<span class="c1"># Colorbar</span>
-<span class="n">cbar</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">sc2</span><span class="p">)</span>
-<span class="n">cbar</span><span class="o">.</span><span class="n">set_label</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;$|\psi|^2$&#39;</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">270</span><span class="p">,</span> <span class="n">labelpad</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
-
-<span class="c1"># Axis labels</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
-
-<span class="c1"># Annotation with energy and angle</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.95</span><span class="p">,</span>
-         <span class="sa">f</span><span class="s1">&#39;Angle = </span><span class="si">{</span><span class="n">theta</span><span class="si">}</span><span class="s1">°</span><span class="se">\n</span><span class="s1">Energy = </span><span class="si">{</span><span class="n">eigenvalues</span><span class="p">[</span><span class="n">R</span><span class="p">]</span><span class="o">.</span><span class="n">real</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="se">\n</span><span class="s1"> R = </span><span class="si">{</span><span class="n">R</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
-         <span class="n">transform</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">transAxes</span><span class="p">,</span>
-         <span class="n">fontsize</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s1">&#39;top&#39;</span><span class="p">,</span>
-         <span class="n">bbox</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;white&#39;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span> <span class="n">boxstyle</span><span class="o">=</span><span class="s1">&#39;round&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">))</span>
-
-<span class="c1"># Clean grid and layout</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.4</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</code></pre></div>
-<p><img alt="Image" src="../../images/tight_binding_ham/plot_4.webp" /></p>
-<h4 id="suppose-we-want-to-design-the-hopping-amplitudes-as-per-our-choice-not-constant-as-discussed-earlier-then-using-moirepy-we-can-define-that-very-easily">Suppose we want to design the hopping amplitudes as per our choice (not constant, as discussed earlier) then using <strong>MoirePy</strong>, we can define that very easily.</h4>
-<div class="highlight"><pre><span></span><code><span class="c1">## Define the hopping function for the lower layer as a function of distance between two points</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">tdd</span><span class="p">(</span><span class="n">this_coo</span><span class="p">,</span> <span class="n">neigh_coo</span><span class="p">,</span> <span class="n">this_type</span><span class="p">,</span> <span class="n">neigh_type</span><span class="p">):</span>  
-<span class="c1">#(coordinates of this point, coordinates of neighbor point, type of this point (for example, Graphene lattice has A and B type atoms), type of neighbor point)</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">this_coo</span> <span class="o">-</span> <span class="n">neigh_coo</span><span class="p">)</span>
-<span class="c1">## Define the hopping function for the upper layer as a function of distance between two points</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">tuu</span><span class="p">(</span><span class="n">this_coo</span><span class="p">,</span> <span class="n">neigh_coo</span><span class="p">,</span> <span class="n">this_type</span><span class="p">,</span> <span class="n">neigh_type</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">this_coo</span> <span class="o">-</span> <span class="n">neigh_coo</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span>
-<span class="c1">## Define the interlayer hopping function as a function of distance between two points</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">tud</span><span class="p">(</span><span class="n">this_coo</span><span class="p">,</span> <span class="n">neigh_coo</span><span class="p">,</span> <span class="n">this_type</span><span class="p">,</span> <span class="n">neigh_type</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">this_coo</span> <span class="o">-</span> <span class="n">neigh_coo</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
-<span class="c1">## Define the onsite energy function for the upper layer</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">mu1</span><span class="p">(</span><span class="n">this_coo</span><span class="p">,</span> <span class="n">this_type</span><span class="p">):</span>
-    <span class="k">return</span> <span class="mi">0</span>
-<span class="c1">## Define the onsite energy function for the lower layer</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">mu2</span><span class="p">(</span><span class="n">this_coo</span><span class="p">,</span> <span class="n">this_type</span><span class="p">):</span>
-    <span class="k">return</span> <span class="mi">0</span>
-</code></pre></div>
-<div class="highlight"><pre><span></span><code><span class="c1">## Lets now generate the hamiltonian using the custom hopping functions defined above</span>
-<span class="n">ham_custom</span> <span class="o">=</span> <span class="n">lattice</span><span class="o">.</span><span class="n">generate_hamiltonian</span><span class="p">(</span><span class="n">tuu</span><span class="p">,</span> <span class="n">tdd</span><span class="p">,</span> <span class="n">tud</span><span class="p">,</span> <span class="n">tud</span><span class="p">,</span> <span class="n">mu1</span><span class="p">,</span> <span class="n">mu2</span><span class="p">)</span>
-</code></pre></div>
-<div class="highlight"><pre><span></span><code><span class="c1">## Extract the lower layer&#39;s hamiltonian from the custom hamiltonian</span>
-<span class="n">lower_layer_ham_custom</span> <span class="o">=</span> <span class="n">ham_custom</span><span class="p">[:</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="p">,</span> <span class="p">:</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="p">]</span>
-<span class="c1">## Let&#39;s plot the structure connections of the lower layer from the custom hamiltonian</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">lower_layer_ham_custom</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Lower Layer Hamiltonian Structure (Custom)&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-<span class="c1">### Similarly, we can check the others and do the similar analysis!!</span>
-</code></pre></div>
-<p><img alt="Image" src="../../images/tight_binding_ham/plot_5.webp" /></p>
-<h4 id="lets-now-analyze-the-case-of-multiple-orbitals-per-site-case-for-simplicity-choose-k-2-using-moirepy">Let's now analyze the case of multiple orbitals per site case (for simplicity choose, k = 2) using <strong>MoirePy</strong>.</h4>
-<div class="highlight"><pre><span></span><code><span class="c1">## Define the lattice function </span>
-<span class="c1"># (Lattice type, a(ll1), b(ll2), m(ul1), n(ul2), x_no, y_no, translation of upper layer by an vector, pbc criteria, no. of orbitals(k))---  </span>
-<span class="n">lattice_n_orbitals</span> <span class="o">=</span> <span class="n">BilayerMoireLattice</span><span class="p">(</span><span class="n">TriangularLayer</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="kc">True</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> 
-<span class="c1">## Define the hamiltonian with 2 orbitals</span>
-<span class="n">ham_n_orbitals</span> <span class="o">=</span> <span class="n">lattice_n_orbitals</span><span class="o">.</span><span class="n">generate_hamiltonian</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">)</span>
-
-<span class="c1"># Output:</span>
-<span class="c1"># twist angle = 0.1646 rad (9.4300 deg)</span>
-<span class="c1"># 37 points in lower lattice</span>
-<span class="c1"># 37 points in upper lattice</span>
-</code></pre></div>
-<div class="highlight"><pre><span></span><code><span class="n">ham_n_orbitals</span><span class="o">.</span><span class="n">shape</span> <span class="c1">## degrees of freedom gets doubled due to the two orbitals in the system</span>
-
-<span class="c1"># Output:</span>
-<span class="c1"># (148, 148)</span>
-</code></pre></div>
-<div class="highlight"><pre><span></span><code><span class="c1">## Extract the lower layer&#39;s hamiltonian from the custom hamiltonian</span>
-<span class="n">lower_layer_ham_custom</span> <span class="o">=</span> <span class="n">ham_n_orbitals</span><span class="p">[:</span><span class="n">N</span><span class="p">,</span> <span class="p">:</span><span class="n">N</span><span class="p">]</span>
-<span class="c1">## Let&#39;s plot the structure connections of the lower layer from the custom hamiltonian</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">lower_layer_ham_custom</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Lower Layer Hamiltonian Structure&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-<span class="c1">### Similarly, we can check the others and do the similar analysis!!</span>
-</code></pre></div>
-<p><img alt="Image" src="../../images/tight_binding_ham/plot_6.webp" /></p>
-<p>Since, we are at pbc = True condition, so because of the translation symmtery in the system, we can analyze it in k-space (momentum space), and this can be found in k_space_ham.ipynb file.</p>
+<p>Hurrah! The Hamiltonian now appears in the familiar block-matrix form. From here, you can explore a wide range of analyses as discussed in the Getting Started section.</p>
 <h2 id="references">References</h2>
 <ol>
 <li>

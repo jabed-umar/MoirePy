@@ -13,10 +13,10 @@
         <link rel="canonical" href="https://jabed-umar.github.io/MoirePy/getting_started/custom_hoppings/">
       
       
-        <link rel="prev" href="../prepare_layers/">
+        <link rel="prev" href="../k_space_hamiltonian/">
       
       
-        <link rel="next" href="../../replications/">
+        <link rel="next" href="../prepare_layers/">
       
       
         
@@ -398,118 +398,6 @@
                 
   
   
-  
-  
-    <li class="md-nav__item">
-      <a href="../obc_vs_pbc/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Lattices in Open vs. Periodic Boundary Conditions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../multiple_orbitals/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Multiple-Orbital Systems
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../non_hermitian/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Non-Hermitian Systems
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../prepare_layers/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Defining Custom Layers
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
     
   
   
@@ -667,28 +555,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#7-exploring-hopping-study-of-non-hermitian-systems" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        7. Exploring Hopping: Study of Non-Hermitian Systems
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#8-moire-system-with-multiple-orbitals" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        8. Moiré System with Multiple Orbitals
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#summary" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -714,6 +580,118 @@
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../prepare_layers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Defining Custom Layers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../obc_vs_pbc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lattices in Open vs. Periodic Boundary Conditions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../multiple_orbitals/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Multiple-Orbital Systems
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../non_hermitian/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Non-Hermitian Systems
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -1643,28 +1621,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#7-exploring-hopping-study-of-non-hermitian-systems" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        7. Exploring Hopping: Study of Non-Hermitian Systems
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#8-moire-system-with-multiple-orbitals" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        8. Moiré System with Multiple Orbitals
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#summary" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1881,206 +1837,7 @@
 <p class="admonition-title">Hermiticity</p>
 <p>MoirePy does not enforce <code>tlu = tul*</code> automatically. For a physical Hermitian system, make sure your <code>tlu</code> callable returns the complex conjugate of what <code>tul</code> returns, or pass the same real-valued function for both as we do here.</p>
 </div>
-<h2 id="7-exploring-hopping-study-of-non-hermitian-systems">7. Exploring Hopping: Study of Non-Hermitian Systems</h2>
-<p>Non-Hermitian systems are unique because they break one of the fundamental postulates of quantum mechanics—that all operators are Hermitian, which ensures real spectra. These systems exhibit a rich variety of phenomena and have been the subject of extensive research in recent years. In this section, we will illustrate one quick example how to construct a Non-Hermitian Hamiltonian using MoirePy.</p>
-<div class="highlight"><pre><span></span><code><span class="c1">## Designing custom lattice with open boundary conditions to show the effect of non-Hermiticity</span>
-<span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;latticetype&quot;</span><span class="p">:</span> <span class="n">SquareLayer</span><span class="p">,</span>
-    <span class="s2">&quot;ll1&quot;</span><span class="p">:</span> <span class="mi">9</span><span class="p">,</span> <span class="s2">&quot;ll2&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;ul1&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;ul2&quot;</span><span class="p">:</span> <span class="mi">9</span><span class="p">,</span>
-    <span class="s2">&quot;n1&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;n2&quot;</span><span class="p">:</span> <span class="mi">1</span>
-<span class="p">}</span>      
-<span class="c1"># 1. Open Boundary Conditions</span>
-<span class="n">lattice_obc</span> <span class="o">=</span> <span class="n">BilayerMoireLattice</span><span class="p">(</span><span class="o">**</span><span class="n">params</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">lattice_obc</span><span class="o">.</span><span class="n">generate_connections</span><span class="p">(</span><span class="n">inter_layer_radius</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">llat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>  <span class="c1"># square lattice vectors for the lower layer</span>
-<span class="n">ulat</span> <span class="o">=</span> <span class="n">llat</span>
-
-<span class="c1"># Output:</span>
-<span class="c1"># twist angle = 0.1052 rad (6.0256 deg)</span>
-<span class="c1"># 181 cells in upper lattice</span>
-<span class="c1"># 181 cells in lower lattice</span>
-</code></pre></div>
-<div class="highlight"><pre><span></span><code><span class="c1">### custom hooping function for styding the Non Hermitian effects</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">tuudd</span><span class="p">(</span><span class="n">this_coo</span><span class="p">,</span> <span class="n">neigh_coo</span><span class="p">,</span> <span class="n">llat</span><span class="p">,</span> <span class="n">ulat</span><span class="p">,</span> <span class="n">this_type</span><span class="p">,</span> <span class="n">neigh_type</span><span class="p">):</span>
-    <span class="n">gamma</span> <span class="o">=</span> <span class="mf">0.3</span> <span class="c1"># anisotropy parameter</span>
-    <span class="n">t0</span> <span class="o">=</span> <span class="mi">1</span>   <span class="c1"># hopping parameter</span>
-    <span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">neigh_coo</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">this_coo</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">neigh_coo</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">this_coo</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
-    <span class="k">return</span> <span class="n">t0</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">theta</span><span class="p">))</span> <span class="o">*</span> <span class="n">gamma</span> 
-<span class="c1">## this cosine term introduces anisotropy in the hopping based on the angle between the two sites</span>
-
-<span class="c1">### lets contrcuct the hamiltonian with this new hopping function</span>
-<span class="n">ham</span> <span class="o">=</span> <span class="n">lattice_obc</span><span class="o">.</span><span class="n">generate_hamiltonian</span><span class="p">(</span>
-    <span class="n">tll</span><span class="o">=</span><span class="n">tuudd</span><span class="p">,</span>           <span class="c1"># float: same hop for every intra-lower bond</span>
-    <span class="n">tuu</span><span class="o">=</span><span class="n">tuudd</span><span class="p">,</span>           <span class="c1"># float: same hop for every intra-upper bond</span>
-    <span class="n">tul</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>    <span class="c1"># callable</span>
-    <span class="n">tlu</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>    <span class="c1"># callable </span>
-    <span class="n">tlself</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>            <span class="c1"># float: zero on-site energy</span>
-    <span class="n">tuself</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>            <span class="c1"># float: zero on-site energy</span>
-<span class="p">)</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span>
-</code></pre></div>
-<div class="highlight"><pre><span></span><code><span class="c1">## Chk if the Ham is Hermitian</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Is the Hamiltonian Hermitian?&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">ham</span><span class="p">,</span> <span class="n">ham</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span><span class="o">.</span><span class="n">T</span><span class="p">))</span>
-
-<span class="c1"># Output:</span>
-<span class="c1"># Is the Hamiltonian Hermitian? False</span>
-</code></pre></div>
-<div class="highlight"><pre><span></span><code><span class="c1">##plot the eigenvalues</span>
-<span class="n">e</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eig</span><span class="p">(</span><span class="n">ham</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">real</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">imag</span><span class="p">,</span> <span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;steelblue&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Real Part&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Imaginary Part&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Eigenvalues of the Hamiltonian&#39;</span><span class="p">)</span>
-
-<span class="c1"># Output:</span>
-<span class="c1"># Text(0.5, 1.0, &#39;Eigenvalues of the Hamiltonian&#39;)</span>
-</code></pre></div>
-<p><img alt="Image" src="../../images/custom_hoppings/plot_1.webp" /></p>
-<div class="highlight"><pre><span></span><code><span class="c1">## plot one eigenvector</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">6</span><span class="p">]),</span> <span class="s1">&#39;o-&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;steelblue&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Site Index&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Amplitude&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Eigenvector corresponding to the 7th eigenvalue&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</code></pre></div>
-<p><img alt="Image" src="../../images/custom_hoppings/plot_2.webp" /></p>
-<div class="highlight"><pre><span></span><code><span class="c1">## Lets plot the |eigenvectors| (amplitude of a given state) of the Hamiltonian for a specific eigenvalue----</span>
-<span class="n">N</span> <span class="o">=</span> <span class="n">lattice_obc</span><span class="o">.</span><span class="n">lower_lattice</span><span class="o">.</span><span class="n">points</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-<span class="n">R</span> <span class="o">=</span>  <span class="mi">6</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
-<span class="n">nx</span> <span class="o">=</span> <span class="n">lattice_obc</span><span class="o">.</span><span class="n">n1</span>
-<span class="n">ny</span> <span class="o">=</span> <span class="n">lattice_obc</span><span class="o">.</span><span class="n">n2</span>
-<span class="n">mlv1</span> <span class="o">=</span> <span class="n">lattice_obc</span><span class="o">.</span><span class="n">mlv1</span>
-<span class="n">mlv2</span> <span class="o">=</span> <span class="n">lattice_obc</span><span class="o">.</span><span class="n">mlv2</span>
-
-<span class="c1"># Draw large unit cell</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="n">nx</span><span class="o">*</span><span class="n">mlv1</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">nx</span><span class="o">*</span><span class="n">mlv1</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="n">ny</span><span class="o">*</span><span class="n">mlv2</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">ny</span><span class="o">*</span><span class="n">mlv2</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">nx</span><span class="o">*</span><span class="n">mlv1</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">nx</span><span class="o">*</span><span class="n">mlv1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">ny</span><span class="o">*</span><span class="n">mlv2</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> 
-         <span class="p">[</span><span class="n">nx</span><span class="o">*</span><span class="n">mlv1</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">nx</span><span class="o">*</span><span class="n">mlv1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">ny</span><span class="o">*</span><span class="n">mlv2</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">ny</span><span class="o">*</span><span class="n">mlv2</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">nx</span><span class="o">*</span><span class="n">mlv1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">ny</span><span class="o">*</span><span class="n">mlv2</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> 
-         <span class="p">[</span><span class="n">ny</span><span class="o">*</span><span class="n">mlv2</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">nx</span><span class="o">*</span><span class="n">mlv1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">ny</span><span class="o">*</span><span class="n">mlv2</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-
-<span class="c1"># Draw base unit cell</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="n">mlv1</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">mlv1</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="s1">&#39;k--&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="n">mlv2</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">mlv2</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="s1">&#39;k--&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">mlv1</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">mlv1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">mlv2</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> 
-         <span class="p">[</span><span class="n">mlv1</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">mlv1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">mlv2</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="s1">&#39;k--&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">mlv2</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">mlv1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">mlv2</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> 
-         <span class="p">[</span><span class="n">mlv2</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">mlv1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">mlv2</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="s1">&#39;k--&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-
-<span class="c1"># Plot upper and lower lattice points</span>
-<span class="n">sc1</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">lattice_obc</span><span class="o">.</span><span class="n">upper_lattice</span><span class="o">.</span><span class="n">points</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> 
-                  <span class="n">lattice_obc</span><span class="o">.</span><span class="n">upper_lattice</span><span class="o">.</span><span class="n">points</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span>
-                  <span class="n">c</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">v</span><span class="p">[:</span><span class="n">N</span><span class="p">,</span> <span class="n">R</span><span class="p">]),</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;Reds&#39;</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Upper&#39;</span><span class="p">)</span>
-<span class="n">sc2</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">lattice_obc</span><span class="o">.</span><span class="n">lower_lattice</span><span class="o">.</span><span class="n">points</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> 
-                  <span class="n">lattice_obc</span><span class="o">.</span><span class="n">lower_lattice</span><span class="o">.</span><span class="n">points</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span>
-                  <span class="n">c</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="n">N</span><span class="p">:,</span> <span class="n">R</span><span class="p">]),</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;Reds&#39;</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Lower&#39;</span><span class="p">)</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="s1">&#39;equal&#39;</span><span class="p">,</span> <span class="n">adjustable</span><span class="o">=</span><span class="s1">&#39;box&#39;</span><span class="p">)</span>
-
-<span class="c1"># Colorbar</span>
-<span class="n">cbar</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">sc2</span><span class="p">)</span>
-<span class="n">cbar</span><span class="o">.</span><span class="n">set_label</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;$|\psi|$&#39;</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">270</span><span class="p">,</span> <span class="n">labelpad</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
-
-<span class="c1"># Axis labels</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
-
-<span class="c1"># Clean grid and layout</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.4</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</code></pre></div>
-<p><img alt="Image" src="../../images/custom_hoppings/plot_3.webp" /></p>
-<p>In the eigenstate, we can see the pile up of the state (known as <code>Non-Hermitian Skin effect</code>). This example illustartes that you can use MoirePy to make a non-hermitian system and analyze such system. The more about this can be found <strong><a href="examples.md">here</a></strong>.</p>
-<h2 id="8-moire-system-with-multiple-orbitals">8. Moiré System with Multiple Orbitals</h2>
-<p>We have explored so many phenomena with single orbital. Now, we will illustrate the Hamiltonian construction with multiple orbitals. </p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">moirepy</span><span class="w"> </span><span class="kn">import</span> <span class="n">BilayerMoireLattice</span><span class="p">,</span> <span class="n">TriangularLayer</span>
-</code></pre></div>
-<div class="highlight"><pre><span></span><code><span class="n">lattice</span> <span class="o">=</span> <span class="n">BilayerMoireLattice</span><span class="p">(</span>
-    <span class="n">latticetype</span><span class="o">=</span><span class="n">TriangularLayer</span><span class="p">,</span>
-    <span class="n">ll1</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">ll2</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-    <span class="n">ul1</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ul2</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-    <span class="n">n1</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">n2</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-    <span class="n">k</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
-    <span class="n">pbc</span><span class="o">=</span><span class="kc">True</span>  <span class="c1"># for k-space </span>
-<span class="p">)</span>
-
-<span class="c1"># Output:</span>
-<span class="c1"># twist angle = 0.3803 rad (21.7868 deg)</span>
-<span class="c1"># 7 cells in upper lattice</span>
-<span class="c1"># 7 cells in lower lattice</span>
-</code></pre></div>
-<div class="highlight"><pre><span></span><code><span class="n">lattice</span><span class="o">.</span><span class="n">generate_connections</span><span class="p">(</span><span class="n">inter_layer_radius</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">real_ham</span> <span class="o">=</span> <span class="n">lattice</span><span class="o">.</span><span class="n">generate_hamiltonian</span><span class="p">(</span>
-    <span class="n">tll</span><span class="o">=</span><span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span> <span class="n">tuu</span><span class="o">=</span><span class="mf">1.2</span><span class="p">,</span>
-    <span class="n">tul</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">tlu</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-    <span class="n">tuself</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">tlself</span><span class="o">=</span><span class="mf">0.2</span>
-<span class="p">)</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span><span class="o">.</span><span class="n">real</span>   <span class="c1">## How to set the multij orbital index for the hoppings?</span>
-</code></pre></div>
-<div class="highlight"><pre><span></span><code><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Hamiltonian shape: </span><span class="si">{</span><span class="n">real_ham</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-<span class="c1"># Output:</span>
-<span class="c1"># Hamiltonian shape: [[0.2 0.2 2.  2.  2.  2.  2.  2.  2.  2.  2.  2.  2.  2.  1.  1.  1.  1.</span>
-<span class="c1">#   1.  1.  0.  0.  0.  0.  0.  0.  1.  1. ]</span>
-<span class="c1">#  [0.2 0.2 2.  2.  2.  2.  2.  2.  2.  2.  2.  2.  2.  2.  1.  1.  1.  1.</span>
-<span class="c1">#   1.  1.  0.  0.  0.  0.  0.  0.  1.  1. ]</span>
-<span class="c1">#  [2.  2.  0.2 0.2 2.  2.  2.  2.  2.  2.  2.  2.  2.  2.  1.  1.  0.  0.</span>
-<span class="c1">#   1.  1.  1.  1.  0.  0.  1.  1.  0.  0. ]</span>
-<span class="c1">#  [2.  2.  0.2 0.2 2.  2.  2.  2.  2.  2.  2.  2.  2.  2.  1.  1.  0.  0.</span>
-<span class="c1">#   1.  1.  1.  1.  0.  0.  1.  1.  0.  0. ]</span>
-<span class="c1">#  [2.  2.  2.  2.  0.2 0.2 2.  2.  2.  2.  2.  2.  2.  2.  0.  0.  0.  0.</span>
-<span class="c1">#   0.  0.  1.  1.  1.  1.  0.  0.  1.  1. ]</span>
-<span class="c1">#  [2.  2.  2.  2.  0.2 0.2 2.  2.  2.  2.  2.  2.  2.  2.  0.  0.  0.  0.</span>
-<span class="c1">#   0.  0.  1.  1.  1.  1.  0.  0.  1.  1. ]</span>
-<span class="c1">#  [2.  2.  2.  2.  2.  2.  0.2 0.2 2.  2.  2.  2.  2.  2.  1.  1.  1.  1.</span>
-<span class="c1">#   1.  1.  1.  1.  0.  0.  0.  0.  1.  1. ]</span>
-<span class="c1">#  [2.  2.  2.  2.  2.  2.  0.2 0.2 2.  2.  2.  2.  2.  2.  1.  1.  1.  1.</span>
-<span class="c1">#   1.  1.  1.  1.  0.  0.  0.  0.  1.  1. ]</span>
-<span class="c1">#  [2.  2.  2.  2.  2.  2.  2.  2.  0.2 0.2 2.  2.  2.  2.  1.  1.  1.  1.</span>
-<span class="c1">#   0.  0.  1.  1.  1.  1.  0.  0.  0.  0. ]</span>
-<span class="c1">#  [2.  2.  2.  2.  2.  2.  2.  2.  0.2 0.2 2.  2.  2.  2.  1.  1.  1.  1.</span>
-<span class="c1">#   0.  0.  1.  1.  1.  1.  0.  0.  0.  0. ]</span>
-<span class="c1">#  [2.  2.  2.  2.  2.  2.  2.  2.  2.  2.  0.2 0.2 2.  2.  0.  0.  0.  0.</span>
-<span class="c1">#   1.  1.  0.  0.  1.  1.  1.  1.  0.  0. ]</span>
-<span class="c1">#  [2.  2.  2.  2.  2.  2.  2.  2.  2.  2.  0.2 0.2 2.  2.  0.  0.  0.  0.</span>
-<span class="c1">#   1.  1.  0.  0.  1.  1.  1.  1.  0.  0. ]</span>
-<span class="c1">#  [2.  2.  2.  2.  2.  2.  2.  2.  2.  2.  2.  2.  0.2 0.2 0.  0.  1.  1.</span>
-<span class="c1">#   0.  0.  0.  0.  0.  0.  1.  1.  1.  1. ]</span>
-<span class="c1">#  [2.  2.  2.  2.  2.  2.  2.  2.  2.  2.  2.  2.  0.2 0.2 0.  0.  1.  1.</span>
-<span class="c1">#   0.  0.  0.  0.  0.  0.  1.  1.  1.  1. ]</span>
-<span class="c1">#  [1.  1.  1.  1.  0.  0.  1.  1.  1.  1.  0.  0.  0.  0.  0.1 0.1 1.2 1.2</span>
-<span class="c1">#   1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2]</span>
-<span class="c1">#  [1.  1.  1.  1.  0.  0.  1.  1.  1.  1.  0.  0.  0.  0.  0.1 0.1 1.2 1.2</span>
-<span class="c1">#   1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2]</span>
-<span class="c1">#  [1.  1.  0.  0.  0.  0.  1.  1.  1.  1.  0.  0.  1.  1.  1.2 1.2 0.1 0.1</span>
-<span class="c1">#   1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2]</span>
-<span class="c1">#  [1.  1.  0.  0.  0.  0.  1.  1.  1.  1.  0.  0.  1.  1.  1.2 1.2 0.1 0.1</span>
-<span class="c1">#   1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2]</span>
-<span class="c1">#  [1.  1.  1.  1.  0.  0.  1.  1.  0.  0.  1.  1.  0.  0.  1.2 1.2 1.2 1.2</span>
-<span class="c1">#   0.1 0.1 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2]</span>
-<span class="c1">#  [1.  1.  1.  1.  0.  0.  1.  1.  0.  0.  1.  1.  0.  0.  1.2 1.2 1.2 1.2</span>
-<span class="c1">#   0.1 0.1 1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2]</span>
-<span class="c1">#  [0.  0.  1.  1.  1.  1.  1.  1.  1.  1.  0.  0.  0.  0.  1.2 1.2 1.2 1.2</span>
-<span class="c1">#   1.2 1.2 0.1 0.1 1.2 1.2 1.2 1.2 1.2 1.2]</span>
-<span class="c1">#  [0.  0.  1.  1.  1.  1.  1.  1.  1.  1.  0.  0.  0.  0.  1.2 1.2 1.2 1.2</span>
-<span class="c1">#   1.2 1.2 0.1 0.1 1.2 1.2 1.2 1.2 1.2 1.2]</span>
-<span class="c1">#  [0.  0.  0.  0.  1.  1.  0.  0.  1.  1.  1.  1.  0.  0.  1.2 1.2 1.2 1.2</span>
-<span class="c1">#   1.2 1.2 1.2 1.2 0.1 0.1 1.2 1.2 1.2 1.2]</span>
-<span class="c1">#  [0.  0.  0.  0.  1.  1.  0.  0.  1.  1.  1.  1.  0.  0.  1.2 1.2 1.2 1.2</span>
-<span class="c1">#   1.2 1.2 1.2 1.2 0.1 0.1 1.2 1.2 1.2 1.2]</span>
-<span class="c1">#  [0.  0.  1.  1.  0.  0.  0.  0.  0.  0.  1.  1.  1.  1.  1.2 1.2 1.2 1.2</span>
-<span class="c1">#   1.2 1.2 1.2 1.2 1.2 1.2 0.1 0.1 1.2 1.2]</span>
-<span class="c1">#  [0.  0.  1.  1.  0.  0.  0.  0.  0.  0.  1.  1.  1.  1.  1.2 1.2 1.2 1.2</span>
-<span class="c1">#   1.2 1.2 1.2 1.2 1.2 1.2 0.1 0.1 1.2 1.2]</span>
-<span class="c1">#  [1.  1.  0.  0.  1.  1.  1.  1.  0.  0.  0.  0.  1.  1.  1.2 1.2 1.2 1.2</span>
-<span class="c1">#   1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 0.1 0.1]</span>
-<span class="c1">#  [1.  1.  0.  0.  1.  1.  1.  1.  0.  0.  0.  0.  1.  1.  1.2 1.2 1.2 1.2</span>
-<span class="c1">#   1.2 1.2 1.2 1.2 1.2 1.2 1.2 1.2 0.1 0.1]]</span>
-</code></pre></div>
+<p>This setup can be naturally generalized to multiorbital and non-Hermitian systems through a careful choice of hopping amplitudes.</p>
 <h2 id="summary">Summary</h2>
 <ul>
 <li>All six hopping slots accept a <strong>float, int, or any callable</strong>; you can mix and match freely.</li>
