@@ -1,0 +1,53 @@
+name: Tests
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'moirepy/**'
+      - 'pyproject.toml'
+      - 'Cargo.toml'
+      - 'Cargo.lock'
+      - 'tests/**'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'moirepy/**'
+      - 'pyproject.toml'
+      - 'Cargo.toml'
+      - 'Cargo.lock'
+      - 'tests/**'
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12", "3.13"]
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Set up Rust
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+        override: true
+
+    - name: Install dependencies and build
+      run: |
+        python -m pip install --upgrade pip
+        pip install maturin
+        maturin develop --release
+        pip install ".[test]"
+
+    - name: Run tests
+      run: |
+        # Use Agg backend to avoid GUI errors
+        MPLBACKEND=Agg pytest tests/
