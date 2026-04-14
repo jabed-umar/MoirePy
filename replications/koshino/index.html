@@ -1492,10 +1492,10 @@
 <p><strong>M. Koshino and E. McCann</strong><br />
 <em>Optical absorption in twisted bilayer graphene</em> (2013)<br />
 <a href="https://journals.aps.org/prb/abstract/10.1103/PhysRevB.87.205404">https://journals.aps.org/prb/abstract/10.1103/PhysRevB.87.205404</a></p>
-<p><strong>Original code author</strong><br />
+<p><strong>Code Author</strong><br />
 Sarbajit Mazumdar<br />
 Doctoral Researcher, Julius-Maximilians-Universitat Wurzburg<br />
-Email: (sarbajit.mazumdar@uni-wuerzburg.de)</p>
+Email: <a href="mailto:sarbajit.mazumdar@uni-wuerzburg.de">sarbajit.mazumdar@uni-wuerzburg.de</a></p>
 <h2 id="scope">Scope</h2>
 <ul>
 <li>Build periodic commensurate TBG lattice.</li>
@@ -1663,7 +1663,7 @@ d &gt; 4a_0 \;\Rightarrow\; t(d) \approx 0
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number of k-points:&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">k_path</span><span class="p">))</span>
 
 <span class="c1"># Output:</span>
-<span class="c1"># Number of k-points: 61</span>
+<span class="c1"># Number of k-points: 121</span>
 </code></pre></div>
 <h2 id="compute-band-structure-along-the-high-symmetry-path">Compute band structure along the high-symmetry path</h2>
 <p>This cell evaluates eigenvalues of <span class="arithmatex">\(H(k)\)</span> along <span class="arithmatex">\(K \to \Gamma \to M \to K^{\prime}\)</span>.</p>
@@ -1678,7 +1678,10 @@ d &gt; 4a_0 \;\Rightarrow\; t(d) \approx 0
 <span class="n">bands</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">bands</span><span class="p">)</span>
 
 <span class="c1"># Output:</span>
-<span class="c1"># Calculating bands: 100%|██████████| 61/61 [00:08&lt;00:00,  7.44it/s]</span>
+<span class="c1"># Calculating bands:   0%|          | 0/121 [00:00&lt;?, ?it/s]</span>
+
+<span class="c1"># Output:</span>
+<span class="c1"># Calculating bands: 100%|██████████| 121/121 [00:35&lt;00:00,  3.38it/s]</span>
 </code></pre></div>
 <h2 id="compute-dos-on-the-irreducible-brillouin-zone-triangle">Compute DOS on the irreducible Brillouin-zone triangle</h2>
 <p>This cell samples the triangle and builds a smoothed DOS in the target energy window.</p>
@@ -1712,9 +1715,8 @@ d &gt; 4a_0 \;\Rightarrow\; t(d) \approx 0
 <span class="n">bin_centers</span> <span class="o">=</span> <span class="p">(</span><span class="n">energy_grid</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">energy_grid</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="o">/</span> <span class="mf">2.0</span>
 <span class="n">dos_smooth</span> <span class="o">=</span> <span class="n">gaussian_filter1d</span><span class="p">(</span><span class="n">dos_raw</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mf">1.25</span><span class="p">)</span>
 
-
 <span class="c1"># Output:</span>
-<span class="c1"># Calculating DOS: 100%|██████████| 60/60 [05:52&lt;00:00,  5.88s/it]</span>
+<span class="c1"># Calculating DOS: 100%|██████████| 60/60 [05:08&lt;00:00,  5.15s/it]</span>
 </code></pre></div>
 <h2 id="plot-band-structure-and-dos">Plot band structure and DOS</h2>
 <p>The final figure shows the band structure (left) and DOS (right) using the same energy axis.</p>
