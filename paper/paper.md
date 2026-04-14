@@ -12,12 +12,12 @@ authors:
     orcid: 0009-0005-7960-373X
     affiliation: "1, 3, 4"
     corresponding: true
-    email: aritra.mukhopadhyay@niser.ac.in
+    email: amukherjeeniser@gmail.com
   - name: Jabed Umar
     orcid: 0009-0000-0566-4373
     affiliation: "2, 3, 4"
     corresponding: true
-    email: aritra.mukhopadhyay@niser.ac.in
+    email: jabed.umar@tuwien.ac.at
 affiliations:
   - name: "Independent Researcher, India"
     index: 1
