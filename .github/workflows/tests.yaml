@@ -5,20 +5,20 @@ on:
     branches: [ main ]
     paths:
       - 'moirepy/**'
+      - 'tests/**'
       - '.github/workflows/tests.yaml'
       - 'pyproject.toml'
       - 'Cargo.toml'
       - 'Cargo.lock'
-      - 'tests/**'
   pull_request:
     branches: [ main ]
     paths:
       - 'moirepy/**'
+      - 'tests/**'
       - '.github/workflows/tests.yaml'
       - 'pyproject.toml'
       - 'Cargo.toml'
       - 'Cargo.lock'
-      - 'tests/**'
   workflow_dispatch:
 
 jobs:

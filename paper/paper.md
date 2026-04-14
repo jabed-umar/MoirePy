@@ -51,7 +51,9 @@ The first bottleneck in any moiré simulation is selecting a valid commensurate 
 
 The second design goal is a clean separation between geometry and physics. The lattice and its inter-site connections are constructed once; the user then generates Hamiltonians from that geometry as many times as needed, each time with different hopping parameters. Building the connections requires a spatial neighbour search, which scales as $O(N \log N)$ for $N$ lattice sites using a KD-tree [@kiddo]. Once the connections are established, each subsequent Hamiltonian assembly runs in $O(N)$ time. Hopping amplitudes can be simple constants or arbitrary callable functions, making it straightforward to implement distance-dependent models such as Slater-Koster parametrisations [@slater1954simplified] or Gaussian decay without touching the geometry code.
 
-Beyond algorithmic choices, all performance-critical operations (angle enumeration, neighbour search, connectivity construction) are implemented in Rust and exposed to Python via PyO3. This combination of efficient algorithms and a compiled backend is what produces the benchmark results below.
+Beyond algorithmic choices, all performance-critical operations (angle enumeration, neighbour search, connectivity construction) are implemented in Rust and exposed to Python via PyO3 [@pyo3]. This combination of efficient algorithms and a compiled backend is what produces the benchmark results below.
+
+MoirePy is open-source software and can be cited using its metadata [@CITATION.cff].
 
 # Benchmarks
 

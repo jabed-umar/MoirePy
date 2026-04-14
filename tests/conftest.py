@@ -3,7 +3,17 @@ import os
 
 # --- The Bouncer (Whitelist) ---
 ALLOWED_TESTS = {
-    "test_quickstart_tbg.py",
+    "quickstart_tbg.py",
+    "nori.py",
+    
+    # "custom_hoppings.py",
+    # "k_space_hamiltonian.py",
+    # "multiple_orbitals.py",
+    # "non_hermitian.py",
+    # "obc_vs_pbc.py",
+    
+    # "koshino.py",  # too slow for CI, but will keep the tests writen, when I have time later 
+    # "prepare_layers.py",  # nothing to test
 }
 
 def pytest_ignore_collect(collection_path, config):
