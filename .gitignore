@@ -23,3 +23,6 @@ docs/benchmark/*.csv
 
 paper/jats
 paper/paper.pdf
+
+.pytest_cache
+.copilot

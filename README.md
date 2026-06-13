@@ -4,9 +4,9 @@
 
 It is designed to be easy to use while remaining fully flexible. You can define custom lattice geometries, program arbitrary hopping functions, and build tight-binding Hamiltonians in both **real space** and **k-space**, with support for **open (OBC)** and **periodic (PBC)** boundary conditions. Generate your lattice and Hamiltonian in MoirePy, then export to the tools you already use (like **Kwant**, **NumPy**, **SciPy**, and related ecosystems) and keep your workflow.
 
-* **Documentation:** [https://jabed-umar.github.io/MoirePy/](https://jabed-umar.github.io/MoirePy/)<br>
+* **Documentation:** [https://jabed-umar.github.io/MoirePy/](https://jabed-umar.github.io/MoirePy)<br>
 * **Github Repository:** [https://github.com/jabed-umar/MoirePy](https://github.com/jabed-umar/MoirePy)<br>
-* **PyPI page:** [https://pypi.org/project/moirepy/](https://pypi.org/project/moirepy/)
+* **PyPI page:** [https://pypi.org/project/moirepy/](https://pypi.org/project/moirepy)
 
 <p align="center">
   <!-- Replace with GIF later -->
