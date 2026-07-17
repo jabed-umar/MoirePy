@@ -27,7 +27,7 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def plot_results(x: np.ndarray, y: np.ndarray, out_base_path: Path, save_webp: bool) -> None:
+def plot_results(x: np.ndarray, y: np.ndarray, out_base_path: Path, save_webp: bool, title: str = None) -> None:
     plt.rcParams.update(
         {
             "font.size": 14,
@@ -43,6 +43,7 @@ def plot_results(x: np.ndarray, y: np.ndarray, out_base_path: Path, save_webp: b
     ax.plot(x, y, marker="o")
     ax.set_xlabel("Number of lattice points")
     ax.set_ylabel("Time taken (ms)")
+    if title: ax.set_title(title)
 
     formatter = ScalarFormatter(useMathText=True)
     formatter.set_scientific(True)
@@ -91,6 +92,9 @@ def main() -> None:
 
     plot_results(x, y1, out_exp1, args.save_webp)
     plot_results(x, y2, out_exp2, args.save_webp)
+
+    # plot_results(x, y1, out_exp1, args.save_webp, title="Generate Lattice, Connections, and Hamiltonian")
+    # plot_results(x, y2, out_exp2, args.save_webp, title="Subsequent Hamiltonian Generations")
 
 
 if __name__ == "__main__":
