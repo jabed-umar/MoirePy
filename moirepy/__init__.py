@@ -6,10 +6,12 @@ from .utils import (
     LatticeAlreadyFinalisedError,
     StackStateError,
 )
+from .layers import Layer
 
 __all__ = [
     "get_rotation_matrix",
     "are_coeffs_integers",
     "LatticeAlreadyFinalisedError",
     "StackStateError",
+    "Layer",
 ]
