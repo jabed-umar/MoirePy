@@ -89,3 +89,99 @@ class Layer:
             self._translation = np.array([translation[0], translation[1], 0.0], dtype=np.float64)
         else:
             self._translation = np.array(translation, dtype=np.float64)
+
+    def generate_points(self, mlv1: np.ndarray, mlv2: np.ndarray, n1: int = 1, n2: int = 1):
+        """
+        Generates points in the moire supercell defined by mlv1 and mlv2,
+        tiled by n1 and n2.
+        """
+        if self._owner_id is None:
+            # We assign a dummy owner if called standalone (mostly for testing)
+            self._owner_id = 0
+            
+        mlv1 = np.array(mlv1, dtype=np.float64)[:2] * n1
+        mlv2 = np.array(mlv2, dtype=np.float64)[:2] * n2
+        
+        S = np.column_stack((mlv1, mlv2))
+        Minv = np.linalg.inv(S)
+        
+        P = np.column_stack((self.lv1[:2], self.lv2[:2]))
+        Pinv = np.linalg.inv(P)
+        
+        corners = np.array([
+            [0.0, 0.0],
+            mlv1,
+            mlv2,
+            mlv1 + mlv2
+        ])
+        
+        # We need to find the inverse mapping considering rotation
+        # So we test corners against the inverse rotation
+        rot_2d = self._rot_m[:2, :2]
+        inv_rot = np.linalg.inv(rot_2d)
+        
+        corners_unrot = (inv_rot @ (corners - self._translation[:2]).T).T
+        
+        # Project into primitive fractional coords
+        corners_prim = (Pinv @ corners_unrot.T).T
+        
+        min_i = int(np.floor(np.min(corners_prim[:, 0]))) - 1
+        max_i = int(np.ceil(np.max(corners_prim[:, 0]))) + 1
+        min_j = int(np.floor(np.min(corners_prim[:, 1]))) - 1
+        max_j = int(np.ceil(np.max(corners_prim[:, 1]))) + 1
+        
+        points = []
+        labels = []
+        seen = set()
+        
+        for i in range(min_i, max_i + 1):
+            for j in range(min_j, max_j + 1):
+                for k, bp in enumerate(self.basis_points):
+                    raw = i * self.lv1 + j * self.lv2 + bp
+                    pt = self._rot_m @ raw + self._translation
+                    
+                    # Fractional in supercell
+                    frac = Minv @ pt[:2]
+                    
+                    # Canonical dedup
+                    frac_c = np.round(frac % 1.0, decimals=6) % 1.0
+                    
+                    # Also need a unique key for the atom position
+                    # To prevent identical atoms (from PBC boundaries mapping to 0) being added multiple times
+                    key = (int(frac_c[0] * 1e6), int(frac_c[1] * 1e6), k)
+                    
+                    # We check if it falls strictly inside the 0..1 bounding box
+                    # Since frac_c is positive, any point that Maps strictly inside [0, 1) belongs to the cell
+                    if 0.0 <= frac[0] < 1.0 + 1e-6 and 0.0 <= frac[1] < 1.0 + 1e-6:
+                        # Wait, due to edge floating point issues, standard checking is brittle.
+                        # We just trust canonical dedup and check if the original frac was roughly inside
+                        # To be safe and capture all boundary points perfectly:
+                        if -1e-5 <= frac[0] < 1.0 + 1e-5 and -1e-5 <= frac[1] < 1.0 + 1e-5:
+                            if key not in seen:
+                                seen.add(key)
+                                points.append((frac_c[0], frac_c[1], pt))
+                                labels.append(self.basis_labels[k])
+                                
+        # Sort for deterministic ordering
+        points_sorted = sorted(zip(points, labels), key=lambda x: (x[0][0], x[0][1], x[0][2][-1]))
+        
+        self._points = np.array([x[0][2] for x in points_sorted], dtype=np.float64)
+        self._labels = np.array([x[1] for x in points_sorted], dtype=str)
+        
+        # Build bigger_points (3x3 tiling)
+        bigger_pts = []
+        bigger_lbls = []
+        self._bigger_to_primary = []
+        
+        # Generate 9 tiles
+        tile_idx = 0
+        for di in [-1, 0, 1]:
+            for dj in [-1, 0, 1]:
+                shift = di * np.array([mlv1[0], mlv1[1], 0.0]) + dj * np.array([mlv2[0], mlv2[1], 0.0])
+                for p_idx, pt in enumerate(self._points):
+                    bigger_pts.append(pt + shift)
+                    bigger_lbls.append(self._labels[p_idx])
+                    self._bigger_to_primary.append(p_idx)
+                    
+        self._bigger_points = np.array(bigger_pts, dtype=np.float64)
+        self._bigger_labels = np.array(bigger_lbls, dtype=str)

@@ -49,10 +49,17 @@ def convert_nb_to_md_content(nb_path, site_dir):
         else:
             raise NotImplementedError(f"Unsupported cell type: {cell.cell_type} in file {nb_path}")
 
-    # print("\n\n".join(md_content))
 
+    md_text = "\n\n".join(md_content)
+    old_docs_dir = Path("/extra/MoirePy/old_docs/notebook_to_md")
+    if old_docs_dir.exists():
+        try:
+            md_path = old_docs_dir / Path(nb_path).relative_to("/extra/MoirePy/docs").with_suffix(".md")
+            md_path.parent.mkdir(parents=True, exist_ok=True)
+            md_path.write_text(md_text, encoding='utf-8')
+        except Exception: pass
 
-    return "\n\n".join(md_content)
+    return md_text
 
 def on_files(files, config):
     notebooks = config.get('extra', {}).get('notebooks_to_convert', [])

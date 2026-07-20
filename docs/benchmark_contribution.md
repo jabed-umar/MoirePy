@@ -118,6 +118,8 @@ On Windows/macOS, use your system's highest-performance power mode or equivalent
 
 ### Run command
 
+Inside the directory docs/benchmark, run:
+
 ```bash
 python benchmark.py --out-dir <your_machine_label>
 ```

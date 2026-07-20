@@ -46,6 +46,7 @@ const DATASETS = [
   { label: "i5 Gen12", path: "../benchmark/i5_gen12/benchmark_results.json", color: "#1472e6", enabled: true },
   { label: "i3 Gen4", path: "../benchmark/i3_gen4/benchmark_results.json", color: "#e95d2a", enabled: false },
   { label: "Raspberry Pi 5", path: "../benchmark/pi5/benchmark_results.json", color: "#0f9d58", enabled: false },
+  { label: "new", path: "../benchmark/new/benchmark_results.json", color: "#ff0000", enabled: true },
 ];
 
 const statusEl = document.getElementById("bench-status");
