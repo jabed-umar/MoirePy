@@ -15,3 +15,18 @@ __all__ = [
     "StackStateError",
     "Layer",
 ]
+from .presets import (
+    SquareLayer,
+    TriangularLayer,
+    HexagonalLayer,
+    KagomeLayer,
+    Rhombus60Layer,
+)
+
+__all__.extend([
+    "SquareLayer",
+    "TriangularLayer",
+    "HexagonalLayer",
+    "KagomeLayer",
+    "Rhombus60Layer",
+])
