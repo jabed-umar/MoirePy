@@ -30,3 +30,5 @@ __all__.extend([
     "KagomeLayer",
     "Rhombus60Layer",
 ])
+from .stack import MoireStack
+__all__.append("MoireStack")
