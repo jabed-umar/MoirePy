@@ -54,3 +54,21 @@ def test_stack_hetero_commensurate():
     
     stack.add_layer(l3, 1, 2, 2, 1)
     assert len(stack.layers) == 2
+
+def test_stack_generate_points():
+    l1 = HexagonalLayer()
+    stack = MoireStack(l1)
+    
+    l2 = HexagonalLayer()
+    stack.add_layer(l2, 1, 2, 2, 1)
+    
+    assert stack.state == "BUILDING"
+    stack.generate_points()
+    assert stack.state == "GENERATED"
+    
+    assert len(l1._points) > 0
+    assert len(l2._points) > 0
+    
+    l3 = HexagonalLayer()
+    with pytest.raises(Exception):
+        stack.add_layer(l3, 1, 2, 2, 1)

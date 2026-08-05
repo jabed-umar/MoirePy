@@ -82,3 +82,20 @@ class MoireStack:
         layer._owner_id = id(self)
         self.layers.append(layer)
 
+
+    def generate_points(self, n1: int = 1, n2: int = 1):
+        """
+        Locks the stack geometry and generates points for all layers.
+        """
+        if self.state != "BUILDING":
+            raise StackStateError("generate_points can only be called in BUILDING state.")
+            
+        if self.mlv1 is None:
+            # Only one layer in stack?
+            self.mlv1 = self.lv1_ref
+            self.mlv2 = self.lv2_ref
+            
+        for layer in self.layers:
+            layer.generate_points(self.mlv1, self.mlv2, n1, n2)
+            
+        self.state = "GENERATED"
