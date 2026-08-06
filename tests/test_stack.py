@@ -72,3 +72,16 @@ def test_stack_generate_points():
     l3 = HexagonalLayer()
     with pytest.raises(Exception):
         stack.add_layer(l3, 1, 2, 2, 1)
+
+def test_stack_repeat():
+    l1 = HexagonalLayer()
+    stack = MoireStack(l1)
+    
+    stack.generate_points()
+    n_pts_single = len(l1._points)
+    
+    stack.repeat(2, 2)
+    assert len(l1._points) == n_pts_single * 4
+    
+    stack.repeat(1, 2)
+    assert len(l1._points) == n_pts_single * 8

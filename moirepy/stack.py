@@ -99,3 +99,19 @@ class MoireStack:
             layer.generate_points(self.mlv1, self.mlv2, n1, n2)
             
         self.state = "GENERATED"
+
+    def repeat(self, n1: int, n2: int):
+        """
+        Tiles the supercell n1 x n2 times.
+        Can only be called in GENERATED state.
+        """
+        if self.state != "GENERATED":
+            raise StackStateError("repeat can only be called in GENERATED state.")
+            
+        for layer in self.layers:
+            # Re-run layer generation with the scaled boundaries
+            layer.generate_points(self.mlv1, self.mlv2, n1, n2)
+            
+        # Update the stack's supercell vectors to match the repeated size
+        self.mlv1 = self.mlv1 * n1
+        self.mlv2 = self.mlv2 * n2
