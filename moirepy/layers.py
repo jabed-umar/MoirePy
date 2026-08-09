@@ -185,3 +185,44 @@ class Layer:
                     
         self._bigger_points = np.array(bigger_pts, dtype=np.float64)
         self._bigger_labels = np.array(bigger_lbls, dtype=str)
+
+    def first_nearest_neighbours(self) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+        """
+        Builds a KDTree to find intra-layer nearest neighbours based on self._neighbours.
+        Returns:
+            primary_indices, bigger_indices, labels_i, labels_j
+        """
+        if self._points is None:
+            raise RuntimeError("Must call generate_points first")
+            
+        from scipy.spatial import cKDTree
+        
+        tree = cKDTree(self._bigger_points)
+        
+        i_idx = []
+        j_idx = []
+        l_i = []
+        l_j = []
+        
+        for p_idx, pt in enumerate(self._points):
+            label = self._labels[p_idx]
+            if label not in self._neighbours:
+                continue
+                
+            deltas = self._neighbours[label]
+            if len(deltas) == 0:
+                continue
+                
+            rotated_deltas = (self._rot_m @ deltas.T).T
+            targets = pt + rotated_deltas
+            
+            dists, indices = tree.query(targets, k=1, distance_upper_bound=1e-5)
+            
+            for d, b_idx in zip(dists, indices):
+                if d < 1e-5:
+                    i_idx.append(p_idx)
+                    j_idx.append(b_idx)
+                    l_i.append(label)
+                    l_j.append(self._bigger_labels[b_idx])
+                    
+        return np.array(i_idx), np.array(j_idx), np.array(l_i), np.array(l_j)
