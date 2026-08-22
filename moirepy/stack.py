@@ -115,3 +115,68 @@ class MoireStack:
         # Update the stack's supercell vectors to match the repeated size
         self.mlv1 = self.mlv1 * n1
         self.mlv2 = self.mlv2 * n2
+
+    def generate_connections(self, radii_matrix: np.ndarray) -> None:
+        """
+        Builds interlayer connections up to given radii matrix.
+        radii_matrix should be an L x L matrix where L is number of layers.
+        """
+        if self.state != "GENERATED":
+            from .utils import StackStateError
+            raise StackStateError("generate_connections must be called in GENERATED state.")
+            
+        radii_matrix = np.array(radii_matrix, dtype=np.float64)
+        num_layers = len(self.layers)
+        if radii_matrix.shape != (num_layers, num_layers):
+            raise ValueError(f"radii_matrix must be {num_layers}x{num_layers}")
+            
+        from scipy.spatial import cKDTree
+        
+        self.connections = {} # (i, j) -> (idx_i, idx_j, label_i, label_j, R_shift)
+        
+        trees = []
+        for l in self.layers:
+            trees.append(cKDTree(l._bigger_points))
+            
+        for i in range(num_layers):
+            for j in range(num_layers):
+                if i == j:
+                    continue
+                r = radii_matrix[i, j]
+                if r <= 0:
+                    continue
+                    
+                pts_i = self.layers[i]._points
+                tree_j = trees[j]
+                
+                indices_list = tree_j.query_ball_point(pts_i, r)
+                
+                c_i = []
+                c_j = []
+                l_i = []
+                l_j = []
+                R_shifts = []
+                
+                for idx_i, n_indices in enumerate(indices_list):
+                    for b_idx_j in n_indices:
+                        idx_j = self.layers[j]._bigger_to_primary[b_idx_j]
+                        
+                        pt_i = self.layers[i]._points[idx_i]
+                        b_pt_j = self.layers[j]._bigger_points[b_idx_j]
+                        pt_j = self.layers[j]._points[idx_j]
+                        
+                        shift = b_pt_j - pt_j
+                        
+                        c_i.append(idx_i)
+                        c_j.append(idx_j)
+                        l_i.append(self.layers[i]._labels[idx_i])
+                        l_j.append(self.layers[j]._bigger_labels[b_idx_j])
+                        R_shifts.append(shift)
+                        
+                self.connections[(i, j)] = (
+                    np.array(c_i, dtype=np.int64),
+                    np.array(c_j, dtype=np.int64),
+                    np.array(l_i, dtype=str),
+                    np.array(l_j, dtype=str),
+                    np.array(R_shifts, dtype=np.float64)
+                )
