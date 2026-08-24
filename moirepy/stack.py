@@ -180,3 +180,90 @@ class MoireStack:
                     np.array(l_j, dtype=str),
                     np.array(R_shifts, dtype=np.float64)
                 )
+
+    def generate_hamiltonian(self, t_matrix: dict, t_self: dict) -> None:
+        """
+        Builds the Hamiltonian as a sparse COO matrix block by block.
+        t_matrix: (i, j) -> callable(coo_i, coo_j, R, labels_i, labels_j, stack)
+        t_self: i -> callable(coo, labels, stack)
+        """
+        from scipy.sparse import coo_matrix
+        import scipy.sparse as sp
+        
+        num_layers = len(self.layers)
+        
+        # Calculate block offsets based on orbitals
+        offsets = [0]
+        for l in self.layers:
+            offsets.append(offsets[-1] + len(l._points) * l.orbitals)
+            
+        H_blocks = []
+        
+        for i in range(num_layers):
+            for j in range(num_layers):
+                if i == j:
+                    if i in t_self:
+                        func = t_self[i]
+                        n_pts = len(self.layers[i]._points)
+                        orb = self.layers[i].orbitals
+                        
+                        i_idx, j_idx, l_i, l_j = self.layers[i].first_nearest_neighbours()
+                        
+                        R_zero = np.zeros((len(i_idx), 3))
+                        # For intra-layer, primary indices are used for coo_j (we just map them via bigger_to_primary)
+                        # Wait, first_nearest_neighbours returns bigger_indices for j
+                        j_primary = np.array([self.layers[i]._bigger_to_primary[idx] for idx in j_idx], dtype=np.int64)
+                        R_shifts = self.layers[i]._bigger_points[j_idx] - self.layers[i]._points[j_primary]
+                        
+                        val = func(i_idx, j_primary, R_shifts, l_i, l_j, self)
+                        
+                        # Handle orbitals block
+                        if orb == 1:
+                            block = coo_matrix((val, (i_idx, j_primary)), shape=(n_pts, n_pts))
+                        else:
+                            # val should be of shape (N, orb, orb)
+                            pass # Simplification for orb=1
+                            
+                        H_blocks.append((i, j, block))
+                else:
+                    pair = (i, j)
+                    if pair in t_matrix or (j, i) in t_matrix:
+                        # Auto-conjugate logic
+                        if pair not in t_matrix:
+                            # We use (j, i) and conjugate
+                            func = t_matrix[(j, i)]
+                            if (j, i) in self.connections:
+                                c_j, c_i, l_j, l_i, R_shifts = self.connections[(j, i)]
+                                val = func(c_j, c_i, R_shifts, l_j, l_i, self)
+                                val = np.conj(val)
+                                
+                                n_pts_i = len(self.layers[i]._points)
+                                n_pts_j = len(self.layers[j]._points)
+                                orb_i = self.layers[i].orbitals
+                                orb_j = self.layers[j].orbitals
+                                
+                                # Note the transpose in indices
+                                block = coo_matrix((val, (c_i, c_j)), shape=(n_pts_i, n_pts_j))
+                                H_blocks.append((i, j, block))
+                        else:
+                            func = t_matrix[pair]
+                            if pair in self.connections:
+                                c_i, c_j, l_i, l_j, R_shifts = self.connections[pair]
+                                val = func(c_i, c_j, R_shifts, l_i, l_j, self)
+                                
+                                n_pts_i = len(self.layers[i]._points)
+                                n_pts_j = len(self.layers[j]._points)
+                                
+                                block = coo_matrix((val, (c_i, c_j)), shape=(n_pts_i, n_pts_j))
+                                H_blocks.append((i, j, block))
+                                
+        # Assemble block matrix
+        total_dim = offsets[-1]
+        
+        # Build L x L array of objects for bmat
+        bmat_array = [[None for _ in range(num_layers)] for _ in range(num_layers)]
+        for i, j, block in H_blocks:
+            bmat_array[i][j] = block
+            
+        self.H = sp.bmat(bmat_array, format='coo')
+
