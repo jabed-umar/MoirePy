@@ -184,7 +184,7 @@ class MoireStack:
     def generate_hamiltonian(self, t_matrix: dict, t_self: dict) -> None:
         """
         Builds the Hamiltonian as a sparse COO matrix block by block.
-        t_matrix: (i, j) -> callable(coo_i, coo_j, R, labels_i, labels_j, stack)
+        t_matrix: (i, j) -> callable(coo_i, coo_j, R, labels_i, labels_j, stack) (R is supercell shift)
         t_self: i -> callable(coo, labels, stack)
         """
         from scipy.sparse import coo_matrix
