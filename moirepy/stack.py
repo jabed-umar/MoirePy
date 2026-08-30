@@ -198,6 +198,7 @@ class MoireStack:
             offsets.append(offsets[-1] + len(l._points) * l.orbitals)
             
         H_blocks = []
+        R_blocks = []
         
         for i in range(num_layers):
             for j in range(num_layers):
@@ -220,31 +221,38 @@ class MoireStack:
                         # Handle orbitals block
                         if orb == 1:
                             block = coo_matrix((val, (i_idx, j_primary)), shape=(n_pts, n_pts))
+                            R_block_x = coo_matrix((R_shifts[:, 0], (i_idx, j_primary)), shape=(n_pts, n_pts))
+                            R_block_y = coo_matrix((R_shifts[:, 1], (i_idx, j_primary)), shape=(n_pts, n_pts))
+                            R_block_z = coo_matrix((R_shifts[:, 2], (i_idx, j_primary)), shape=(n_pts, n_pts))
                         else:
-                            # val should be of shape (N, orb, orb)
-                            pass # Simplification for orb=1
+                            # Expansion for orbitals would go here
+                            pass
                             
                         H_blocks.append((i, j, block))
+                        R_blocks.append((i, j, R_block_x, R_block_y, R_block_z))
                 else:
                     pair = (i, j)
                     if pair in t_matrix or (j, i) in t_matrix:
-                        # Auto-conjugate logic
                         if pair not in t_matrix:
-                            # We use (j, i) and conjugate
                             func = t_matrix[(j, i)]
                             if (j, i) in self.connections:
                                 c_j, c_i, l_j, l_i, R_shifts = self.connections[(j, i)]
                                 val = func(c_j, c_i, R_shifts, l_j, l_i, self)
                                 val = np.conj(val)
                                 
+                                # Conjugation negates the R vector
+                                R_shifts = -R_shifts
+                                
                                 n_pts_i = len(self.layers[i]._points)
                                 n_pts_j = len(self.layers[j]._points)
-                                orb_i = self.layers[i].orbitals
-                                orb_j = self.layers[j].orbitals
                                 
-                                # Note the transpose in indices
                                 block = coo_matrix((val, (c_i, c_j)), shape=(n_pts_i, n_pts_j))
+                                R_block_x = coo_matrix((R_shifts[:, 0], (c_i, c_j)), shape=(n_pts_i, n_pts_j))
+                                R_block_y = coo_matrix((R_shifts[:, 1], (c_i, c_j)), shape=(n_pts_i, n_pts_j))
+                                R_block_z = coo_matrix((R_shifts[:, 2], (c_i, c_j)), shape=(n_pts_i, n_pts_j))
+                                
                                 H_blocks.append((i, j, block))
+                                R_blocks.append((i, j, R_block_x, R_block_y, R_block_z))
                         else:
                             func = t_matrix[pair]
                             if pair in self.connections:
@@ -255,15 +263,65 @@ class MoireStack:
                                 n_pts_j = len(self.layers[j]._points)
                                 
                                 block = coo_matrix((val, (c_i, c_j)), shape=(n_pts_i, n_pts_j))
-                                H_blocks.append((i, j, block))
+                                R_block_x = coo_matrix((R_shifts[:, 0], (c_i, c_j)), shape=(n_pts_i, n_pts_j))
+                                R_block_y = coo_matrix((R_shifts[:, 1], (c_i, c_j)), shape=(n_pts_i, n_pts_j))
+                                R_block_z = coo_matrix((R_shifts[:, 2], (c_i, c_j)), shape=(n_pts_i, n_pts_j))
                                 
-        # Assemble block matrix
-        total_dim = offsets[-1]
-        
-        # Build L x L array of objects for bmat
+                                H_blocks.append((i, j, block))
+                                R_blocks.append((i, j, R_block_x, R_block_y, R_block_z))
+                                
         bmat_array = [[None for _ in range(num_layers)] for _ in range(num_layers)]
+        R_x_array = [[None for _ in range(num_layers)] for _ in range(num_layers)]
+        R_y_array = [[None for _ in range(num_layers)] for _ in range(num_layers)]
+        R_z_array = [[None for _ in range(num_layers)] for _ in range(num_layers)]
+        
         for i, j, block in H_blocks:
             bmat_array[i][j] = block
+        for i, j, rx, ry, rz in R_blocks:
+            R_x_array[i][j] = rx
+            R_y_array[i][j] = ry
+            R_z_array[i][j] = rz
             
         self.H = sp.bmat(bmat_array, format='coo')
+        self.Rx = sp.bmat(R_x_array, format='coo')
+        self.Ry = sp.bmat(R_y_array, format='coo')
+        self.Rz = sp.bmat(R_z_array, format='coo')
+
+    def get_phase(self, k: np.ndarray) -> np.ndarray:
+        """
+        Calculates the bloch phase factor e^{i k . (r_j - r_i + R_shift)} for each non-zero element in H.
+        Since H only stores non-zero elements, we just need to return an array of same length as H.data.
+        Ensure phase expands to match orbitals block dimensions for perfect H.multiply(phase) usage.
+        """
+        if not hasattr(self, 'H'):
+            raise RuntimeError("Must call generate_hamiltonian first.")
+            
+        k = np.array(k, dtype=np.float64)
+        if k.shape == (2,):
+            k = np.array([k[0], k[1], 0.0])
+            
+        # Get absolute positions of all points
+        pts = []
+        for l in self.layers:
+            for pt in l._points:
+                for _ in range(l.orbitals):
+                    pts.append(pt)
+        all_pts = np.array(pts)
+        
+        # d = r_j - r_i + R_shift
+        r_i = all_pts[self.H.row]
+        r_j = all_pts[self.H.col]
+        
+        shift_x = self.Rx.data
+        shift_y = self.Ry.data
+        shift_z = self.Rz.data
+        shifts = np.column_stack((shift_x, shift_y, shift_z))
+        
+        d = r_j - r_i + shifts
+        
+        # Phase = e^{i k . d}
+        k_dot_d = np.sum(d * k, axis=1)
+        phase = np.exp(1j * k_dot_d)
+        
+        return phase
 
