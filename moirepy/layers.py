@@ -81,14 +81,17 @@ class Layer:
             for i in range(len(self.basis_points)):
                 self.basis_points[i] = rot @ self.basis_points[i]
 
-    def perform_rotation_translation(self, rot_deg: float, translation: Tuple[float, float] = (0,0)):
+    def perform_rotation_translation(self, rot_deg: float, translation: Tuple[float, float, float] = (0.0, 0.0, 0.0)):
         from .utils import get_rotation_matrix
-        self._rot_m = get_rotation_matrix(np.radians(rot_deg))
         
-        if len(translation) == 2:
-            self._translation = np.array([translation[0], translation[1], 0.0], dtype=np.float64)
-        else:
-            self._translation = np.array(translation, dtype=np.float64)
+        rot = np.radians(rot_deg)
+        self._rot_m = get_rotation_matrix(rot)
+        
+        V = np.array(translation, dtype=np.float64)
+        if len(V) == 2:
+            V = np.array([V[0], V[1], 0.0])
+            
+        self._translation = self._rot_m @ V
 
     def generate_points(self, mlv1: np.ndarray, mlv2: np.ndarray, n1: int = 1, n2: int = 1):
         """
@@ -103,6 +106,7 @@ class Layer:
         mlv2 = np.array(mlv2, dtype=np.float64)[:2] * n2
         
         S = np.column_stack((mlv1, mlv2))
+        M = S
         Minv = np.linalg.inv(S)
         
         P = np.column_stack((self.lv1[:2], self.lv2[:2]))
@@ -145,22 +149,21 @@ class Layer:
                     
                     # Canonical dedup
                     frac_c = np.round(frac % 1.0, decimals=6) % 1.0
-                    
-                    # Also need a unique key for the atom position
-                    # To prevent identical atoms (from PBC boundaries mapping to 0) being added multiple times
                     key = (int(frac_c[0] * 1e6), int(frac_c[1] * 1e6), k)
                     
-                    # We check if it falls strictly inside the 0..1 bounding box
-                    # Since frac_c is positive, any point that Maps strictly inside [0, 1) belongs to the cell
-                    if 0.0 <= frac[0] < 1.0 + 1e-6 and 0.0 <= frac[1] < 1.0 + 1e-6:
-                        # Wait, due to edge floating point issues, standard checking is brittle.
-                        # We just trust canonical dedup and check if the original frac was roughly inside
-                        # To be safe and capture all boundary points perfectly:
-                        if -1e-5 <= frac[0] < 1.0 + 1e-5 and -1e-5 <= frac[1] < 1.0 + 1e-5:
-                            if key not in seen:
-                                seen.add(key)
-                                points.append((frac_c[0], frac_c[1], pt))
-                                labels.append(self.basis_labels[k])
+                    if -1e-5 <= frac[0] < 1.0 + 1e-5 and -1e-5 <= frac[1] < 1.0 + 1e-5:
+                        if key not in seen:
+                            seen.add(key)
+                            # Map back to primary cell coordinates for storing
+                            # This ensures we store [0, 0] instead of [0, 1] for boundary points
+                            # Use np.floor on rounded frac to avoid precision loss
+                            frac_rounded = np.round(frac, decimals=5)
+                            integer_shift = np.floor(frac_rounded)
+                            mapped_pt_2d = pt[:2] - S @ integer_shift
+                            mapped_pt = np.array([mapped_pt_2d[0], mapped_pt_2d[1], pt[2]], dtype=np.float64)
+                            
+                            points.append((frac_c[0], frac_c[1], mapped_pt))
+                            labels.append(self.basis_labels[k])
                                 
         # Sort for deterministic ordering
         points_sorted = sorted(zip(points, labels), key=lambda x: (x[0][0], x[0][1], x[0][2][-1]))
