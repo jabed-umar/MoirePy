@@ -47,8 +47,8 @@ class HexagonalLayer(Layer):
             [0.5, -0.5/np.sqrt(3.0), 0.0]
         ])
         neighbours = {
-            "A": neigh_deltas,
-            "B": -neigh_deltas
+            "A": -neigh_deltas,
+            "B": neigh_deltas
         }
         super().__init__(lv1, lv2, basis_points, neighbours, pbc, orbitals)
 

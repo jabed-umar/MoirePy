@@ -1,5 +1,10 @@
 import numpy as np
 from typing import List, Tuple, Dict, Optional, Union
+from .utils import StackStateError
+from .utils import get_rotation_matrix
+from scipy.spatial import cKDTree
+
+from . import moirepy_rust
 
 class Layer:
     def __init__(
@@ -53,45 +58,69 @@ class Layer:
         self._bigger_points = None
         self._bigger_labels = None
         self._bigger_to_primary = None
+        self._cached_neighbors = None
         self._owner_id = None
 
     def apply_strain(self, strain_tensor: np.ndarray) -> None:
         """
-        Applies a 2x2 strain tensor to the primitive lattice vectors lv1 and lv2.
+        Applies a 2x2 strain tensor to the primitive lattice vectors, basis points, and neighbours.
         """
         if self._owner_id is not None:
-            from .utils import LatticeAlreadyFinalisedError
-            raise LatticeAlreadyFinalisedError("Cannot apply strain after layer is added to a MoireStack.")
+            raise StackStateError("Cannot apply strain after layer is added to a MoireStack.")
             
         strain_tensor = np.array(strain_tensor, dtype=np.float64)
         if strain_tensor.shape != (2, 2):
             raise ValueError("strain_tensor must be a 2x2 matrix")
             
-        self.lv1[:2] = (np.eye(2) + strain_tensor) @ self.lv1[:2]
-        self.lv2[:2] = (np.eye(2) + strain_tensor) @ self.lv2[:2]
+        F = np.eye(3, dtype=np.float64)
+        F[:2, :2] = strain_tensor
+        
+        self.lv1 = F @ self.lv1
+        self.lv2 = F @ self.lv2
+        
+        for i in range(len(self.basis_points)):
+            self.basis_points[i] = F @ self.basis_points[i]
+            
+        for lbl in self._neighbours:
+            deltas = self._neighbours[lbl]
+            if len(deltas) > 0:
+                self._neighbours[lbl] = (F @ deltas.T).T
         
         # Re-enforce convention if strain broke it
         angle = np.arctan2(self.lv1[1], self.lv1[0])
         if abs(angle) > 1e-8:
-            from .utils import get_rotation_matrix
             rot = get_rotation_matrix(-angle)
             self.lv1 = rot @ self.lv1
             self.lv2 = rot @ self.lv2
             
             for i in range(len(self.basis_points)):
                 self.basis_points[i] = rot @ self.basis_points[i]
+                
+            for lbl in self._neighbours:
+                deltas = self._neighbours[lbl]
+                if len(deltas) > 0:
+                    self._neighbours[lbl] = (rot @ deltas.T).T
 
-    def perform_rotation_translation(self, rot_deg: float, translation: Tuple[float, float, float] = (0.0, 0.0, 0.0)):
-        from .utils import get_rotation_matrix
-        
+    def perform_rotation_translation(self, rot_deg: float, translate: Tuple[float, float] = (0.0, 0.0), z_pos: float = 0.0):
+        if len(translate) != 2:
+            if len(translate) == 3:
+                raise ValueError(
+                    "The 'translate' argument only accepts a 2D vector (x, y) for in-plane shifts. "
+                    "For out-of-plane (z) shifts, please use the explicit 'z_pos' argument instead. "
+                    f"Example: translate=({translate[0]}, {translate[1]}), z_pos={translate[2]}"
+                )
+            else:
+                raise ValueError("translate must be a 2D tuple (x, y).")
+                
         rot = np.radians(rot_deg)
         self._rot_m = get_rotation_matrix(rot)
         
-        V = np.array(translation, dtype=np.float64)
-        if len(V) == 2:
-            V = np.array([V[0], V[1], 0.0])
-            
-        self._translation = self._rot_m @ V
+        # Apply rotation only to the 2D XY translation
+        t_xy = np.array([translate[0], translate[1], 0.0], dtype=np.float64)
+        rotated_t_xy = self._rot_m @ t_xy
+        
+        # Add the z_pos directly to the translation vector (z is unaffected by in-plane rotation)
+        self._translation = np.array([rotated_t_xy[0], rotated_t_xy[1], z_pos], dtype=np.float64)
 
     def generate_points(self, mlv1: np.ndarray, mlv2: np.ndarray, n1: int = 1, n2: int = 1):
         """
@@ -188,6 +217,9 @@ class Layer:
                     
         self._bigger_points = np.array(bigger_pts, dtype=np.float64)
         self._bigger_labels = np.array(bigger_lbls, dtype=str)
+        self._bigger_to_primary = np.array(self._bigger_to_primary, dtype=np.int64)
+        self._cached_neighbors = None
+        self._cached_intra_shifts = None
 
     def first_nearest_neighbours(self) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
         """
@@ -197,8 +229,49 @@ class Layer:
         """
         if self._points is None:
             raise RuntimeError("Must call generate_points first")
-            
-        from scipy.spatial import cKDTree
+
+        if self._cached_neighbors is not None:
+            return self._cached_neighbors
+
+        if len(self._neighbours) == 0 or len(self._points) == 0:
+            res = (np.zeros(0, dtype=np.int64), np.zeros(0, dtype=np.int64), np.zeros(0, dtype=str), np.zeros(0, dtype=str))
+            self._cached_neighbors = res
+            return res
+
+        unique_labels = list(self._neighbours.keys())
+        label_to_id = {lbl: idx for idx, lbl in enumerate(unique_labels)}
+        point_type_indices = np.array(
+            [label_to_id.get(lbl, -1) for lbl in self._labels],
+            dtype=np.int64
+        )
+        
+        deltas_per_type = []
+        for lbl in unique_labels:
+            deltas = self._neighbours[lbl]
+            if len(deltas) == 0:
+                deltas_per_type.append(np.zeros((0, 3), dtype=np.float64))
+            else:
+                rot_deltas = (self._rot_m @ deltas.T).T
+                deltas_per_type.append(np.ascontiguousarray(rot_deltas, dtype=np.float64))
+                
+        i_idx, j_idx = moirepy_rust.find_first_nearest_neighbors(
+            np.ascontiguousarray(self._points, dtype=np.float64),
+            np.ascontiguousarray(self._bigger_points, dtype=np.float64),
+            point_type_indices,
+            deltas_per_type,
+            1e-5
+        )
+        l_i = self._labels[i_idx]
+        l_j = self._bigger_labels[j_idx]
+        res = (i_idx, j_idx, l_i, l_j)
+        self._cached_neighbors = res
+        
+        b2p = self._bigger_to_primary
+        j_prim = b2p[j_idx]
+        r_shifts = np.ascontiguousarray(self._bigger_points[j_idx] - self._points[j_prim], dtype=np.float64)
+        self._cached_intra_shifts = (j_prim, r_shifts)
+        return res
+
         
         tree = cKDTree(self._bigger_points)
         
@@ -228,4 +301,36 @@ class Layer:
                     l_i.append(label)
                     l_j.append(self._bigger_labels[b_idx])
                     
-        return np.array(i_idx), np.array(j_idx), np.array(l_i), np.array(l_j)
+        res = (np.array(i_idx, dtype=np.int64), np.array(j_idx, dtype=np.int64), np.array(l_i), np.array(l_j))
+        self._cached_neighbors = res
+        return res
+
+    def get_neighbors_within_radius(
+        self, query_points: np.ndarray, radius: float
+    ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+        """
+        Finds all atoms in this layer's bigger points within radius of each query point.
+        Returns:
+            (c_i, c_j, R_shifts) where c_j is primary cell index and R_shifts is supercell offset.
+        """
+        if self._points is None:
+            raise RuntimeError("Must call generate_points first")
+            
+        query_points = np.asarray(query_points, dtype=np.float64)
+        if query_points.ndim == 1:
+            query_points = query_points.reshape(1, -1)
+        if query_points.shape[1] == 2:
+            query_points = np.column_stack([query_points, np.zeros(len(query_points), dtype=np.float64)])
+            
+        pts_i = np.ascontiguousarray(query_points, dtype=np.float64)
+        bigger_pts_j = np.ascontiguousarray(self._bigger_points, dtype=np.float64)
+        prim_pts_j = np.ascontiguousarray(self._points, dtype=np.float64)
+        b2p_j = np.ascontiguousarray(self._bigger_to_primary, dtype=np.int64)
+        
+        return moirepy_rust.find_neighbors_within_radius(
+            pts_i,
+            bigger_pts_j,
+            prim_pts_j,
+            b2p_j,
+            float(radius)
+        )

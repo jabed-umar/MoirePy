@@ -1,7 +1,12 @@
 import numpy as np
 from typing import List, Optional, Tuple
-from .layers import Layer
 from .utils import StackStateError
+from scipy.sparse import coo_matrix
+from scipy.spatial import cKDTree
+import scipy.sparse as sp
+from .layers import Layer
+
+from . import moirepy_rust
 
 class MoireStack:
     def __init__(self, base_layer: Layer):
@@ -30,8 +35,29 @@ class MoireStack:
         ll2: int, 
         ul1: int, 
         ul2: int, 
-        translate: Tuple[float, float, float] = (0.0, 0.0, 0.0)
+        translate: Tuple[float, float] = (0.0, 0.0),
+        z_pos: Optional[float] = None
     ):
+        if len(translate) != 2:
+            if len(translate) == 3:
+                raise ValueError(
+                    "The 'translate' argument only accepts a 2D vector (x, y) for in-plane shifts. "
+                    "For out-of-plane (z) shifts, please use the explicit 'z_pos' argument instead. "
+                    f"Example: translate=({translate[0]}, {translate[1]}), z_pos={translate[2]}"
+                )
+            else:
+                raise ValueError("translate must be a 2D tuple (x, y).")
+                
+        import warnings
+        if z_pos is None or np.isclose(z_pos, 0.0, atol=1e-8):
+            warnings.warn(
+                "z_pos was not provided or is exactly 0.0. "
+                "This means the added layer will physically collide in the same 2D plane as the base layer. "
+                "Did you forget to specify the interlayer distance (e.g., z_pos=3.35)?",
+                UserWarning, stacklevel=2
+            )
+            if z_pos is None:
+                z_pos = 0.0
         if self.state != "BUILDING":
             raise StackStateError("Cannot add layer after stack is finalized.")
             
@@ -78,7 +104,7 @@ class MoireStack:
         theta_rad = angle_mlv1 - angle_new
         theta_deg = np.degrees(theta_rad)
         
-        layer.perform_rotation_translation(theta_deg, translate)
+        layer.perform_rotation_translation(theta_deg, translate, z_pos)
         layer._owner_id = id(self)
         self.layers.append(layer)
 
@@ -122,7 +148,6 @@ class MoireStack:
         radii_matrix should be an L x L matrix where L is number of layers.
         """
         if self.state != "GENERATED":
-            from .utils import StackStateError
             raise StackStateError("generate_connections must be called in GENERATED state.")
             
         radii_matrix = np.array(radii_matrix, dtype=np.float64)
@@ -130,9 +155,41 @@ class MoireStack:
         if radii_matrix.shape != (num_layers, num_layers):
             raise ValueError(f"radii_matrix must be {num_layers}x{num_layers}")
             
-        from scipy.spatial import cKDTree
         
         self.connections = {} # (i, j) -> (idx_i, idx_j, label_i, label_j, R_shift)
+        
+        for i in range(num_layers):
+            for j in range(num_layers):
+                if i == j:
+                    continue
+                r = radii_matrix[i, j]
+                if r <= 0:
+                    continue
+                    
+                pts_i = np.ascontiguousarray(self.layers[i]._points, dtype=np.float64)
+                bigger_pts_j = np.ascontiguousarray(self.layers[j]._bigger_points, dtype=np.float64)
+                prim_pts_j = np.ascontiguousarray(self.layers[j]._points, dtype=np.float64)
+                b2p_j = np.ascontiguousarray(self.layers[j]._bigger_to_primary, dtype=np.int64)
+                
+                c_i, c_j, R_shifts = moirepy_rust.find_neighbors_within_radius(
+                    pts_i,
+                    bigger_pts_j,
+                    prim_pts_j,
+                    b2p_j,
+                    float(r)
+                )
+                
+                l_i = self.layers[i]._labels[c_i]
+                l_j = self.layers[j]._labels[c_j]
+                
+                self.connections[(i, j)] = (
+                    c_i,
+                    c_j,
+                    l_i,
+                    l_j,
+                    R_shifts
+                )
+
         
         trees = []
         for l in self.layers:
@@ -173,12 +230,16 @@ class MoireStack:
                         l_j.append(self.layers[j]._bigger_labels[b_idx_j])
                         R_shifts.append(shift)
                         
+                R_shifts_arr = np.array(R_shifts, dtype=np.float64)
+                if len(R_shifts) == 0:
+                    R_shifts_arr = np.zeros((0, 3), dtype=np.float64)
+                    
                 self.connections[(i, j)] = (
                     np.array(c_i, dtype=np.int64),
                     np.array(c_j, dtype=np.int64),
                     np.array(l_i, dtype=str),
                     np.array(l_j, dtype=str),
-                    np.array(R_shifts, dtype=np.float64)
+                    R_shifts_arr
                 )
 
     def generate_hamiltonian(self, t_matrix: dict, t_self: dict) -> None:
@@ -187,8 +248,6 @@ class MoireStack:
         t_matrix: (i, j) -> callable(coo_i, coo_j, R, labels_i, labels_j, stack) (R is supercell shift)
         t_self: i -> callable(coo, labels, stack)
         """
-        from scipy.sparse import coo_matrix
-        import scipy.sparse as sp
         
         num_layers = len(self.layers)
         
@@ -196,96 +255,80 @@ class MoireStack:
         offsets = [0]
         for l in self.layers:
             offsets.append(offsets[-1] + len(l._points) * l.orbitals)
+        total_dim = offsets[-1]
             
-        H_blocks = []
-        R_blocks = []
+        blocks_to_assemble = []
         
         for i in range(num_layers):
             for j in range(num_layers):
                 if i == j:
                     if i in t_self:
                         func = t_self[i]
-                        n_pts = len(self.layers[i]._points)
-                        orb = self.layers[i].orbitals
-                        
                         i_idx, j_idx, l_i, l_j = self.layers[i].first_nearest_neighbours()
-                        
-                        R_zero = np.zeros((len(i_idx), 3))
-                        # For intra-layer, primary indices are used for coo_j (we just map them via bigger_to_primary)
-                        # Wait, first_nearest_neighbours returns bigger_indices for j
-                        j_primary = np.array([self.layers[i]._bigger_to_primary[idx] for idx in j_idx], dtype=np.int64)
-                        R_shifts = self.layers[i]._bigger_points[j_idx] - self.layers[i]._points[j_primary]
-                        
-                        val = func(i_idx, j_primary, R_shifts, l_i, l_j, self)
-                        
-                        # Handle orbitals block
-                        if orb == 1:
-                            block = coo_matrix((val, (i_idx, j_primary)), shape=(n_pts, n_pts))
-                            R_block_x = coo_matrix((R_shifts[:, 0], (i_idx, j_primary)), shape=(n_pts, n_pts))
-                            R_block_y = coo_matrix((R_shifts[:, 1], (i_idx, j_primary)), shape=(n_pts, n_pts))
-                            R_block_z = coo_matrix((R_shifts[:, 2], (i_idx, j_primary)), shape=(n_pts, n_pts))
+                        if hasattr(self.layers[i], '_cached_intra_shifts') and self.layers[i]._cached_intra_shifts is not None:
+                            j_primary, R_shifts = self.layers[i]._cached_intra_shifts
                         else:
-                            # Expansion for orbitals would go here
-                            pass
-                            
-                        H_blocks.append((i, j, block))
-                        R_blocks.append((i, j, R_block_x, R_block_y, R_block_z))
+                            b2p = self.layers[i]._bigger_to_primary
+                            j_primary = b2p[j_idx]
+                            R_shifts = np.ascontiguousarray(
+                                self.layers[i]._bigger_points[j_idx] - self.layers[i]._points[j_primary],
+                                dtype=np.float64
+                            )
+                            self.layers[i]._cached_intra_shifts = (j_primary, R_shifts)
+                        
+                        call_args = (i_idx, j_primary, R_shifts, l_i, l_j, self)
+                        blocks_to_assemble.append((
+                            call_args,
+                            func,
+                            i_idx,
+                            j_primary,
+                            R_shifts,
+                            offsets[i],
+                            offsets[i],
+                            False
+                        ))
                 else:
                     pair = (i, j)
                     if pair in t_matrix or (j, i) in t_matrix:
                         if pair not in t_matrix:
+                            # Auto-conjugate from (j, i)
                             func = t_matrix[(j, i)]
                             if (j, i) in self.connections:
                                 c_j, c_i, l_j, l_i, R_shifts = self.connections[(j, i)]
-                                val = func(c_j, c_i, R_shifts, l_j, l_i, self)
-                                val = np.conj(val)
-                                
-                                # Conjugation negates the R vector
-                                R_shifts = -R_shifts
-                                
-                                n_pts_i = len(self.layers[i]._points)
-                                n_pts_j = len(self.layers[j]._points)
-                                
-                                block = coo_matrix((val, (c_i, c_j)), shape=(n_pts_i, n_pts_j))
-                                R_block_x = coo_matrix((R_shifts[:, 0], (c_i, c_j)), shape=(n_pts_i, n_pts_j))
-                                R_block_y = coo_matrix((R_shifts[:, 1], (c_i, c_j)), shape=(n_pts_i, n_pts_j))
-                                R_block_z = coo_matrix((R_shifts[:, 2], (c_i, c_j)), shape=(n_pts_i, n_pts_j))
-                                
-                                H_blocks.append((i, j, block))
-                                R_blocks.append((i, j, R_block_x, R_block_y, R_block_z))
+                                call_args = (c_j, c_i, R_shifts, l_j, l_i, self)
+                                blocks_to_assemble.append((
+                                    call_args,
+                                    func,
+                                    c_i,
+                                    c_j,
+                                    R_shifts,
+                                    offsets[i],
+                                    offsets[j],
+                                    True
+                                ))
                         else:
                             func = t_matrix[pair]
                             if pair in self.connections:
                                 c_i, c_j, l_i, l_j, R_shifts = self.connections[pair]
-                                val = func(c_i, c_j, R_shifts, l_i, l_j, self)
+                                call_args = (c_i, c_j, R_shifts, l_i, l_j, self)
+                                blocks_to_assemble.append((
+                                    call_args,
+                                    func,
+                                    c_i,
+                                    c_j,
+                                    R_shifts,
+                                    offsets[i],
+                                    offsets[j],
+                                    False
+                                ))
                                 
-                                n_pts_i = len(self.layers[i]._points)
-                                n_pts_j = len(self.layers[j]._points)
-                                
-                                block = coo_matrix((val, (c_i, c_j)), shape=(n_pts_i, n_pts_j))
-                                R_block_x = coo_matrix((R_shifts[:, 0], (c_i, c_j)), shape=(n_pts_i, n_pts_j))
-                                R_block_y = coo_matrix((R_shifts[:, 1], (c_i, c_j)), shape=(n_pts_i, n_pts_j))
-                                R_block_z = coo_matrix((R_shifts[:, 2], (c_i, c_j)), shape=(n_pts_i, n_pts_j))
-                                
-                                H_blocks.append((i, j, block))
-                                R_blocks.append((i, j, R_block_x, R_block_y, R_block_z))
-                                
-        bmat_array = [[None for _ in range(num_layers)] for _ in range(num_layers)]
-        R_x_array = [[None for _ in range(num_layers)] for _ in range(num_layers)]
-        R_y_array = [[None for _ in range(num_layers)] for _ in range(num_layers)]
-        R_z_array = [[None for _ in range(num_layers)] for _ in range(num_layers)]
+        h_data, h_row, h_col, rx_data, ry_data, rz_data = moirepy_rust.assemble_hamiltonian_sparse(blocks_to_assemble)
         
-        for i, j, block in H_blocks:
-            bmat_array[i][j] = block
-        for i, j, rx, ry, rz in R_blocks:
-            R_x_array[i][j] = rx
-            R_y_array[i][j] = ry
-            R_z_array[i][j] = rz
+        self.H = coo_matrix((h_data, (h_row, h_col)), shape=(total_dim, total_dim))
+        self.Rx = coo_matrix((rx_data, (h_row, h_col)), shape=(total_dim, total_dim))
+        self.Ry = coo_matrix((ry_data, (h_row, h_col)), shape=(total_dim, total_dim))
+        self.Rz = coo_matrix((rz_data, (h_row, h_col)), shape=(total_dim, total_dim))
             
-        self.H = sp.bmat(bmat_array, format='coo')
-        self.Rx = sp.bmat(R_x_array, format='coo')
-        self.Ry = sp.bmat(R_y_array, format='coo')
-        self.Rz = sp.bmat(R_z_array, format='coo')
 
     def get_phase(self, k: np.ndarray) -> np.ndarray:
         """
@@ -324,4 +367,187 @@ class MoireStack:
         phase = np.exp(1j * k_dot_d)
         
         return phase
+
+    def plot_3d(self, show_connections: bool = True, enable_hover: bool = True):
+        """
+        Renders an interactable 3D Plotly graph of the MoireStack.
+        Allows toggling individual layers and connection lines natively via the legend.
+        Set enable_hover=True in Jupyter to dynamically highlight bonds.
+        """
+        try:
+            import plotly.graph_objects as go
+        except ImportError:
+            raise ImportError("Plotly is required for 3D plotting. Install it via 'pip install plotly'.")
+            
+        if self.state == "BUILDING":
+            raise StackStateError("Must call generate_points() before plotting.")
+            
+        if enable_hover:
+            fig = go.FigureWidget()
+        else:
+            fig = go.Figure()
+        # fig = go.FigureWidget()
+        
+        # Plot layers
+        for i, layer in enumerate(self.layers):
+            pts = layer._points
+            if pts is None or len(pts) == 0:
+                continue
+                
+            fig.add_trace(go.Scatter3d(
+                x=pts[:, 0].tolist(),
+                y=pts[:, 1].tolist(),
+                z=pts[:, 2].tolist(),
+                mode='markers',
+                marker=dict(size=4, opacity=0.9),
+                name=f"Layer {i}"
+            ))
+            
+            # Draw internal bonds (honeycomb) natively for the layer
+            i_idx, b_idx, l_i, l_j = layer.first_nearest_neighbours()
+            if len(i_idx) > 0:
+                pts_i = pts[i_idx]
+                pts_j = layer._bigger_points[b_idx]
+                
+                x_lines = np.empty(len(pts_i) * 3, dtype=object)
+                x_lines[0::3] = pts_i[:, 0]
+                x_lines[1::3] = pts_j[:, 0]
+                x_lines[2::3] = None
+                
+                y_lines = np.empty(len(pts_i) * 3, dtype=object)
+                y_lines[0::3] = pts_i[:, 1]
+                y_lines[1::3] = pts_j[:, 1]
+                y_lines[2::3] = None
+                
+                z_lines = np.empty(len(pts_i) * 3, dtype=object)
+                z_lines[0::3] = pts_i[:, 2]
+                z_lines[1::3] = pts_j[:, 2]
+                z_lines[2::3] = None
+                
+                fig.add_trace(go.Scatter3d(
+                    x=x_lines.tolist(),
+                    y=y_lines.tolist(),
+                    z=z_lines.tolist(),
+                    mode='lines',
+                    line=dict(width=2),
+                    opacity=0.5,
+                    name=f"Bonds L{i}"
+                ))
+            
+        # Plot connections
+        if show_connections and hasattr(self, 'connections'):
+            for (i, j), (c_i, c_j, l_i, l_j, R_shifts) in self.connections.items():
+                if j <= i:
+                    continue # Skip intralayer (i==j) and avoid duplicate reverse interlayer (j<i)
+                    
+                pts_i = self.layers[i]._points[c_i]
+                pts_j = self.layers[j]._points[c_j] + R_shifts
+                
+                # To draw lines in Plotly rapidly, we interleave [x1, x2, None, x3, x4, None...]
+                x_lines = np.empty(len(pts_i) * 3, dtype=object)
+                x_lines[0::3] = pts_i[:, 0]
+                x_lines[1::3] = pts_j[:, 0]
+                x_lines[2::3] = None
+                
+                y_lines = np.empty(len(pts_i) * 3, dtype=object)
+                y_lines[0::3] = pts_i[:, 1]
+                y_lines[1::3] = pts_j[:, 1]
+                y_lines[2::3] = None
+                
+                z_lines = np.empty(len(pts_i) * 3, dtype=object)
+                z_lines[0::3] = pts_i[:, 2]
+                z_lines[1::3] = pts_j[:, 2]
+                z_lines[2::3] = None
+                
+                fig.add_trace(go.Scatter3d(
+                    x=x_lines.tolist(),
+                    y=y_lines.tolist(),
+                    z=z_lines.tolist(),
+                    mode='lines',
+                    line=dict(color='gray', width=1),
+                    opacity=0.3,
+                    visible='legendonly',
+                    name=f"Interlayer (L{i}-L{j})"
+                ))
+                
+        # Plot lattice boundaries (Supercell) at each layer's z-height
+        if self.mlv1 is not None and self.mlv2 is not None:
+            v1 = self.mlv1
+            v2 = self.mlv2
+            bx = [0, v1[0], v1[0] + v2[0], v2[0], 0]
+            by = [0, v1[1], v1[1] + v2[1], v2[1], 0]
+            
+            for i, layer in enumerate(self.layers):
+                if layer._points is not None and len(layer._points) > 0:
+                    z_val = np.mean(layer._points[:, 2])
+                    # z_val = layer._translation[2]
+                    bz = [z_val] * 5
+                    
+                    fig.add_trace(go.Scatter3d(
+                        x=bx,
+                        y=by,
+                        z=bz,
+                        mode='lines',
+                        line=dict(color='black', width=3, dash='dash'),
+                        name=f"Boundary L{i}",
+                        showlegend=False
+                    ))
+                
+        fig.update_layout(
+            title="MoirePy 3D Lattice",
+            scene=dict(
+                xaxis_title='X (Å)',
+                yaxis_title='Y (Å)',
+                zaxis_title='Z (Å)',
+                aspectmode='data', # Critical: forces physical aspect ratio!
+                dragmode='orbit',  # Orbital rotation instead of turntable
+                camera=dict(
+                    projection=dict(type='orthographic'), # No perspective shrinking
+                    eye=dict(x=0, y=0, z=2.5),            # Look from the top (along Z axis)
+                    up=dict(x=0, y=1, z=0)                # Up is Y axis
+                )
+            ),
+            margin=dict(l=0, r=0, b=0, t=40)
+        )
+        
+        # --- INTERACTIVE HOVER HIGHLIGHTING ---
+        if enable_hover:
+            # Add a dedicated trace for fast dynamic highlighting in Jupyter
+            fig.add_trace(go.Scatter3d(
+                x=[], y=[], z=[],
+                mode='lines',
+                line=dict(color='red', width=5),
+                name='Highlighted Bonds',
+                hoverinfo='none'
+            ))
+    
+            def highlight_bonds(trace, points, state):
+                if not points.point_inds: return
+                idx = points.point_inds[0]
+                hovered_pt = np.array([trace.x[idx], trace.y[idx], trace.z[idx]], dtype=np.float64)
+                
+                hx, hy, hz = [], [], []
+                for t in fig.data:
+                    if t.mode == 'lines' and ('Interlayer' in t.name or 'Bonds' in t.name):
+                        for i in range(0, len(t.x), 3):
+                            if t.x[i] is None: 
+                                continue
+                            pt1 = np.array([t.x[i], t.y[i], t.z[i]], dtype=np.float64)
+                            pt2 = np.array([t.x[i+1], t.y[i+1], t.z[i+1]], dtype=np.float64)
+                            if np.allclose(pt1, hovered_pt) or np.allclose(pt2, hovered_pt):
+                                hx.extend([pt1[0], pt2[0], None])
+                                hy.extend([pt1[1], pt2[1], None])
+                                hz.extend([pt1[2], pt2[2], None])
+                                
+                with fig.batch_update():
+                    fig.data[-1].x = hx
+                    fig.data[-1].y = hy
+                    fig.data[-1].z = hz
+                            
+            for t in fig.data:
+                if t.mode == 'markers':
+                    t.on_hover(highlight_bonds)
+        # ----------------------------------------
+
+        return fig
 

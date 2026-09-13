@@ -26,3 +26,6 @@ paper/paper.pdf
 
 .pytest_cache
 .copilot
+dead_agent.md
+scratch_rust.rs
+.copilot/

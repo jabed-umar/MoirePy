@@ -1,6 +1,6 @@
 import numpy as np
 
-class LatticeAlreadyFinalisedError(Exception):
+class StackStateError(Exception):
     """Raised when attempting to modify a lattice that is already finalised."""
     pass
 
