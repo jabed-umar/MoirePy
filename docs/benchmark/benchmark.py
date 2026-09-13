@@ -11,7 +11,8 @@ import numpy as np
 from tqdm import trange
 
 from moirepy import (
-    BilayerMoireLattice,
+    MoireStack,
+    
     HexagonalLayer,
     KagomeLayer,
     Rhombus60Layer,
@@ -53,8 +54,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--data-path", type=Path, default=DEFAULT_DATA_PATH)
     parser.add_argument("--out-dir", type=Path, default=DEFAULT_OUT_DIR)
 
-    parser.add_argument("--n", type=int, default=DEFAULT_N)
-    parser.add_argument("--repeat", type=int, default=DEFAULT_REPEAT)
+    parser.add_argument("-n", "--n", type=int, default=DEFAULT_N)
+    parser.add_argument("-r", "--repeat", type=int, default=DEFAULT_REPEAT)
     parser.add_argument("--cpu_name", type=str, default=None)
     parser.add_argument("--quiet", action="store_true")
 
@@ -251,17 +252,13 @@ def select_equally_spaced_rows(rows: list[dict[str, float | int]], n: int) -> li
     return sorted(selected, key=lambda r: int(r["cells"]))
 
 
-def build_lattice(row: dict[str, float | int], lattice_class, n1: int, n2: int) -> BilayerMoireLattice:
-    return BilayerMoireLattice(
-        lattice_class,
-        int(row["ll1"]),
-        int(row["ll2"]),
-        int(row["ul1"]),
-        int(row["ul2"]),
-        n1,
-        n2,
-        verbose=False,
-    )
+def build_lattice(row: dict[str, float | int], lattice_class, n1: int, n2: int):
+    l1 = lattice_class()
+    l2 = lattice_class()
+    stack = MoireStack(l1)
+    stack.add_layer(l2, int(row["ll1"]), int(row["ll2"]), int(row["ul1"]), int(row["ul2"]))
+    stack.generate_points(n1, n2)
+    return stack
 
 
 def run_experiment_1(
@@ -277,8 +274,12 @@ def run_experiment_1(
     start = time()
     for _ in trange(repeat, desc=f"Exp1 cells={row['cells']}", leave=False, disable=quiet):
         lattice = build_lattice(row, lattice_class, n1, n2)
-        lattice.generate_connections(inter_layer_radius=inter_layer_radius)
-        lattice.generate_hamiltonian(**hopping)
+        radii = np.array([[0.0, inter_layer_radius], [inter_layer_radius, 0.0]])
+        lattice.generate_connections(radii)
+        def const_hop(coo_i, coo_j, R, li, lj, stack): return np.ones(len(coo_i))
+        t_matrix = {(0,1): const_hop, (1,0): const_hop}
+        t_self = {0: const_hop, 1: const_hop}
+        lattice.generate_hamiltonian(t_matrix, t_self)
     return (time() - start) * 1000.0 / repeat
 
 
@@ -293,11 +294,15 @@ def run_experiment_2(
     quiet: bool,
 ) -> float:
     lattice = build_lattice(row, lattice_class, n1, n2)
-    lattice.generate_connections(inter_layer_radius=inter_layer_radius)
+    radii = np.array([[0.0, inter_layer_radius], [inter_layer_radius, 0.0]])
+    lattice.generate_connections(radii)
 
     start = time()
     for _ in trange(repeat, desc=f"Exp2 cells={row['cells']}", leave=False, disable=quiet):
-        lattice.generate_hamiltonian(**hopping)
+        def const_hop(coo_i, coo_j, R, li, lj, stack): return np.ones(len(coo_i))
+        t_matrix = {(0,1): const_hop, (1,0): const_hop}
+        t_self = {0: const_hop, 1: const_hop}
+        lattice.generate_hamiltonian(t_matrix, t_self)
     return (time() - start) * 1000.0 / repeat
 
 

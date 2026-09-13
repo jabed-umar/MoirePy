@@ -92,17 +92,17 @@ nav:
     - Overview: api/index.md
     - Core Classes:
       - Layer: api/generated/moirepy.layers.Layer.md
-      - BilayerMoireLattice: api/generated/moirepy.moire.BilayerMoireLattice.md
+      - MoireStack: api/generated/moirepy.stack.MoireStack.md
     - Built-in Layers:
-      - SquareLayer: api/generated/moirepy.layers.SquareLayer.md
-      - TriangularLayer: api/generated/moirepy.layers.TriangularLayer.md
-      - Rhombus60Layer: api/generated/moirepy.layers.Rhombus60Layer.md
-      - KagomeLayer: api/generated/moirepy.layers.KagomeLayer.md
-      - HexagonalLayer: api/generated/moirepy.layers.HexagonalLayer.md
+      - SquareLayer: api/generated/moirepy.presets.SquareLayer.md
+      - TriangularLayer: api/generated/moirepy.presets.TriangularLayer.md
+      - Rhombus60Layer: api/generated/moirepy.presets.Rhombus60Layer.md
+      - KagomeLayer: api/generated/moirepy.presets.KagomeLayer.md
+      - HexagonalLayer: api/generated/moirepy.presets.HexagonalLayer.md
     - Utilities:
       - get_rotation_matrix: api/generated/moirepy.utils.get_rotation_matrix.md
       - are_coeffs_integers: api/generated/moirepy.utils.are_coeffs_integers.md
-      - LatticeAlreadyFinalisedError: api/generated/moirepy.utils.LatticeAlreadyFinalisedError.md
+      # - StackStateError: api/generated/moirepy.utils.StackStateError.md
 
 markdown_extensions:
   - footnotes
@@ -115,6 +115,7 @@ markdown_extensions:
 
 extra_javascript:
   - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
+  - https://cdn.plot.ly/plotly-2.27.0.min.js
 
 hooks:
   - mkdocs_hooks.py

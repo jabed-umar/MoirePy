@@ -25,11 +25,38 @@ def convert_nb_to_md_content(nb_path, site_dir):
         if cell.cell_type == 'markdown':
             md_content.append(cell.source)
         elif cell.cell_type == 'code':
-            cell_data = [f"```python\n{cell.source}"]
+            filtered_lines = []
+            ignore = False
+            for line in cell.source.splitlines():
+                if line.strip() == "# ==================== IGNORE START ====================":
+                    ignore = True
+                    continue
+                if line.strip() == "# ==================== IGNORE END ====================":
+                    ignore = False
+                    continue
+                if not ignore:
+                    filtered_lines.append(line)
+            
+            filtered_source = "\n".join(filtered_lines)
+            cell_data = [f"```python\n{filtered_source}"]
             for output in cell.get('outputs', []):
 
                 if 'text' in output:
                     cell_data.append(comment_lines(output['text']))
+                elif 'data' in output and 'text/html' in output['data']:
+                    cell_data.append("```")
+                    md_content.append("\n".join(cell_data))
+                    html_str = output['data']['text/html']
+                    if isinstance(html_str, list):
+                        html_str = "".join(html_str)
+                    
+                    # Wrap Plotly initialization in a load event listener so it waits for plotly.min.js at the bottom of the body
+                    if "Plotly.newPlot" in html_str:
+                        html_str = html_str.replace("<script>", "<script>window.addEventListener('load', function() {")
+                        html_str = html_str.replace("</script>", "});</script>")
+                        
+                    md_content.append(html_str)
+                    cell_data = ["```python"]
                 elif 'data' in output and 'image/png' in output['data']:
                     img_counter += 1
                     img_name = f"plot_{img_counter}.webp"
