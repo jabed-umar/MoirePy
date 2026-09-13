@@ -43,10 +43,10 @@ This page presents interactive benchmark results for MoirePy across multiple mac
 
 <script>
 const DATASETS = [
-  { label: "i5 Gen12", path: "../benchmark/i5_gen12/benchmark_results.json", color: "#1472e6", enabled: true },
-  { label: "i3 Gen4", path: "../benchmark/i3_gen4/benchmark_results.json", color: "#e95d2a", enabled: false },
-  { label: "Raspberry Pi 5", path: "../benchmark/pi5/benchmark_results.json", color: "#0f9d58", enabled: false },
-  { label: "new", path: "../benchmark/new/benchmark_results.json", color: "#ff0000", enabled: true },
+  { label: "v1 i5 Gen12", path: "../benchmark/i5_gen12/benchmark_results.json", color: "#1472e6", enabled: true },
+  { label: "v1 i3 Gen4", path: "../benchmark/i3_gen4/benchmark_results.json", color: "#e95d2a", enabled: false },
+  { label: "v1 RPi 5", path: "../benchmark/pi5/benchmark_results.json", color: "#0f9d58", enabled: false },
+  { label: "v2 i5 Gen12", path: "../benchmark/new/benchmark_results.json", color: "#ff0000", enabled: true },
 ];
 
 const statusEl = document.getElementById("bench-status");

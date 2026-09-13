@@ -3,7 +3,7 @@
 from .utils import (
     get_rotation_matrix,
     are_coeffs_integers,
-    LatticeAlreadyFinalisedError,
+    StackStateError,
     StackStateError,
 )
 from .layers import Layer
@@ -11,10 +11,11 @@ from .layers import Layer
 __all__ = [
     "get_rotation_matrix",
     "are_coeffs_integers",
-    "LatticeAlreadyFinalisedError",
+    "StackStateError",
     "StackStateError",
     "Layer",
 ]
+
 from .presets import (
     SquareLayer,
     TriangularLayer,
